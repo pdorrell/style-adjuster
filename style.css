@@ -1,17 +1,15 @@
-.test, .test3, .test4, test5 {
+.test-page .test, .test-page .test3, .test-page .test4, .test-page test5 {
   font-size: 2em;
   color: #000060;
   background-color: #f0c0c0; }
-
-h1 {
+.test-page h1 {
   font-family: Tahoma, sans-serif;
   font-size: 3em;
   color: black;
   background-color: white;
   margin: 0;
   padding: 0; }
-
-h2 {
+.test-page h2 {
   font-family: Tahoma, sans-serif;
   font-size: 2em;
   color: #0000ff;
@@ -20,12 +18,21 @@ h2 {
   padding: 0;
   margin-top: 1em;
   margin-bottom: 0.2em; }
-
-p {
+.test-page p {
   margin: 1em;
   padding: 0; }
-
-.highlighted {
+.test-page .highlighted {
   font-size: 1.2em;
   color: red;
   background-color: yellow; }
+.test-page a {
+  font-weight: bold;
+  color: #000080;
+  text-decoration: none;
+  background-color: gainsboro; }
+  .test-page a:hover {
+    background-color: white;
+    color: blue; }
+.test-page .author {
+  font-style: italic;
+  font-size: 0.9em; }
