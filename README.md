@@ -13,4 +13,4 @@ Functions include:
 * Save any changed values as CSS source code, which you can cut and paste
   to update your CSS source files.
 
-You can try it out at [http://pdorrell.github.io/style-adjuster/].
+You can try it out at http://pdorrell.github.io/style-adjuster/.
