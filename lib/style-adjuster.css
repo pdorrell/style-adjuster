@@ -1,0 +1,104 @@
+.style-adjuster {
+  font: 16px Tahoma, Helvetica, sans-serif;
+  border: solid 2px #707070;
+  background-color: white; }
+  .style-adjuster .style-rules {
+    margin-top: 1em; }
+  .style-adjuster .rules h2 {
+    font-family: Tahoma, Helvetica, sans-serif;
+    font-size: 1.3em;
+    margin: 0;
+    padding: 0; }
+  .style-adjuster .filtering .filtered {
+    background-color: #ffffd0; }
+  .style-adjuster button.expand {
+    font-size: 0.8em;
+    padding: 0;
+    margin: 0 0.5em;
+    min-width: 1.2em; }
+  .style-adjuster .property {
+    margin-left: 3em; }
+  .style-adjuster .property .name, .style-adjuster .edit-property .name {
+    font-weight: bold; }
+  .style-adjuster .property .separator, .style-adjuster .edit-property .separator {
+    font-weight: bold; }
+  .style-adjuster .edit-style-sheet {
+    margin-top: 0.8em; }
+    .style-adjuster .edit-style-sheet:first-child {
+      margin-top: 0; }
+    .style-adjuster .edit-style-sheet .href {
+      font-weight: bold; }
+  .style-adjuster .edit-rule {
+    margin-left: 2em; }
+  .style-adjuster .edit-property {
+    margin-left: 2em;
+    cursor: pointer; }
+    .style-adjuster .edit-property:hover {
+      background-color: yellow; }
+  .style-adjuster .being-edited {
+    background-color: #cad8d4; }
+    .style-adjuster .being-edited:hover {
+      background-color: #cad8d4; }
+  .style-adjuster .editor-wrapper div {
+    border: solid 1pt #707070; }
+  .style-adjuster .properties-wrapper {
+    margin-top: 1em; }
+  .style-adjuster .text-value-editor {
+    padding: 0.5em; }
+    .style-adjuster .text-value-editor .name {
+      font-weight: bold; }
+  .style-adjuster .style-sheets .href {
+    cursor: pointer; }
+    .style-adjuster .style-sheets .href:hover {
+      background-color: yellow; }
+  .style-adjuster .rules .rule .selector {
+    cursor: pointer; }
+    .style-adjuster .rules .rule .selector:hover {
+      background-color: yellow; }
+  .style-adjuster .rules .rule .property .name-and-value {
+    cursor: pointer; }
+    .style-adjuster .rules .rule .property .name-and-value:hover {
+      background-color: yellow; }
+  .style-adjuster h1 {
+    font-size: 2.5em;
+    background-color: #eaeaea;
+    color: #500000; }
+  .style-adjuster .empty-message {
+    font-style: italic;
+    margin: 1em; }
+  .style-adjuster h2 {
+    font-family: Tahoma, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0; }
+  .style-adjuster .no-href {
+    font-style: italic; }
+  .style-adjuster .original-value {
+    font-size: 0.9em;
+    font-style: italic; }
+  .style-adjuster .changed-value {
+    background-color: #e0e0ff;
+    color: red; }
+  .style-adjuster .rule-value-changed {
+    background-color: #e0e0ff;
+    color: red; }
+  .style-adjuster label.checkbox {
+    cursor: pointer; }
+  .style-adjuster .changes pre {
+    background-color: #f2f2fb;
+    color: #5f0000;
+    padding: 1em; }
+  .style-adjuster .tab {
+    overflow: auto;
+    position: absolute;
+    height: auto;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-top: 3.5em;
+    margin-bottom: 1em;
+    margin-right: 0;
+    padding-right: 1em;
+    margin-left: 1em; }
+  .style-adjuster .ui-tabs .ui-tabs-nav li a {
+    padding: 0.2em 0.5em; }

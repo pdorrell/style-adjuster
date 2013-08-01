@@ -1,0 +1,190 @@
+$selectable_hover_color: yellow;
+$sans_serif_font: Tahoma,Helvetica,sans-serif;
+
+.style-adjuster {
+    font: 16px $sans_serif_font;
+    border: solid 2px #707070;
+    background-color: white;
+
+    .style-rules {
+	margin-top: 1em;
+    }
+
+    .rules {
+	h2 {
+	    font-family: $sans_serif_font;
+	    font-size: 1.3em;
+	    margin: 0;
+	    padding: 0;
+	}
+    }
+
+    .filtering {
+	.filtered {
+	    background-color: #ffffd0;
+	}
+    }
+
+    button.expand {
+	font-size: 0.8em;
+	padding: 0;
+	margin: 0 0.5em;
+	min-width: 1.2em;
+    }
+
+    .property {
+	margin-left: 3em;
+    }
+
+    .property, .edit-property {
+	.name {
+	    font-weight: bold;
+	}
+	.separator {
+	    font-weight: bold;
+	}
+    }
+
+    .edit-style-sheet {
+	margin-top: 0.8em;
+	&:first-child {
+	    margin-top: 0;
+	}
+	.href {
+	    font-weight: bold;
+	}
+    }
+
+    .edit-rule {
+	margin-left: 2em;
+    }
+
+    .edit-property {
+	margin-left: 2em;
+	cursor: pointer;
+	&:hover {
+	    background-color: $selectable_hover_color;
+	}
+    }
+
+    $being_edited_color: rgb(202, 216, 212);
+
+    .being-edited {
+	background-color: $being_edited_color;
+	&:hover {
+	    background-color: $being_edited_color;
+	}
+    }
+
+    .editor-wrapper {
+	div {
+	    border: solid 1pt #707070;
+	}
+    }
+
+    .properties-wrapper {
+	margin-top: 1em;
+    }
+
+    .text-value-editor {
+	padding: 0.5em;
+	.name { 
+	    font-weight: bold;
+	}
+    }
+
+    .style-sheets {
+	.href {
+	    &:hover {
+		background-color: $selectable_hover_color;
+	    }
+	    cursor: pointer;
+	}
+    }
+
+    .rules {
+	.rule {
+	    .selector {
+		&:hover {
+		    background-color: $selectable_hover_color;
+		}
+		cursor: pointer;
+	    }
+	    .property {
+		.name-and-value {
+		    &:hover {
+			background-color: $selectable_hover_color;
+		    }
+		    cursor: pointer;
+		}
+	    }
+	}
+    }
+
+    h1 {
+	font-size: 2.5em;
+	background-color: rgb(234,234,234);
+	color: rgb(80, 0, 0);
+    }
+
+    .empty-message {
+	font-style: italic;
+	margin: 1em;
+    }
+
+    h2 {
+	font-family: $sans_serif_font;
+	margin: 0;
+	padding: 0;
+    }
+
+    .no-href {
+	font-style: italic;
+    }    
+
+    .original-value {
+	font-size: 0.9em;
+	font-style: italic;
+    }
+
+    .changed-value {
+	background-color: #e0e0ff;
+	color: red;
+    }
+
+    .rule-value-changed {
+	background-color: #e0e0ff;
+	color: red;
+    }
+
+    label.checkbox {
+	cursor: pointer;
+    }
+
+    .changes {
+	pre {
+	    background-color: rgb(242, 242, 251);
+	    color: rgb(95, 0, 0);
+	    padding: 1em;
+	}
+    }
+
+    .tab {
+	overflow: auto;     
+	position: absolute; 
+	height: auto; 
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin-top: 3.5em;
+	margin-bottom: 1em;
+	margin-right: 0;
+	padding-right: 1em;
+	margin-left: 1em;
+    }
+
+    .ui-tabs .ui-tabs-nav li a {
+	padding: 0.2em 0.5em;
+    }
+}

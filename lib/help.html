@@ -1,0 +1,63 @@
+<p><b>Style Adjuster</b> is a utility for selecting a set of properties within the CSS rules
+that apply to a web page, making changes to those rules, and seeing
+the results immediately in the browser.</p>
+
+<h2>Tab: Style Sheets</h2>
+
+<p>The <b>Style Sheets</b> tab shows all the CSS style sheets loaded into the web page
+so that you can select those style sheets containing the rules that you want to edit.
+Depending on how Style Adjuster has been injected into the page, some style
+sheets may have been pre-selected.
+</p>
+
+<p>When a style sheet is deselected, any selections and changes for that style sheet
+are not shown in the <b>Rules</b>, <b>Edit</b> or <b>Changes</b> tabs. However they are not discarded,
+and will reappear if the style sheet is reselected.</p>
+
+<h2>Tab: Rules</h2>
+
+<p>The <b>Rules</b> tab shows all rules from the selected style sheets. Each rule can
+be expanded to view and select the properties that you want to edit.
+(Actual editing happens in the <b>Edit</b> tab.)</p>
+
+<p>To edit properties, you must select the individual properties that you want to edit. 
+Selecting a property forces the rule to be selected. Conversely, deselecting a rule deselects
+all properties within the rule.</p>
+
+<p>You can use the Filter field to view only a subset of rules. Rules are shown if the selector
+matches part of the filter value, or, if the rule is already selected.</p>
+
+<p>There is a checkbox option to only show selected rules, and buttons to expand or unexpand
+all currently visible rules.</p>
+
+<h2>Tab: Edit</h2>
+
+<p>The <b>Edit</b> tab shows all the properties selected in the <b>Rules</b> tab.</p>
+
+<p>Clicking on a property invokes the property editor for that rule.</p>
+
+<p>Currently the property editor for all rules is a simple text editor.</p>
+
+<p>You can enter a new value in the text field, and then either press "Save" or
+press the "Enter" key.</p>
+
+<p>(Also, at the moment, if you attempt to save an invalid values for a property, it silently 
+fails to be updated.)</p>
+
+<p>The "Reset" button will reset the value of the property back to its original value.</p>
+
+<p>When a property value is set to a value different to its original value, the changed
+value is highlighted, the original value is also displayed in italics, and that property
+cannot be deselected.</p>
+
+<h2>Tab: Changes</h2>
+
+<p>The <b>Changes</b> tab shows the current changes made in CSS format. This can be selected
+using the "Select" button, and copied and pasted into a file. (It is up to you how you reintegrate
+any changes made into your source files. However, the changes can simply be inserted as-is to the end
+of the last CSS file included in the web page, or saved to a new CSS file which is included
+as the last CSS file in the web page, and they will be correctly applied to the web page.)</p>
+
+<h2>Keyboard Shortcut</h2>
+
+<p><b>Ctrl-Alt-F12</b> hides and re-displays the Style Adjuster dialog.</p>
