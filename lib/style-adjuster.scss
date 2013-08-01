@@ -113,12 +113,22 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     }
 
     .rules {
+	.property-error {
+	    background-color: #ffe0e0;
+	}
 	.rule {
 	    .selector {
 		&:hover {
 		    background-color: $selectable_hover_color;
 		}
 		cursor: pointer;
+	    }
+	    .property-error {
+		color: red;
+		font-weight: bold;
+	    }
+	    .property-text {
+		font-weight: bold;
 	    }
 	    .property {
 		.name-and-value {

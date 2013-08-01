@@ -60,10 +60,17 @@
     cursor: pointer; }
     .style-adjuster .style-sheets .href:hover {
       background-color: yellow; }
+  .style-adjuster .rules .property-error {
+    background-color: #ffe0e0; }
   .style-adjuster .rules .rule .selector {
     cursor: pointer; }
     .style-adjuster .rules .rule .selector:hover {
       background-color: yellow; }
+  .style-adjuster .rules .rule .property-error {
+    color: red;
+    font-weight: bold; }
+  .style-adjuster .rules .rule .property-text {
+    font-weight: bold; }
   .style-adjuster .rules .rule .property .name-and-value {
     cursor: pointer; }
     .style-adjuster .rules .rule .property .name-and-value:hover {
