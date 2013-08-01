@@ -3,11 +3,14 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 
 .style-adjuster {
     font: 16px $sans_serif_font;
-    border: solid 2px #707070;
     background-color: white;
 
     .style-rules {
 	margin-top: 1em;
+    }
+
+    h2.href, .href {
+	color: #000080;
     }
 
     .rules {
@@ -51,6 +54,7 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	    margin-top: 0;
 	}
 	.href {
+	    font-size: 1.1em;
 	    font-weight: bold;
 	}
     }
@@ -95,6 +99,8 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 
     .style-sheets {
 	.href {
+	    font-size: 1.1em;
+	    font-weight: bold;
 	    &:hover {
 		background-color: $selectable_hover_color;
 	    }
@@ -183,8 +189,14 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	padding-right: 1em;
 	margin-left: 1em;
     }
+}
 
-    .ui-tabs .ui-tabs-nav li a {
-	padding: 0.2em 0.5em;
+.ui-tabs {
+    .ui-tabs-nav { 
+	li {
+	    a {
+		padding: 0.2em 0.5em;
+	    }
+	}
     }
 }

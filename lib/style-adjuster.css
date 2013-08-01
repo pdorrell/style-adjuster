@@ -1,9 +1,10 @@
 .style-adjuster {
   font: 16px Tahoma, Helvetica, sans-serif;
-  border: solid 2px #707070;
   background-color: white; }
   .style-adjuster .style-rules {
     margin-top: 1em; }
+  .style-adjuster h2.href, .style-adjuster .href {
+    color: #000080; }
   .style-adjuster .rules h2 {
     font-family: Tahoma, Helvetica, sans-serif;
     font-size: 1.3em;
@@ -27,6 +28,7 @@
     .style-adjuster .edit-style-sheet:first-child {
       margin-top: 0; }
     .style-adjuster .edit-style-sheet .href {
+      font-size: 1.1em;
       font-weight: bold; }
   .style-adjuster .edit-rule {
     margin-left: 2em; }
@@ -48,6 +50,8 @@
     .style-adjuster .text-value-editor .name {
       font-weight: bold; }
   .style-adjuster .style-sheets .href {
+    font-size: 1.1em;
+    font-weight: bold;
     cursor: pointer; }
     .style-adjuster .style-sheets .href:hover {
       background-color: yellow; }
@@ -100,5 +104,6 @@
     margin-right: 0;
     padding-right: 1em;
     margin-left: 1em; }
-  .style-adjuster .ui-tabs .ui-tabs-nav li a {
-    padding: 0.2em 0.5em; }
+
+.ui-tabs .ui-tabs-nav li a {
+  padding: 0.2em 0.5em; }
