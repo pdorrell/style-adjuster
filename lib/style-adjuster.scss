@@ -81,8 +81,12 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     }
 
     .editor-wrapper {
-	div {
-	    border: solid 1pt #707070;
+	border: solid 1pt #707070;
+	.error-message {
+	    color: #e00000;
+	    padding: 0.3em;
+	    border: solid 2pt red;
+	    margin: 0.4em 0.2em 0 0.2em;
 	}
     }
 

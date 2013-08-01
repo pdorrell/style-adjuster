@@ -41,8 +41,13 @@
     background-color: #cad8d4; }
     .style-adjuster .being-edited:hover {
       background-color: #cad8d4; }
-  .style-adjuster .editor-wrapper div {
+  .style-adjuster .editor-wrapper {
     border: solid 1pt #707070; }
+    .style-adjuster .editor-wrapper .error-message {
+      color: #e00000;
+      padding: 0.3em;
+      border: solid 2pt red;
+      margin: 0.4em 0.2em 0 0.2em; }
   .style-adjuster .properties-wrapper {
     margin-top: 1em; }
   .style-adjuster .text-value-editor {
