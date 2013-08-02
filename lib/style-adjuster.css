@@ -41,19 +41,18 @@
     background-color: #cad8d4; }
     .style-adjuster .being-edited:hover {
       background-color: #cad8d4; }
-  .style-adjuster .editor-wrapper {
-    border: solid 1pt #707070; }
-    .style-adjuster .editor-wrapper .error-message {
+  .style-adjuster .value-editor {
+    border: solid 1pt #707070;
+    padding: 0.5em; }
+    .style-adjuster .value-editor .name {
+      font-weight: bold; }
+    .style-adjuster .value-editor .error-message {
       color: #e00000;
       padding: 0.3em;
       border: solid 2pt red;
       margin: 0.4em 0.2em 0 0.2em; }
   .style-adjuster .properties-wrapper {
     margin-top: 1em; }
-  .style-adjuster .text-value-editor {
-    padding: 0.5em; }
-    .style-adjuster .text-value-editor .name {
-      font-weight: bold; }
   .style-adjuster .style-sheets .href {
     font-size: 1.1em;
     font-weight: bold;

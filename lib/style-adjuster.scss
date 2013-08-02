@@ -80,8 +80,12 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	}
     }
 
-    .editor-wrapper {
+    .value-editor {
 	border: solid 1pt #707070;
+	padding: 0.5em;
+	.name { 
+	    font-weight: bold;
+	}
 	.error-message {
 	    color: #e00000;
 	    padding: 0.3em;
@@ -92,13 +96,6 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 
     .properties-wrapper {
 	margin-top: 1em;
-    }
-
-    .text-value-editor {
-	padding: 0.5em;
-	.name { 
-	    font-weight: bold;
-	}
     }
 
     .style-sheets {
