@@ -1,7 +1,7 @@
 $(document).ready(function(){
   //showStyleSheets();
   var styleAdjusterModel = new StyleAdjusterModel(document.styleSheets);
-  styleAdjusterModel.deselect(function (styleSheet) {
+  styleAdjusterModel.deselectStyleSheets(function (styleSheet) {
     var href = styleSheet.href;
     return href == null || href.indexOf("jquery") != -1;
   });
