@@ -118,3 +118,7 @@
 
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
+
+.scale-slider {
+  width: 14em;
+  display: inline-block; }
