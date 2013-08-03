@@ -85,9 +85,18 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 
     .value-editor {
 	border: solid 1pt #707070;
-	padding: 0.5em;
-	.name { 
+	padding: 0.3em;
+	.selector {
+	    font-size: 1.2em;
 	    font-weight: bold;
+	    color: #600000;
+	    margin-bottom: 0.3em;
+	}
+	.value-row {
+	    margin: 0px 1.1em;
+	    .name { 
+		font-weight: bold;
+	    }
 	}
 	.error-message {
 	    color: #e00000;
@@ -220,7 +229,7 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 }
 
 .extra-editor {
-    margin: 1.2em;
+    margin: 0.9em 2.3em;
 }    
 
 .scale-slider { 
@@ -229,11 +238,20 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 }
 
 .size-slider {
-    margin: 1em 0;
+    margin: 0.7em 0px;
     &:first-child {
 	margin-top: 0;
     }
     &:last-child {
 	margin-botton: 0;
     }
+    .limit-value {
+	min-width: 3em;
+	display: inline-block;
+	text-align: right;
+    }
+}
+
+.size-slider {
+  margin: 0.7em 0px;
 }

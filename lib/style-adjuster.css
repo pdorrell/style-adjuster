@@ -45,9 +45,16 @@
       background-color: #cad8d4; }
   .style-adjuster .value-editor {
     border: solid 1pt #707070;
-    padding: 0.5em; }
-    .style-adjuster .value-editor .name {
-      font-weight: bold; }
+    padding: 0.3em; }
+    .style-adjuster .value-editor .selector {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #600000;
+      margin-bottom: 0.3em; }
+    .style-adjuster .value-editor .value-row {
+      margin: 0px 1.1em; }
+      .style-adjuster .value-editor .value-row .name {
+        font-weight: bold; }
     .style-adjuster .value-editor .error-message {
       color: #e00000;
       padding: 0.3em;
@@ -125,15 +132,22 @@
   padding: 0.1em 0.5em; }
 
 .extra-editor {
-  margin: 1.2em; }
+  margin: 0.9em 2.3em; }
 
 .scale-slider {
   width: 30em;
   display: inline-block; }
 
 .size-slider {
-  margin: 1em 0; }
+  margin: 0.7em 0px; }
   .size-slider:first-child {
     margin-top: 0; }
   .size-slider:last-child {
     margin-botton: 0; }
+  .size-slider .limit-value {
+    min-width: 3em;
+    display: inline-block;
+    text-align: right; }
+
+.size-slider {
+  margin: 0.7em 0px; }
