@@ -32,6 +32,8 @@
       font-weight: bold; }
   .style-adjuster .edit-rule {
     margin-left: 2em; }
+    .style-adjuster .edit-rule .selector {
+      font-size: 1.3em; }
   .style-adjuster .edit-property {
     margin-left: 2em;
     cursor: pointer; }
