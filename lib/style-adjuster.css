@@ -121,6 +121,9 @@
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
 
+.ui-dialog .ui-dialog-titlebar {
+  padding: 0.1em 0.5em; }
+
 .extra-editor {
   margin: 1.2em; }
 
