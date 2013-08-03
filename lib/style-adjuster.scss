@@ -228,3 +228,12 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     display: inline-block;
 }
 
+.size-slider {
+    margin: 1em 0;
+    &:first-child {
+	margin-top: 0;
+    }
+    &:last-child {
+	margin-botton: 0;
+    }
+}

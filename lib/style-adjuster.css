@@ -130,3 +130,10 @@
 .scale-slider {
   width: 30em;
   display: inline-block; }
+
+.size-slider {
+  margin: 1em 0; }
+  .size-slider:first-child {
+    margin-top: 0; }
+  .size-slider:last-child {
+    margin-botton: 0; }
