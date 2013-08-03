@@ -119,6 +119,9 @@
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
 
+.extra-editor {
+  margin: 2em; }
+
 .scale-slider {
-  width: 14em;
+  width: 40em;
   display: inline-block; }
