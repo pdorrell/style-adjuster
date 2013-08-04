@@ -36,7 +36,7 @@ all currently visible rules.</p>
 
 <p>Clicking on a property invokes the property editor for that rule.</p>
 
-<p>Currently the property editor for all rules is a simple text editor.</p>
+<p>The property editor includes a text field for editing the value directly.</p>
 
 <p>You can enter a new value in the text field, and then either press "Save" or
 press the "Enter" key.</p>
@@ -52,6 +52,16 @@ an error message will be displayed.</p>
 value is highlighted, the original value is also displayed in italics, and that property
 cannot be deselected.</p>
 
+<p>For some properties, additional UI is provided for changing the property value, for example
+using sliders to change numerical values.</p>
+
+<p>Currently, additional editing UI is provided for the following CSS properties:</p>
+
+<table class="property-editors">
+<thead><tr><th>Property</th><th>Value type</th></tr></thead>
+<tbody id="property-editors-list"></tbody>
+</table>
+
 <h2>Tab: Changes</h2>
 
 <p>The <b>Changes</b> tab shows the current changes made in CSS format. This can be selected
@@ -59,15 +69,6 @@ using the "Select" button, and copied and pasted into a file. (It is up to you h
 any changes made into your source files. However, the changes can simply be inserted as-is to the end
 of the last CSS file included in the web page, or saved to a new CSS file which is included
 as the last CSS file in the web page, and they will be correctly applied to the web page.)</p>
-
-<h2>CSS Property Editors</h2>
-
-<p>Currently special editors are provided for the following CSS properties:</p>
-
-<table class="property-editors">
-<thead><tr><th>Property</th><th>Value type</th></tr></thead>
-<tbody id="property-editors-list"></tbody>
-</table>
 
 <h2>Keyboard Shortcut</h2>
 

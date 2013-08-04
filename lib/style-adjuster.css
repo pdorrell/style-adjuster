@@ -90,10 +90,13 @@
   .style-adjuster .empty-message {
     font-style: italic;
     margin: 1em; }
-  .style-adjuster h2 {
+  .style-adjuster .help h2 {
     font-family: Tahoma, Helvetica, sans-serif;
-    margin: 0;
-    padding: 0; }
+    margin: 0.8em 0em 0.1em;
+    padding: 0;
+    color: #002070; }
+  .style-adjuster .help p {
+    margin: 0px 0px 0.8em; }
   .style-adjuster .no-href {
     font-style: italic; }
   .style-adjuster .original-value {
@@ -157,6 +160,10 @@ table.property-editors {
   border: solid 1px blue;
   margin: 1em; }
   table.property-editors th {
-    background-color: #e0e8ff; }
-  table.property-editors td.property {
-    font-weight: bold; }
+    background-color: #e0e8ff;
+    border: solid 1px blue; }
+  table.property-editors td {
+    border: solid 1px blue;
+    padding: 0.3em; }
+    table.property-editors td.property {
+      font-weight: bold; }

@@ -161,10 +161,16 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	margin: 1em;
     }
 
-    h2 {
-	font-family: $sans_serif_font;
-	margin: 0;
-	padding: 0;
+    .help {
+	h2 {
+	    font-family: $sans_serif_font;
+	    margin: 0.8em 0em 0.1em;
+	    padding: 0;
+	    color: #002070;
+	}
+	p {
+	    margin: 0px 0px 0.8em;
+	}
     }
 
     .no-href {
@@ -262,8 +268,13 @@ table.property-editors {
     margin: 1em;
     th {
 	background-color: #e0e8ff;
+	border: solid 1px blue;
     }
-    td.property {
-	font-weight: bold;
+    td {
+	border: solid 1px blue;
+	padding: 0.3em;
+	&.property {
+	    font-weight: bold;
+	}
     }
 }
