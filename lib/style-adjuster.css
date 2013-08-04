@@ -151,3 +151,12 @@
 
 .size-slider {
   margin: 0.7em 0px; }
+
+table.property-editors {
+  border-collapse: collapse;
+  border: solid 1px blue;
+  margin: 1em; }
+  table.property-editors th {
+    background-color: #e0e8ff; }
+  table.property-editors td.property {
+    font-weight: bold; }
