@@ -284,7 +284,14 @@ table.property-editors {
     padding: 0.2em 0.3em;
     margin: 0.3em;
     display: inline-block;
-	
+
+    .value-and-range {
+	margin-right: 1.4em;
+	display: inline-block;
+    }
+    .zoom-controls {
+	display: inline-block;
+    }
     .label, .value, .range, .zoom-label {
 	display: inline-block;
     }
@@ -294,6 +301,8 @@ table.property-editors {
     }
     .value {
 	font-weight: bold;
+	min-width: 3.5em;
+	text-align: right;
     }
     .zoom-label {
 	font-weight: bold;
@@ -302,3 +311,4 @@ table.property-editors {
 	font-style: italic;
     }
 }
+
