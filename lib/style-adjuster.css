@@ -146,7 +146,7 @@
   .size-slider:first-child {
     margin-top: 0; }
   .size-slider:last-child {
-    margin-botton: 0; }
+    margin-bottom: 0; }
   .size-slider .limit-value {
     min-width: 3em;
     display: inline-block;
