@@ -167,3 +167,20 @@ table.property-editors {
     padding: 0.3em; }
     table.property-editors td.property {
       font-weight: bold; }
+
+.slider-control {
+  border: solid 1px blue;
+  padding: 0.2em 0.3em;
+  margin: 0.3em;
+  display: inline-block; }
+  .slider-control .label, .slider-control .value, .slider-control .range, .slider-control .zoom-label {
+    display: inline-block; }
+  .slider-control .label {
+    background-color: #d0d8ff;
+    padding: 0.2em 0; }
+  .slider-control .value {
+    font-weight: bold; }
+  .slider-control .zoom-label {
+    font-weight: bold; }
+  .slider-control .range {
+    font-style: italic; }

@@ -279,4 +279,26 @@ table.property-editors {
     }
 }
 
-
+.slider-control {
+    border: solid 1px blue;
+    padding: 0.2em 0.3em;
+    margin: 0.3em;
+    display: inline-block;
+	
+    .label, .value, .range, .zoom-label {
+	display: inline-block;
+    }
+    .label {
+	background-color: #d0d8ff;
+	padding: 0.2em 0;
+    }
+    .value {
+	font-weight: bold;
+    }
+    .zoom-label {
+	font-weight: bold;
+    }
+    .range {
+	font-style: italic;
+    }
+}
