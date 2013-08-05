@@ -55,6 +55,8 @@
       margin: 0px 1.1em; }
       .style-adjuster .value-editor .value-row .name {
         font-weight: bold; }
+    .style-adjuster .value-editor .focussed {
+      background-color: #f0f0e4; }
     .style-adjuster .value-editor .error-message {
       color: #e00000;
       padding: 0.3em;
@@ -142,7 +144,8 @@
   display: inline-block; }
 
 .size-slider {
-  margin: 0.7em 0px; }
+  padding: 0.6em 0px 0.4em;
+  margin: 0; }
   .size-slider:first-child {
     margin-top: 0; }
   .size-slider:last-child {
@@ -151,9 +154,6 @@
     min-width: 3em;
     display: inline-block;
     text-align: right; }
-
-.size-slider {
-  margin: 0.7em 0px; }
 
 table.property-editors {
   border-collapse: collapse;
@@ -181,8 +181,10 @@ table.property-editors {
   .slider-control .label, .slider-control .value, .slider-control .range, .slider-control .zoom-label {
     display: inline-block; }
   .slider-control .label {
-    background-color: #d0d8ff;
-    padding: 0.2em 0; }
+    color: #000096;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    padding: 0.1em 0.1em; }
   .slider-control .value {
     font-weight: bold;
     min-width: 3.5em;

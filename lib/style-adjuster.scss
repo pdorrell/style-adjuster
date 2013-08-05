@@ -98,6 +98,9 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 		font-weight: bold;
 	    }
 	}
+	.focussed {
+	    background-color: #f0f0e4;
+	}
 	.error-message {
 	    color: #e00000;
 	    padding: 0.3em;
@@ -244,7 +247,8 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 }
 
 .size-slider {
-    margin: 0.7em 0px;
+    padding: 0.6em 0px 0.4em;
+    margin: 0;
     &:first-child {
 	margin-top: 0;
     }
@@ -256,10 +260,6 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	display: inline-block;
 	text-align: right;
     }
-}
-
-.size-slider {
-  margin: 0.7em 0px;
 }
 
 table.property-editors {
@@ -296,8 +296,10 @@ table.property-editors {
 	display: inline-block;
     }
     .label {
-	background-color: #d0d8ff;
-	padding: 0.2em 0;
+	color: rgb(0, 0, 150);
+	background-color: #f0f0f0;
+	font-weight: bold;
+	padding: 0.1em 0.1em;
     }
     .value {
 	font-weight: bold;
