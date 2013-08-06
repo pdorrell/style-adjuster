@@ -170,14 +170,17 @@ table.property-editors {
 
 .slider-control {
   border: solid 1px blue;
-  padding: 0.2em 0.3em;
-  margin: 0.3em;
+  padding: 0.2em 0em 0.2em 0.7em;
+  margin: 0.5em 0px 0px 0.9em;
   display: inline-block; }
   .slider-control .value-and-range {
-    margin-right: 1.4em;
+    min-width: 26em;
     display: inline-block; }
   .slider-control .zoom-controls {
-    display: inline-block; }
+    display: inline-block;
+    border: solid 1px #c0c0ff;
+    padding: 0.3em;
+    margin: 0.3em; }
   .slider-control .label, .slider-control .value, .slider-control .range, .slider-control .zoom-label {
     display: inline-block; }
   .slider-control .label {
@@ -189,6 +192,8 @@ table.property-editors {
     font-weight: bold;
     min-width: 3.5em;
     text-align: right; }
+    .slider-control .value span {
+      background-color: #ffffa0; }
   .slider-control .zoom-label {
     font-weight: bold; }
   .slider-control .range {

@@ -281,16 +281,19 @@ table.property-editors {
 
 .slider-control {
     border: solid 1px blue;
-    padding: 0.2em 0.3em;
-    margin: 0.3em;
+    padding: 0.2em 0em 0.2em 0.7em;
+    margin: 0.5em 0px 0px 0.9em;
     display: inline-block;
 
     .value-and-range {
-	margin-right: 1.4em;
+	min-width: 26em;
 	display: inline-block;
     }
     .zoom-controls {
 	display: inline-block;
+	border: solid 1px #c0c0ff;
+	padding: 0.3em;
+	margin: 0.3em;
     }
     .label, .value, .range, .zoom-label {
 	display: inline-block;
@@ -305,6 +308,9 @@ table.property-editors {
 	font-weight: bold;
 	min-width: 3.5em;
 	text-align: right;
+	span {
+	    background-color: #ffffa0;
+	}
     }
     .zoom-label {
 	font-weight: bold;
