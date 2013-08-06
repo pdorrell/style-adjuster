@@ -186,7 +186,7 @@ table.property-editors {
   margin: 0.5em 0px 0px 0.9em;
   display: inline-block; }
   .slider-control .value-and-range {
-    min-width: 26em;
+    min-width: 20em;
     display: inline-block; }
   .slider-control .zoom-controls {
     display: inline-block;
