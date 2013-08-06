@@ -57,6 +57,10 @@
         font-weight: bold; }
     .style-adjuster .value-editor .focussed {
       background-color: #f0f0e4; }
+      .style-adjuster .value-editor .focussed .short-description {
+        color: #000096;
+        background-color: #f0f0f0;
+        border: solid 2px white; }
     .style-adjuster .value-editor .error-message {
       color: #e00000;
       padding: 0.3em;
@@ -150,6 +154,14 @@
     margin-top: 0; }
   .size-slider:last-child {
     margin-bottom: 0; }
+  .size-slider .short-description {
+    min-width: 2em;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 1.2em;
+    padding: 0 0 0 0.3em;
+    margin-left: 0.3em;
+    border: solid 2px transparent; }
   .size-slider .limit-value {
     min-width: 3em;
     display: inline-block;

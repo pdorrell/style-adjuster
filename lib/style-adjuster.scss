@@ -100,6 +100,11 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	}
 	.focussed {
 	    background-color: #f0f0e4;
+	    .short-description {
+		color: rgb(0, 0, 150);
+		background-color: #f0f0f0;
+		border: solid 2px white;
+	    }
 	}
 	.error-message {
 	    color: #e00000;
@@ -254,6 +259,15 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     }
     &:last-child {
 	margin-bottom: 0;
+    }
+    .short-description {
+	min-width: 2em;
+	font-weight: bold;
+	display: inline-block;
+	font-size: 1.2em;
+	padding: 0 0 0 0.3em;
+	margin-left: 0.3em;
+	border: solid 2px transparent;
     }
     .limit-value {
 	min-width: 3em;
