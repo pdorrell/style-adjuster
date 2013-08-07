@@ -1,3 +1,7 @@
+@function HSL($h, $s, $l) {
+  @return unquote("hsl(#{$h}, #{$s}, #{$l})");
+}
+
 $headline_font_family: Tahoma,sans-serif;
 
 .test-page {
@@ -11,7 +15,7 @@ $headline_font_family: Tahoma,sans-serif;
     h1 {
 	font-family: $headline_font_family;
 	font-size: 3em;
-	color: hsl(0, 0%, 0%);
+	color: HSL(0, 0%, 0%);
 	background-color: white;
 	margin: 0;
 	padding: 0;
@@ -20,8 +24,8 @@ $headline_font_family: Tahoma,sans-serif;
     h2 {
 	font-family: $headline_font_family;
 	font-size: 2em;
-	color: hsl(240, 100%, 50%);
-	background-color: hsl(0, 100%, 100%);
+	color: HSL(240, 100%, 50%);
+	background-color: HSL(0, 100%, 100%);
 	margin: 1em 10pt 30px;
 	padding: 0;
     }
@@ -36,12 +40,12 @@ $headline_font_family: Tahoma,sans-serif;
     .highlighted {
 	font-size: 1.2em;
 	color: red;
-	background-color: hsl(60, 100%, 50%);
+	background-color: HSL(60, 100%, 50%);
     }
 
     a {
 	font-weight: bold;
-	color: hsl(240,100%,30%);
+	color: HSL(240,100%,30%);
 	text-decoration: none;
 	background-color: rgb(0, 0%, 80%);
 	&:hover {

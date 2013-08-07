@@ -5,15 +5,15 @@
 .test-page h1 {
   font-family: Tahoma, sans-serif;
   font-size: 3em;
-  color: black;
+  color: hsl(0, 0%, 0%);
   background-color: white;
   margin: 0;
   padding: 0; }
 .test-page h2 {
   font-family: Tahoma, sans-serif;
   font-size: 2em;
-  color: blue;
-  background-color: white;
+  color: hsl(240, 100%, 50%);
+  background-color: hsl(0, 100%, 100%);
   margin: 1em 10pt 30px;
   padding: 0; }
 .test-page p {
@@ -24,10 +24,10 @@
 .test-page .highlighted {
   font-size: 1.2em;
   color: red;
-  background-color: yellow; }
+  background-color: hsl(60, 100%, 50%); }
 .test-page a {
   font-weight: bold;
-  color: #000099;
+  color: hsl(240, 100%, 30%);
   text-decoration: none;
   background-color: #0000cc; }
   .test-page a:hover {
