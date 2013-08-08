@@ -103,6 +103,8 @@
     color: #002070; }
   .style-adjuster .help p {
     margin: 0px 0px 0.8em; }
+  .style-adjuster .help li {
+    margin-bottom: 0.5em; }
   .style-adjuster .no-href {
     font-style: italic; }
   .style-adjuster .original-value {
