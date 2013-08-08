@@ -36,3 +36,13 @@
 .test-page .author {
   font-style: italic;
   font-size: 0.9em; }
+.test-page .box {
+  margin: 0.5em;
+  padding: 0.5em;
+  font-size: 2em;
+  border-style: solid;
+  display: inline-block; }
+.test-page .box {
+  border-width: 8pt; }
+.test-page .box {
+  border-color: gray; }
