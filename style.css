@@ -1,47 +1,49 @@
-.test-page .test, .test-page .test3, .test-page .test4, .test-page test5 {
-  font-size: 2em;
-  color: red;
-  background-color: #f0c0c0; }
-.test-page h1 {
-  font-family: Tahoma, sans-serif;
-  font-size: 3em;
-  color: black;
-  background-color: white;
-  margin: 0;
-  padding: 0; }
-.test-page h2 {
-  font-family: Tahoma, sans-serif;
-  font-size: 2em;
-  color: #200df2;
-  background-color: white;
-  margin: 0.5em 10pt 15px;
-  padding: 0; }
-.test-page p {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  padding-left: 0em;
-  padding-right: 1em; }
-.test-page .highlighted {
-  font-size: 1.2em;
-  color: red;
-  background-color: yellow; }
-.test-page a {
-  font-weight: bold;
-  color: #000099;
-  text-decoration: none;
-  background-color: #e3e4fc; }
-  .test-page a:hover {
-    background-color: yellow;
-    color: black; }
-.test-page .author {
-  font-style: italic;
-  font-size: 0.9em; }
-.test-page .box {
-  margin: 0.3em;
-  padding: 0.2em;
-  font-size: 2em;
-  display: inline-block;
-  border-style: solid;
-  border-width: 8pt; }
-.test-page .box {
-  border-color: blue; }
+.test-page {
+  min-height: 900px; }
+  .test-page .test, .test-page .test3, .test-page .test4, .test-page test5 {
+    font-size: 2em;
+    color: red;
+    background-color: #f0c0c0; }
+  .test-page h1 {
+    font-family: Tahoma, sans-serif;
+    font-size: 3em;
+    color: black;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+  .test-page h2 {
+    font-family: Tahoma, sans-serif;
+    font-size: 2em;
+    color: #200df2;
+    background-color: white;
+    margin: 0.5em 10pt 15px;
+    padding: 0; }
+  .test-page p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-left: 0em;
+    padding-right: 1em; }
+  .test-page .highlighted {
+    font-size: 1.2em;
+    color: red;
+    background-color: yellow; }
+  .test-page a {
+    font-weight: bold;
+    color: #000099;
+    text-decoration: none;
+    background-color: #e3e4fc; }
+    .test-page a:hover {
+      background-color: yellow;
+      color: black; }
+  .test-page .author {
+    font-style: italic;
+    font-size: 0.9em; }
+  .test-page .box {
+    margin: 0.3em;
+    padding: 0.2em;
+    font-size: 2em;
+    display: inline-block;
+    border-style: solid;
+    border-width: 8pt; }
+  .test-page .box {
+    border-color: blue; }
