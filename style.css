@@ -41,8 +41,6 @@
   padding: 0.5em;
   font-size: 2em;
   border-style: solid;
-  display: inline-block; }
-.test-page .box {
-  border-width: 8pt; }
-.test-page .box {
-  border-color: blue red; }
+  display: inline-block;
+  border-width: 8pt;
+  border-color: blue; }
