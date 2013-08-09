@@ -82,8 +82,6 @@ more is needed.</p>
 <p>Known limitations include:</p>
 
 <ul>
- <li><b>Style Adjuster</b> has only been tested to work on <b>Firefox</b>, <b>Chrome</b>, <b>Chromium</b> and <b>Safari</b>.
-It does not currently work on <b>Internet Explorer</b>.</li>
  <li><b>Style Adjuster</b> does not work on a touch screen (that is, a mouse is required).</li>
  <li>The rules filter only filters on exact sub-strings. An option to filter on whole words would
 be useful, especially when searching for tags like <b>"a"</b> and <b>"p"</b>.</li>
@@ -98,10 +96,10 @@ have a special editing UI (even though some of their component properties do).</
 <h2>Browser Issues</h2>
 
 <p><b>Style Adjuster</b> depends on the browser's representation of CSS styles for a page in the 
-<b>document.stylesheets</b> object. It reads the CSS style information from that object, and it also
+<b>document.styleSheets</b> object. It reads the CSS style information from that object, and it also
 updates changed styles into the same object.</p>
 
-<p>Unfortunately browser implementations can choose to store CSS data in <b>document.stylesheets</b> slightly
+<p>Unfortunately browser implementations can choose to store CSS data in <b>document.styleSheets</b> slightly
 differently to how it appears in the source CSS file, which somewhat undermines attempts to use it as a 
 mechanism for editing styles in-page.</p>
 
@@ -111,14 +109,14 @@ mechanism for editing styles in-page.</p>
  <li><b>Joining</b>, where multiple properties such as <b>border-style</b>, <b>border-color</b> and
 <b>border-width</b> get aggregated into "shorthand" properties such as <b>border</b>.</li>
  <li><b>Splitting</b>, for example where <b>border</b> gets split into 
-<b>border-top-style</b>, <b>border-right-style</b>, <b>border-bottom-style</b>, <b>border-left-style</b>, <b>border-top-width</b>, <b>border-right-width</b>, <b>border-bottom-width</b>, <b>border-left-width</b>, <b>border-top-color</b>, <b>border-right-color</b>, <b>border-bottom-color</b> and <b>border-left-color</b> (or more, depending on what values where included in the property value).
+<b>border-top-style</b>, <b>border-right-style</b>, <b>border-bottom-style</b>, <b>border-left-style</b>, <b>border-top-width</b>, <b>border-right-width</b>, <b>border-bottom-width</b>, <b>border-left-width</b>, <b>border-top-color</b>, <b>border-right-color</b>, <b>border-bottom-color</b> and <b>border-left-color</b> (or more, depending on what values were included in the property value).
 </li>
  <li><b>Format changes</b>, where a property value in one format, such as an <b>HSL</b> color, gets
 converted into <b>RGB</b>.</li>
 </ul>
 
-<p>For examples of how the browsers change the properties, see the "box" classes on
-<a href="box-examples.html">this page</a>.</p>
+<p>For examples which cause some browsers to either join or split properties in the same CSS rule, see the 
+"box" classes on <a href="box-examples.html">this page</a>.</p>
 
 <p><b>Style Adjuster</b> mitigates some format changes when editing, by remembering the input format,
 and reconverting any converted data back into the same input format (or, if that can not be done 
@@ -133,9 +131,10 @@ you have to choose a browser that doesn't join or split respectively.
 <table>
 <thead><tr><th>Browser</th><th>Behaviour</th></tr></thead>
 <tbody>
-<tr><td>Internet Explorer 9</td><td>Joins</td></tr>
-<tr><td>Firefox 23 (Windows)</td><td>(no changes)</td></tr>
-<tr><td>Chrome 28 (Windows)</td><td>Joins</td></tr>
+<tr><td>Firefox 23 (Windows &amp; Linux)</td><td>(no changes)</td></tr>
+<tr><td>Internet Explorer 10</td><td>Joins</td></tr>
+<tr><td>Chrome 28 (Windows &amp; Linux)</td><td>Joins</td></tr>
+<tr><td>Chromium 28 (Linux)</td><td>Joins</td></tr>
 <tr><td>Opera 12 (Windows)</td><td>Splits</td></tr>
 <tr><td>Safari 5.1.7 (Windows)</td><td>Splits</td></tr>
 </tbody>
@@ -143,7 +142,7 @@ you have to choose a browser that doesn't join or split respectively.
 
 <h3>File URL Cross-Origin Issues</h3>
 
-<p><b>Chrome</b> and <b>Chromium</b> do not allow access to <b>document.stylesheets</b> information
+<p><b>Chrome</b> and <b>Chromium</b> do not allow access to <b>document.styleSheets</b> information
 for <b>file:</b> URLs, and will not load the <b>help.html</b> file (which you are reading now),
 unless the <b>--allow-file-access-from-files</b> flag is used.</p>
 
