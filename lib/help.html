@@ -101,3 +101,61 @@ So, currently, to force separation of properties like <b>border-color</b>,
 same selector &ndash; see the properties for the <b>".test-page .box"</b> selector in <b>style.css</b> for an 
 example.</li>
 </ul>
+
+<h2>Browser Issues</h2>
+
+<p><b>Style Adjuster</b> depends on the browser's representation of CSS styles for a page in the 
+<b>document.stylesheets</b> object. It reads the CSS style information from that object, and it also
+updates changed styles into the same object.</p>
+
+<p>Unfortunately browser implementations can choose to store CSS data in <b>document.stylesheets</b> slightly
+differently to how it appears in the source CSS file, which somewhat undermines attempts to use it as a 
+mechanism for editing styles in-page.</p>
+
+<p>There are three different changes that I have observed to occur:</p>
+
+<ul>
+ <li><b>Joining</b>, where multiple properties such as <b>border-style</b>, <b>border-color</b> and
+<b>border-width</b> get aggregated into "shorthand" properties such as <b>border</b>.</li>
+ <li><b>Splitting</b>, for example where <b>border</b> gets split into 
+<b>border-top-style</b>, <b>border-right-style</b>, <b>border-bottom-style</b>, <b>border-left-style</b>, <b>border-top-width</b>, <b>border-right-width</b>, <b>border-bottom-width</b>, <b>border-left-width</b>, <b>border-top-color</b>, <b>border-right-color</b>, <b>border-bottom-color</b> and <b>border-left-color</b> (or more, depending on what values where included in the property value).
+</li>
+ <li><b>Format changes</b>, where a property value in one format, such as an <b>HSL</b> color, gets
+converted into <b>RGB</b>.</li>
+</ul>
+
+<p><b>Style Adjuster</b> mitigates some format changes when editing, by remembering the input format,
+and reconverting any converted data back into the same input format (or, if that can not be done 
+precisely, it retains the input value).</p>
+
+<p>For the moment, if you want to edit the original property values without them being joined or split,
+you have to choose a browser that doesn't join or split respectively.
+</p>
+
+<p>Currently observed browser behaviour, on the latest browser versions, is as follows:</p>
+
+<table>
+<thead><tr><th>Browser</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td>Internet Explorer 9</td><td>Joins</td></tr>
+<tr><td>Firefox 23 (Windows)</td><td>(no changes)</td></tr>
+<tr><td>Chrome 28 (Windows)</td><td>Joins</td></tr>
+<tr><td>Opera 12 (Windows)</td><td>Splits</td></tr>
+<tr><td>Safari 5.1.7 (Windows)</td><td>Splits</td></tr>
+</tbody>
+</table>
+
+<h3>File URL Cross-Origin Issues</h3>
+
+<p><b>Chrome</b> and <b>Chromium</b> do not allow access to <b>document.stylesheets</b> information
+for <b>file:</b> URLs, and will not load the <b>help.html</b> file (which you are reading now),
+unless the <b>--allow-file-access-from-files</b> flag is used.</p>
+
+<p><b>Opera</b> will not load the <b>help.html</b> file from a <b>file:</b> URL.</p>
+
+<h3>Other Browser Issues</h3>
+
+<p><b>Internet Explorer 9</b> unexpectedly closes the Style Adjuster dialog whenever <b>Enter</b> is entered
+into a text field.</p>
+
+
