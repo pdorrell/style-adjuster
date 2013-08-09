@@ -5,15 +5,15 @@
 .test-page h1 {
   font-family: Tahoma, sans-serif;
   font-size: 3em;
-  color: hsl(0, 0%, 0%);
+  color: black;
   background-color: white;
   margin: 0;
   padding: 0; }
 .test-page h2 {
   font-family: Tahoma, sans-serif;
   font-size: 2em;
-  color: hsl(240, 100%, 50%);
-  background-color: hsl(0, 100%, 100%);
+  color: blue;
+  background-color: white;
   margin: 1em 10pt 30px;
   padding: 0; }
 .test-page p {
@@ -24,23 +24,33 @@
 .test-page .highlighted {
   font-size: 1.2em;
   color: red;
-  background-color: hsl(60, 100%, 50%); }
+  background-color: yellow; }
 .test-page a {
   font-weight: bold;
-  color: hsl(240, 100%, 30%);
+  color: #000099;
   text-decoration: none;
-  background-color: #0000cc; }
+  background-color: #e3e4fc; }
   .test-page a:hover {
-    background-color: white;
-    color: blue; }
+    background-color: yellow;
+    color: black; }
 .test-page .author {
   font-style: italic;
   font-size: 0.9em; }
 .test-page .box {
-  margin: 0.5em;
-  padding: 0.5em;
+  margin: 0.3em;
+  padding: 0.2em;
   font-size: 2em;
   border-style: solid;
   display: inline-block;
   border-width: 8pt;
   border-color: blue; }
+.test-page .box-separated-border-rules {
+  margin: 0.3em;
+  padding: 0.2em;
+  font-size: 2em;
+  display: inline-block;
+  border-style: solid; }
+.test-page .box-separated-border-rules {
+  border-width: 8pt; }
+.test-page .box-separated-border-rules {
+  border-color: red; }
