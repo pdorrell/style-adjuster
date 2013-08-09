@@ -182,6 +182,14 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	li {
 	    margin-bottom: 0.5em;
 	}
+	a {
+	    text-decoration: none;
+	    color: blue;
+	    &:hover {
+		color: black;
+		background-color: hsl(60, 70%, 80%);
+	    }
+	}
     }
 
     .no-href {

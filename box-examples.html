@@ -1,0 +1,46 @@
+<!DOCTYPE html">
+<html lang="en" >
+<head><meta charset="utf-8">
+<title>Style Adjuster Box Examples</title>
+    <link rel="stylesheet" type="text/css" href="js/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="box-examples.css" />
+    <link rel="stylesheet" type="text/css" href="lib/style-adjuster.css" />
+    <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="lib/style-adjuster.js"></script>
+    <script type="text/javascript" src="load-style-adjuster.js"></script>
+</head>
+
+<body>
+<div class="test-page">
+<h1><a href="index.html">Style Adjuster</a> Box Examples</h1>
+
+<div class="author"><a href="http://thinkinghard.com/">Philip Dorrell</a>, 9 August, 2013</div>
+
+<p>This page shows boxes with "border" properties either separate or joined together.
+It is a test page for the behaviour of browsers with regard to reading rules from CSS files and
+putting property values into rules in the <b>document.stylesheets</b> object.
+</p>
+
+<h2>Separate properties in one rule.</h2>
+
+<p>In some browsers, the different <b>border-</b> properties get joined into a single <b>border</b> rule.</p>
+
+<div class="box-separate-border-properties">Some text in a box with separate border properties in one rule.</div>
+
+<h2>One property in one rule.</h2>
+
+<p>In some browsers the single <b>border</b> property gets split into many different <b>border-</b> properties.</p>
+
+<div class="box-single-border-property">Some text in a box with a single "border" property value.</div>
+
+<h2>Separate properties in separate rules</h2>
+
+<p>Separate properties in separate rules will not get joined together &ndash; any splitting and joining
+can only occur within the same rule.</p>
+
+<div class="box-separated-border-rules">Some text in a box with separated border property rules.</div>
+
+</body>
+</html>

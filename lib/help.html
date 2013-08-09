@@ -93,13 +93,6 @@ be useful, especially when searching for tags like <b>"a"</b> and <b>"p"</b>.</l
 values. For example, <b>border-color</b> only has special editing UI when the value is a single color.</li>
  <li>Compound "shorthand" properties, such as <b>font</b> and <b>border</b>, do not yet 
 have a special editing UI (even though some of their component properties do).</li>
- <li>If enough component properties are included in a rule, the browser will coalesce them
-into a single shorthand property in its internal representation, and <b>Style Adjuster</b> 
-reads CSS rules and properties from that same internal representation.
-So, currently, to force separation of properties like <b>border-color</b>,
-<b>border-width</b> and <b>border-style</b>, you have to put them into separate rules with the
-same selector &ndash; see the properties for the <b>".test-page .box"</b> selector in <b>style.css</b> for an 
-example.</li>
 </ul>
 
 <h2>Browser Issues</h2>
@@ -123,6 +116,9 @@ mechanism for editing styles in-page.</p>
  <li><b>Format changes</b>, where a property value in one format, such as an <b>HSL</b> color, gets
 converted into <b>RGB</b>.</li>
 </ul>
+
+<p>For examples of how the browsers change the properties, see the "box" classes on
+<a href="box-examples.html">this page</a>.</p>
 
 <p><b>Style Adjuster</b> mitigates some format changes when editing, by remembering the input format,
 and reconverting any converted data back into the same input format (or, if that can not be done 

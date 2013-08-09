@@ -105,6 +105,12 @@
     margin: 0px 0px 0.8em; }
   .style-adjuster .help li {
     margin-bottom: 0.5em; }
+  .style-adjuster .help a {
+    text-decoration: none;
+    color: blue; }
+    .style-adjuster .help a:hover {
+      color: black;
+      background-color: #f0f0a8; }
   .style-adjuster .no-href {
     font-style: italic; }
   .style-adjuster .original-value {
