@@ -12,9 +12,9 @@
 .test-page h2 {
   font-family: Tahoma, sans-serif;
   font-size: 2em;
-  color: blue;
+  color: #200df2;
   background-color: white;
-  margin: 1em 10pt 30px;
+  margin: 0.5em 10pt 15px;
   padding: 0; }
 .test-page p {
   margin-top: 1em;
