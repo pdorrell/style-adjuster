@@ -44,6 +44,11 @@
   display: inline-block;
   border-width: 8pt;
   border-color: blue; }
+.test-page .box-single-border-property {
+  margin: 0.3em;
+  padding: 0.2em;
+  font-size: 2em;
+  border: solid 8pt green; }
 .test-page .box-separated-border-rules {
   margin: 0.3em;
   padding: 0.2em;
