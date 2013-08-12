@@ -207,6 +207,10 @@
       font-weight: bold; }
     .style-adjuster .slider-control .range {
       font-style: italic; }
+  .style-adjuster .formats {
+    display: inline-block;
+    border: solid 1px #a0a0a0;
+    padding: 0.1em; }
 
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
