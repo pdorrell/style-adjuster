@@ -333,6 +333,9 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
 	display: inline-block;
 	border: solid 1px #a0a0a0;
 	padding: 0.1em;
+	.label { 
+	    font-size: 0.8em;
+	}
     }
 }
 
