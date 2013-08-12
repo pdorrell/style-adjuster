@@ -210,9 +210,12 @@
   .style-adjuster .formats {
     display: inline-block;
     border: solid 1px #a0a0a0;
-    padding: 0.1em; }
+    padding: 0.1em;
+    margin: 0.1em; }
     .style-adjuster .formats .label {
       font-size: 0.8em; }
+  .style-adjuster .hidden {
+    display: none; }
 
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
