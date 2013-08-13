@@ -1,6 +1,8 @@
 function startStyleAdjuster() {
 
   STYLE_ADJUSTER.options.helpHtmlUrl = chrome.extension.getURL("help.html");
+  STYLE_ADJUSTER.options.jqueryUiCssUrl = chrome.extension.getURL("base/jquery-ui.extension.css");
+  STYLE_ADJUSTER.options.styleAdjusterCssUrl = chrome.extension.getURL("style-adjuster.css");
 
   // Create the Style Adjuster model from the document's style sheets
   var styleAdjusterModel = new STYLE_ADJUSTER.StyleAdjusterModel(document.styleSheets);
