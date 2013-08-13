@@ -15,6 +15,8 @@
   "web_accessible_resources":
     [
       "help.html", 
+      "style-adjuster.css", 
+      "base/jquery-ui.extension.css", 
       "base/images/animated-overlay.gif", 
       "base/images/ui-bg_glass_75_dadada_1x400.png", 
       "base/images/ui-icons_2e83ff_256x240.png", 
