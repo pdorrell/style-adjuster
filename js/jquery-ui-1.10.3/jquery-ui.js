@@ -3,12 +3,14 @@
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.draggable.js, jquery.ui.droppable.js, jquery.ui.resizable.js, jquery.ui.selectable.js, jquery.ui.sortable.js, jquery.ui.effect.js, jquery.ui.accordion.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.effect-blind.js, jquery.ui.effect-bounce.js, jquery.ui.effect-clip.js, jquery.ui.effect-drop.js, jquery.ui.effect-explode.js, jquery.ui.effect-fade.js, jquery.ui.effect-fold.js, jquery.ui.effect-highlight.js, jquery.ui.effect-pulsate.js, jquery.ui.effect-scale.js, jquery.ui.effect-shake.js, jquery.ui.effect-slide.js, jquery.ui.effect-transfer.js, jquery.ui.menu.js, jquery.ui.position.js, jquery.ui.progressbar.js, jquery.ui.slider.js, jquery.ui.spinner.js, jquery.ui.tabs.js, jquery.ui.tooltip.js
 * Copyright 2013 jQuery Foundation and other contributors; Licensed MIT */
 (function( $, undefined ) {
-
+  
 var uuid = 0,
 	runiqueId = /^ui-id-\d+$/;
 
 // $.ui might exist from components with no dependencies, e.g., $.ui.position
 $.ui = $.ui || {};
+  
+$.ui.theDocument = $.ui.theDocument || document;
 
 $.extend( $.ui, {
 	version: "1.10.3",
@@ -69,7 +71,7 @@ $.fn.extend({
 			}).eq(0);
 		}
 
-		return (/fixed/).test(this.css("position")) || !scrollParent.length ? $(document) : scrollParent;
+		return (/fixed/).test(this.css("position")) || !scrollParent.length ? $($.ui.theDocument) : scrollParent;
 	},
 
 	zIndex: function( zIndex ) {
@@ -79,7 +81,7 @@ $.fn.extend({
 
 		if ( this.length ) {
 			var elem = $( this[ 0 ] ), position, value;
-			while ( elem.length && elem[ 0 ] !== document ) {
+			while ( elem.length && elem[ 0 ] !== $.ui.theDocument ) {
 				// Ignore z-index if position is set to a value where z-index is ignored by the browser
 				// This makes behavior of this function consistent across browsers
 				// WebKit always returns auto if the element is positioned
@@ -246,7 +248,7 @@ if ( $( "<a>" ).data( "a-b", "a" ).removeData( "a-b" ).data( "a-b" ) ) {
 // deprecated
 $.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
 
-$.support.selectstart = "onselectstart" in document.createElement( "div" );
+$.support.selectstart = "onselectstart" in $.ui.theDocument.createElement( "div" );
 $.fn.extend({
 	disableSelection: function() {
 		return this.bind( ( $.support.selectstart ? "selectstart" : "mousedown" ) +
@@ -828,7 +830,14 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 (function( $, undefined ) {
 
 var mouseHandled = false;
-$( document ).mouseup( function() {
+  $.ui.setTheDocument = function (theDocument) {
+    $.ui.theDocument = theDocument;
+    $( theDocument ).mouseup( function() {
+	mouseHandled = false;
+    });
+  };
+
+$( $.ui.theDocument ).mouseup( function() {
 	mouseHandled = false;
 });
 
@@ -862,7 +871,7 @@ $.widget("ui.mouse", {
 	_mouseDestroy: function() {
 		this.element.unbind("."+this.widgetName);
 		if ( this._mouseMoveDelegate ) {
-			$(document)
+			$($.ui.theDocument)
 				.unbind("mousemove."+this.widgetName, this._mouseMoveDelegate)
 				.unbind("mouseup."+this.widgetName, this._mouseUpDelegate);
 		}
@@ -913,7 +922,7 @@ $.widget("ui.mouse", {
 		this._mouseUpDelegate = function(event) {
 			return that._mouseUp(event);
 		};
-		$(document)
+		$($.ui.theDocument)
 			.bind("mousemove."+this.widgetName, this._mouseMoveDelegate)
 			.bind("mouseup."+this.widgetName, this._mouseUpDelegate);
 
@@ -925,7 +934,7 @@ $.widget("ui.mouse", {
 
 	_mouseMove: function(event) {
 		// IE mouseup check - mouseup happened when mouse was out of window
-		if ($.ui.ie && ( !document.documentMode || document.documentMode < 9 ) && !event.button) {
+		if ($.ui.ie && ( !$.ui.theDocument.documentMode || $.ui.theDocument.documentMode < 9 ) && !event.button) {
 			return this._mouseUp(event);
 		}
 
@@ -944,7 +953,7 @@ $.widget("ui.mouse", {
 	},
 
 	_mouseUp: function(event) {
-		$(document)
+		$($.ui.theDocument)
 			.unbind("mousemove."+this.widgetName, this._mouseMoveDelegate)
 			.unbind("mouseup."+this.widgetName, this._mouseUpDelegate);
 
@@ -1301,14 +1310,14 @@ $.widget("ui.draggable", $.ui.mouse, {
 		// 1. The position of the helper is absolute, so it's position is calculated based on the next positioned parent
 		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't the document, which means that
 		//    the scroll is included in the initial calculation of the offset of the parent, and never recalculated upon drag
-		if(this.cssPosition === "absolute" && this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) {
+		if(this.cssPosition === "absolute" && this.scrollParent[0] !== $.ui.theDocument && $.contains(this.scrollParent[0], this.offsetParent[0])) {
 			po.left += this.scrollParent.scrollLeft();
 			po.top += this.scrollParent.scrollTop();
 		}
 
 		//This needs to be actually done for all browsers, since pageX/pageY includes this information
 		//Ugly IE fix
-		if((this.offsetParent[0] === document.body) ||
+		if((this.offsetParent[0] === $.ui.theDocument.body) ||
 			(this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() === "html" && $.ui.ie)) {
 			po = { top: 0, left: 0 };
 		}
@@ -1365,7 +1374,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 				$( window ).scrollLeft() - this.offset.relative.left - this.offset.parent.left,
 				$( window ).scrollTop() - this.offset.relative.top - this.offset.parent.top,
 				$( window ).scrollLeft() + $( window ).width() - this.helperProportions.width - this.margins.left,
-				$( window ).scrollTop() + ( $( window ).height() || document.body.parentNode.scrollHeight ) - this.helperProportions.height - this.margins.top
+				$( window ).scrollTop() + ( $( window ).height() || $.ui.theDocument.body.parentNode.scrollHeight ) - this.helperProportions.height - this.margins.top
 			];
 			return;
 		}
@@ -1374,8 +1383,8 @@ $.widget("ui.draggable", $.ui.mouse, {
 			this.containment = [
 				0,
 				0,
-				$( document ).width() - this.helperProportions.width - this.margins.left,
-				( $( document ).height() || document.body.parentNode.scrollHeight ) - this.helperProportions.height - this.margins.top
+				$( $.ui.theDocument ).width() - this.helperProportions.width - this.margins.left,
+				( $( $.ui.theDocument ).height() || $.ui.theDocument.body.parentNode.scrollHeight ) - this.helperProportions.height - this.margins.top
 			];
 			return;
 		}
@@ -1414,7 +1423,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 		}
 
 		var mod = d === "absolute" ? 1 : -1,
-			scroll = this.cssPosition === "absolute" && !( this.scrollParent[ 0 ] !== document && $.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) ? this.offsetParent : this.scrollParent;
+			scroll = this.cssPosition === "absolute" && !( this.scrollParent[ 0 ] !== $.ui.theDocument && $.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) ? this.offsetParent : this.scrollParent;
 
 		//Cache the scroll
 		if (!this.offset.scroll) {
@@ -1442,7 +1451,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 
 		var containment, co, top, left,
 			o = this.options,
-			scroll = this.cssPosition === "absolute" && !( this.scrollParent[ 0 ] !== document && $.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) ? this.offsetParent : this.scrollParent,
+			scroll = this.cssPosition === "absolute" && !( this.scrollParent[ 0 ] !== $.ui.theDocument && $.contains( this.scrollParent[ 0 ], this.offsetParent[ 0 ] ) ) ? this.offsetParent : this.scrollParent,
 			pageX = event.pageX,
 			pageY = event.pageY;
 
@@ -1742,7 +1751,7 @@ $.ui.plugin.add("draggable", "opacity", {
 $.ui.plugin.add("draggable", "scroll", {
 	start: function() {
 		var i = $(this).data("ui-draggable");
-		if(i.scrollParent[0] !== document && i.scrollParent[0].tagName !== "HTML") {
+		if(i.scrollParent[0] !== $.ui.theDocument && i.scrollParent[0].tagName !== "HTML") {
 			i.overflowOffset = i.scrollParent.offset();
 		}
 	},
@@ -1750,7 +1759,7 @@ $.ui.plugin.add("draggable", "scroll", {
 
 		var i = $(this).data("ui-draggable"), o = i.options, scrolled = false;
 
-		if(i.scrollParent[0] !== document && i.scrollParent[0].tagName !== "HTML") {
+		if(i.scrollParent[0] !== $.ui.theDocument && i.scrollParent[0].tagName !== "HTML") {
 
 			if(!o.axis || o.axis !== "x") {
 				if((i.overflowOffset.top + i.scrollParent[0].offsetHeight) - event.pageY < o.scrollSensitivity) {
@@ -1771,18 +1780,18 @@ $.ui.plugin.add("draggable", "scroll", {
 		} else {
 
 			if(!o.axis || o.axis !== "x") {
-				if(event.pageY - $(document).scrollTop() < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() - o.scrollSpeed);
-				} else if($(window).height() - (event.pageY - $(document).scrollTop()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
+				if(event.pageY - $($.ui.theDocument).scrollTop() < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollTop($($.ui.theDocument).scrollTop() - o.scrollSpeed);
+				} else if($(window).height() - (event.pageY - $($.ui.theDocument).scrollTop()) < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollTop($($.ui.theDocument).scrollTop() + o.scrollSpeed);
 				}
 			}
 
 			if(!o.axis || o.axis !== "y") {
-				if(event.pageX - $(document).scrollLeft() < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
-				} else if($(window).width() - (event.pageX - $(document).scrollLeft()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
+				if(event.pageX - $($.ui.theDocument).scrollLeft() < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollLeft($($.ui.theDocument).scrollLeft() - o.scrollSpeed);
+				} else if($(window).width() - (event.pageX - $($.ui.theDocument).scrollLeft()) < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollLeft($($.ui.theDocument).scrollLeft() + o.scrollSpeed);
 				}
 			}
 
@@ -2975,13 +2984,13 @@ $.ui.plugin.add("resizable", "containment", {
 
 		that.containerElement = $(ce);
 
-		if (/document/.test(oc) || oc === document) {
+		if (/document/.test(oc) || oc === $.ui.theDocument) {
 			that.containerOffset = { left: 0, top: 0 };
 			that.containerPosition = { left: 0, top: 0 };
 
 			that.parentData = {
-				element: $(document), left: 0, top: 0,
-				width: $(document).width(), height: $(document).height() || document.body.parentNode.scrollHeight
+				element: $($.ui.theDocument), left: 0, top: 0,
+				width: $($.ui.theDocument).width(), height: $($.ui.theDocument).height() || $.ui.theDocument.body.parentNode.scrollHeight
 			};
 		}
 
@@ -3015,7 +3024,7 @@ $.ui.plugin.add("resizable", "containment", {
 			pRatio = that._aspectRatio || event.shiftKey,
 			cop = { top:0, left:0 }, ce = that.containerElement;
 
-		if (ce[0] !== document && (/static/).test(ce.css("position"))) {
+		if (ce[0] !== $.ui.theDocument && (/static/).test(ce.css("position"))) {
 			cop = co;
 		}
 
@@ -3744,7 +3753,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		//Prepare scrolling
-		if(this.scrollParent[0] !== document && this.scrollParent[0].tagName !== "HTML") {
+		if(this.scrollParent[0] !== $.ui.theDocument && this.scrollParent[0].tagName !== "HTML") {
 			this.overflowOffset = this.scrollParent.offset();
 		}
 
@@ -3796,7 +3805,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		//Do scrolling
 		if(this.options.scroll) {
-			if(this.scrollParent[0] !== document && this.scrollParent[0].tagName !== "HTML") {
+			if(this.scrollParent[0] !== $.ui.theDocument && this.scrollParent[0].tagName !== "HTML") {
 
 				if((this.overflowOffset.top + this.scrollParent[0].offsetHeight) - event.pageY < o.scrollSensitivity) {
 					this.scrollParent[0].scrollTop = scrolled = this.scrollParent[0].scrollTop + o.scrollSpeed;
@@ -3812,16 +3821,16 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 			} else {
 
-				if(event.pageY - $(document).scrollTop() < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() - o.scrollSpeed);
-				} else if($(window).height() - (event.pageY - $(document).scrollTop()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollTop($(document).scrollTop() + o.scrollSpeed);
+				if(event.pageY - $($.ui.theDocument).scrollTop() < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollTop($($.ui.theDocument).scrollTop() - o.scrollSpeed);
+				} else if($(window).height() - (event.pageY - $($.ui.theDocument).scrollTop()) < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollTop($($.ui.theDocument).scrollTop() + o.scrollSpeed);
 				}
 
-				if(event.pageX - $(document).scrollLeft() < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() - o.scrollSpeed);
-				} else if($(window).width() - (event.pageX - $(document).scrollLeft()) < o.scrollSensitivity) {
-					scrolled = $(document).scrollLeft($(document).scrollLeft() + o.scrollSpeed);
+				if(event.pageX - $($.ui.theDocument).scrollLeft() < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollLeft($($.ui.theDocument).scrollLeft() - o.scrollSpeed);
+				} else if($(window).width() - (event.pageX - $($.ui.theDocument).scrollLeft()) < o.scrollSensitivity) {
+					scrolled = $($.ui.theDocument).scrollLeft($($.ui.theDocument).scrollLeft() + o.scrollSpeed);
 				}
 
 			}
@@ -3920,10 +3929,10 @@ $.widget("ui.sortable", $.ui.mouse, {
 				animation = {};
 
 			if ( !axis || axis === "x" ) {
-				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft);
+				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === $.ui.theDocument.body ? 0 : this.offsetParent[0].scrollLeft);
 			}
 			if ( !axis || axis === "y" ) {
-				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop);
+				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === $.ui.theDocument.body ? 0 : this.offsetParent[0].scrollTop);
 			}
 			this.reverting = true;
 			$(this.helper).animate( animation, parseInt(this.options.revert, 10) || 500, function() {
@@ -4453,14 +4462,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 		// 1. The position of the helper is absolute, so it's position is calculated based on the next positioned parent
 		// 2. The actual offset parent is a child of the scroll parent, and the scroll parent isn't the document, which means that
 		//    the scroll is included in the initial calculation of the offset of the parent, and never recalculated upon drag
-		if(this.cssPosition === "absolute" && this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) {
+		if(this.cssPosition === "absolute" && this.scrollParent[0] !== $.ui.theDocument && $.contains(this.scrollParent[0], this.offsetParent[0])) {
 			po.left += this.scrollParent.scrollLeft();
 			po.top += this.scrollParent.scrollTop();
 		}
 
 		// This needs to be actually done for all browsers, since pageX/pageY includes this information
 		// with an ugly IE fix
-		if( this.offsetParent[0] === document.body || (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() === "html" && $.ui.ie)) {
+		if( this.offsetParent[0] === $.ui.theDocument.body || (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() === "html" && $.ui.ie)) {
 			po = { top: 0, left: 0 };
 		}
 
@@ -4510,8 +4519,8 @@ $.widget("ui.sortable", $.ui.mouse, {
 			this.containment = [
 				0 - this.offset.relative.left - this.offset.parent.left,
 				0 - this.offset.relative.top - this.offset.parent.top,
-				$(o.containment === "document" ? document : window).width() - this.helperProportions.width - this.margins.left,
-				($(o.containment === "document" ? document : window).height() || document.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
+				$(o.containment === "document" ? $.ui.theDocument : window).width() - this.helperProportions.width - this.margins.left,
+				($(o.containment === "document" ? $.ui.theDocument : window).height() || $.ui.theDocument.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
 			];
 		}
 
@@ -4536,7 +4545,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 			pos = this.position;
 		}
 		var mod = d === "absolute" ? 1 : -1,
-			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent,
+			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== $.ui.theDocument && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent,
 			scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
 
 		return {
@@ -4562,13 +4571,13 @@ $.widget("ui.sortable", $.ui.mouse, {
 			o = this.options,
 			pageX = event.pageX,
 			pageY = event.pageY,
-			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== document && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
+			scroll = this.cssPosition === "absolute" && !(this.scrollParent[0] !== $.ui.theDocument && $.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
 
 		// This is another very weird special case that only happens for relative elements:
 		// 1. If the css position is relative
 		// 2. and the scroll parent is the document or similar to the offset parent
 		// we have to refresh the relative offset during the scroll so there are no jumps
-		if(this.cssPosition === "relative" && !(this.scrollParent[0] !== document && this.scrollParent[0] !== this.offsetParent[0])) {
+		if(this.cssPosition === "relative" && !(this.scrollParent[0] !== $.ui.theDocument && this.scrollParent[0] !== this.offsetParent[0])) {
 			this.offset.relative = this._getRelativeOffset();
 		}
 
@@ -5743,7 +5752,7 @@ $.extend( $.effects, {
 				width: element.width(),
 				height: element.height()
 			},
-			active = document.activeElement;
+			active = $.ui.theDocument.activeElement;
 
 		// support: Firefox
 		// Firefox incorrectly exposes anonymous content
@@ -5751,7 +5760,7 @@ $.extend( $.effects, {
 		try {
 			active.id;
 		} catch( e ) {
-			active = document.body;
+			active = $.ui.theDocument.body;
 		}
 
 		element.wrap( wrapper );
@@ -5792,7 +5801,7 @@ $.extend( $.effects, {
 	},
 
 	removeWrapper: function( element ) {
-		var active = document.activeElement;
+		var active = $.ui.theDocument.activeElement;
 
 		if ( element.parent().is( ".ui-effects-wrapper" ) ) {
 			element.parent().replaceWith( element );
@@ -7910,10 +7919,10 @@ $.extend(Datepicker.prototype, {
 
 		this._pos = (pos ? (pos.length ? pos : [pos.pageX, pos.pageY]) : null);
 		if (!this._pos) {
-			browserWidth = document.documentElement.clientWidth;
-			browserHeight = document.documentElement.clientHeight;
-			scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-			scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+			browserWidth = $.ui.theDocument.documentElement.clientWidth;
+			browserHeight = $.ui.theDocument.documentElement.clientHeight;
+			scrollX = $.ui.theDocument.documentElement.scrollLeft || $.ui.theDocument.body.scrollLeft;
+			scrollY = $.ui.theDocument.documentElement.scrollTop || $.ui.theDocument.body.scrollTop;
 			this._pos = // should use actual width/height below
 				[(browserWidth / 2) - 100 + scrollX, (browserHeight / 2) - 150 + scrollY];
 		}
@@ -8412,12 +8421,12 @@ $.extend(Datepicker.prototype, {
 			dpHeight = inst.dpDiv.outerHeight(),
 			inputWidth = inst.input ? inst.input.outerWidth() : 0,
 			inputHeight = inst.input ? inst.input.outerHeight() : 0,
-			viewWidth = document.documentElement.clientWidth + (isFixed ? 0 : $(document).scrollLeft()),
-			viewHeight = document.documentElement.clientHeight + (isFixed ? 0 : $(document).scrollTop());
+			viewWidth = $.ui.theDocument.documentElement.clientWidth + (isFixed ? 0 : $($.ui.theDocument).scrollLeft()),
+			viewHeight = $.ui.theDocument.documentElement.clientHeight + (isFixed ? 0 : $($.ui.theDocument).scrollTop());
 
 		offset.left -= (this._get(inst, "isRTL") ? (dpWidth - inputWidth) : 0);
-		offset.left -= (isFixed && offset.left === inst.input.offset().left) ? $(document).scrollLeft() : 0;
-		offset.top -= (isFixed && offset.top === (inst.input.offset().top + inputHeight)) ? $(document).scrollTop() : 0;
+		offset.left -= (isFixed && offset.left === inst.input.offset().left) ? $($.ui.theDocument).scrollLeft() : 0;
+		offset.top -= (isFixed && offset.top === (inst.input.offset().top + inputHeight)) ? $($.ui.theDocument).scrollTop() : 0;
 
 		// now check if datepicker is showing outside window viewport - move to a better place if so.
 		offset.left -= Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth) ?
@@ -9604,7 +9613,7 @@ $.fn.datepicker = function(options){
 
 	/* Initialise the date picker. */
 	if (!$.datepicker.initialized) {
-		$(document).mousedown($.datepicker._checkExternalClick);
+		$($.ui.theDocument).mousedown($.datepicker._checkExternalClick);
 		$.datepicker.initialized = true;
 	}
 
@@ -11400,7 +11409,7 @@ $.effects.effect.transfer = function( o, done ) {
 		},
 		startPosition = elem.offset(),
 		transfer = $( "<div class='ui-effects-transfer'></div>" )
-			.appendTo( document.body )
+			.appendTo( $.ui.theDocument.body )
 			.addClass( o.className )
 			.css({
 				top: startPosition.top - fixTop ,
@@ -12474,11 +12483,11 @@ $.ui.position = {
 // fraction support test
 (function () {
 	var testElement, testElementParent, testElementStyle, offsetLeft, i,
-		body = document.getElementsByTagName( "body" )[ 0 ],
-		div = document.createElement( "div" );
+		body = $.ui.theDocument.getElementsByTagName( "body" )[ 0 ],
+		div = $.ui.theDocument.createElement( "div" );
 
 	//Create a "fake body" for testing based on method used in jQuery.support
-	testElement = document.createElement( body ? "div" : "body" );
+	testElement = $.ui.theDocument.createElement( body ? "div" : "body" );
 	testElementStyle = {
 		visibility: "hidden",
 		width: 0,
@@ -12498,7 +12507,7 @@ $.ui.position = {
 		testElement.style[ i ] = testElementStyle[ i ];
 	}
 	testElement.appendChild( div );
-	testElementParent = body || document.documentElement;
+	testElementParent = body || $.ui.theDocument.documentElement;
 	testElementParent.insertBefore( testElement, testElementParent.firstChild );
 
 	div.style.cssText = "position: absolute; left: 10.7432222px;";
