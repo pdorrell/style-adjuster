@@ -331,12 +331,16 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     }
     .formats {
 	display: inline-block;
-	border: solid 1px #a0a0a0;
 	padding: 0.1em;
 	margin: 0.1em;
 	.label { 
 	    font-size: 0.8em;
 	}
+    }
+    .color {
+	border: solid 1px #a0a0a0;
+	padding: 0;
+	margin: 0.4em 0;
     }
     .hidden {
 	display: none;

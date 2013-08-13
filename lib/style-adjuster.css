@@ -209,11 +209,14 @@
       font-style: italic; }
   .style-adjuster .formats {
     display: inline-block;
-    border: solid 1px #a0a0a0;
     padding: 0.1em;
     margin: 0.1em; }
     .style-adjuster .formats .label {
       font-size: 0.8em; }
+  .style-adjuster .color {
+    border: solid 1px #a0a0a0;
+    padding: 0;
+    margin: 0.4em 0; }
   .style-adjuster .hidden {
     display: none; }
 
