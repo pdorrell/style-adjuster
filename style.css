@@ -4,6 +4,9 @@
     font-size: 2em;
     color: red;
     background-color: #f0c0c0; }
+  .test-page .test-bad-property {
+    font-size: 2em;
+    background: linear-gradient(to bottom, #fffaf9, #fff8f7 20%, #fffaf9 50%, white 100%); }
   .test-page h1 {
     font-family: Tahoma, sans-serif;
     font-size: 3em;

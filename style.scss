@@ -10,6 +10,11 @@ $headline_font_family: Tahoma,sans-serif;
 	background-color: #f0c0c0;
     }
 
+    .test-bad-property {
+	font-size: 2em;
+	background: linear-gradient(to bottom, #fffaf9, #fff8f7 20%, #fffaf9 50%, white 100%); 
+    }
+
     h1 {
 	font-family: $headline_font_family;
 	font-size: 3em;
