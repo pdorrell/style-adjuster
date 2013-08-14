@@ -346,6 +346,9 @@ $sans_serif_font: Tahoma,Helvetica,sans-serif;
     .hidden {
 	display: none;
     }
+    .access-error {
+	color: hsl(0, 80%, 50%);
+    }
 }
 
 .ui-tabs {
