@@ -1,7 +1,12 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  margin-bottom: 14px; }
+
 .style-adjuster {
+  height: 100%;
   font: 16px Tahoma, Helvetica, sans-serif;
-  background-color: white;
-  height: 100%; }
+  background-color: white; }
   .style-adjuster .style-rules {
     margin-top: 1em; }
   .style-adjuster h2.href, .style-adjuster .href {

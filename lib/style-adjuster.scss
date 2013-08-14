@@ -1,10 +1,19 @@
 $selectable_hover_color: yellow;
 $sans_serif_font: Tahoma,Helvetica,sans-serif;
 
+body {
+    margin: 0;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+html {
+}
+
 .style-adjuster {
+    height: 100%;
     font: 16px $sans_serif_font;
     background-color: white;
-    height: 100%;
 
     .style-rules {
 	margin-top: 1em;
