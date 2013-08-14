@@ -70,10 +70,6 @@ any changes made into your source files. However, the changes can simply be inse
 of the last CSS file included in the web page, or saved to a new CSS file which is included
 as the last CSS file in the web page, and they will be correctly applied to the web page.)</p>
 
-<h2>Keyboard Shortcut</h2>
-
-<p><b>Ctrl-Alt-F12</b> hides and re-displays the Style Adjuster dialog.</p>
-
 <h2>Limitations</h2>
 
 <p><b>Style Adjuster</b> is work-in-progress. It has enough functionality to be useful, but
@@ -89,8 +85,9 @@ be useful, especially when searching for tags like <b>"a"</b> and <b>"p"</b>.</l
  <li>Special editing UI is only defined for those properties listed above.</li>
  <li>For some of the properties with special editing UI, the UI only works for a subset of possible property
 values. For example, <b>border-color</b> only has special editing UI when the value is a single color.</li>
- <li>To use <b>Style Adjuster</b> on a web page, it is necessary to inject two CSS files and four Javascript files
-into that page. A more convenient method of deployment would be to package <b>Style Adjuster</b> as a browser extension.</li>
+ <li>To use <b>Style Adjuster</b> on a web page, it is necessary to inject two Javascript files
+into that page, and to make JQuery and JQuery UI Javascript, CSS and image files available to the popup window.
+A more convenient method of deployment would be to package <b>Style Adjuster</b> as a browser extension.</li>
 </ul>
 
 <h2>Browser Issues</h2>
