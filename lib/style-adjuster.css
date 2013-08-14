@@ -220,6 +220,8 @@
     margin: 0.4em 0; }
   .style-adjuster .hidden {
     display: none; }
+  .style-adjuster .access-error {
+    color: #e61919; }
 
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }
