@@ -38,6 +38,7 @@ EXTENSION_SRC_FILES = Dir.chdir(BASE_DIR) do
                load-style-adjuster-for-extension.js
                lib/style-adjuster.js
                lib/style-adjuster.css
+               lib/rule-prechecker.css
                lib/help.html
                js/jquery-1.10.2.js
                js/jquery-ui-1.10.3/jquery-ui.js
