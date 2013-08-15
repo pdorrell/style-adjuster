@@ -5,7 +5,8 @@ function startStyleAdjuster() {
   STYLE_ADJUSTER.options.styleAdjusterCssUrl = chrome.extension.getURL("style-adjuster.css");
 
   // Create the Style Adjuster model from the document's style sheets
-  var styleAdjusterModel = new STYLE_ADJUSTER.StyleAdjusterModel(document.styleSheets);
+  var styleSheets = new STYLE_ADJUSTER.StyleSheets(document.styleSheets);
+  var styleAdjusterModel = new STYLE_ADJUSTER.StyleAdjusterModel(styleSheets);
   
   // initially deselect style sheets from jquery UI styles
   styleAdjusterModel.deselectStyleSheets(function (styleSheet) {
