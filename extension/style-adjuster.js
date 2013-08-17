@@ -777,7 +777,7 @@ var STYLE_ADJUSTER = {};
     this.index = index;
     this.domStyleSheet = domStyleSheet;
     this.ruleObjects = this.getRuleObjects();
-    this.ruleSavers = new RuleSavers(domStyleSheet, this.ruleObjects);
+    this.ruleSavers = this.ruleObjects == null ? null : new RuleSavers(domStyleSheet, this.ruleObjects);
   }
   
   StyleSheet.prototype = {
