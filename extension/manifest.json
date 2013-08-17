@@ -2,6 +2,8 @@
   "name": "Style Adjuster",
   "version": "1.0",
   "manifest_version": 2,
+  "description": "Adjust your CSS styles, without taking your eyes off the result.",
+  "homepage_url": "https://github.com/pdorrell/style-adjuster", 
   "permissions": [
     "activeTab"
   ],
@@ -10,7 +12,7 @@
     "persistent": false
   },  
   "browser_action": {
-    "default_title": "Style Adjuster", 
+    "default_title": "StyleAdjuster", 
     "default_icon": "icons/icon19.png", 
     "icons": { 
       "19": "icons/icon19.png",
