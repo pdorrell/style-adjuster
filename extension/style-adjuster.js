@@ -31,9 +31,7 @@ var STYLE_ADJUSTER = {};
 
 (function(lib) {
   
-  var options = { helpHtmlUrl: "extension/help.html",
-                  dialogInNewWindow: true
-                }
+  var options = { helpHtmlUrl: "help.html"};
 
   function ColorConverter() {
     this.reverseKeywords = {};
@@ -766,6 +764,10 @@ var STYLE_ADJUSTER = {};
         console.log("Unexpected error from StyleSheets.updatePropertyValue:");
         console.log(error.stack);
       }
+    }, 
+    
+    toString: function() {
+      return "[StyleSheets]";
     }
   };
 
@@ -1602,25 +1604,8 @@ var STYLE_ADJUSTER = {};
   function StyleAdjusterView(parentDom, styleAdjusterModel) {
     this.parentDom = parentDom;
     this.styleAdjusterModel = styleAdjusterModel;
-    var $this = this;
-    window.styleAdjusterPopupCallback = function(popupJQuery, popupWindow, popupWindowDocument) {
-      $this.popupJQuery = popupJQuery;
-      $this.popupWindow = popupWindow;
-      $ = popupJQuery;
-      var popupWindowBody = getDocumentBody(popupWindow.document);
-      styleAdjusterModel.rulePrechecker = new RulePrechecker(popupWindowDocument);
-      $this.initialiseDom(popupWindowBody, styleAdjusterModel);
-    }
-    if (options.dialogInNewWindow) {
-      this.window = window.open('style-adjuster-popup.html','',
-                                'width=800,height=600,top=300,left=300,menubar=0,' + 
-                                'status=0,scrollbars=0,location=0,toolbar=0,resizable=1');
-      // the popup window will call back into window.styleAdjusterPopupCallback
-    }
-    else {
-      this.initialiseDom(null, styleAdjusterModel);
-      this.configureAsDialog();
-    }
+    styleAdjusterModel.rulePrechecker = new RulePrechecker(document);
+    this.initialiseDom($("body"), styleAdjusterModel);
   }
 
   StyleAdjusterView.prototype = {
@@ -1658,14 +1643,6 @@ var STYLE_ADJUSTER = {};
         }
       }});
       this.tabsDom.find("> ul > li:last-child").css("float", "right");
-    }, 
-    
-    configureAsDialog: function() {
-      this.dom.dialog({appendTo: this.parentDom, 
-                       position: [300, 100], 
-                       width: 800, 
-                       height: 550});
-      this.dom.dialog("widget").draggable("option","containment", false);
     }, 
     
     addTab: function(id, label, view) {
