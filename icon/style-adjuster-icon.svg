@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="style-adjuster-icon.svg">
+   sodipodi:docname="style-adjuster-icon.svg"
+   inkscape:export-filename="/home/philip/dev/projects/style-adjuster/extension/icons/icon19.png"
+   inkscape:export-xdpi="9"
+   inkscape:export-ydpi="9">
   <defs
      id="defs4">
     <marker
@@ -160,26 +163,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-862.36217)">
-    <g
-       id="g5516"
-       transform="translate(0,14.849242)">
-      <rect
-         ry="0"
-         y="1003.5462"
-         x="8.0411224"
-         height="15.203468"
-         width="175.63205"
-         id="rect2985"
-         style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-      <rect
-         ry="0"
-         y="994.87177"
-         x="43.609055"
-         height="31.56653"
-         width="27.995111"
-         id="rect2985-9"
-         style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-    </g>
     <text
        xml:space="preserve"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -192,59 +175,45 @@
          id="tspan3813"
          x="42"
          y="55" /></text>
-    <g
-       id="g5426"
-       transform="translate(2.1213204,7.0710678)">
-      <text
-         sodipodi:linespacing="125%"
-         id="text3815"
-         y="983.36218"
-         x="74"
-         style="font-size:100px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#428310;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
-         xml:space="preserve"><tspan
-           y="983.36218"
-           x="74"
-           id="tspan3817"
-           sodipodi:role="line">A</tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3815-0"
-         y="961.81238"
-         x="32.303711"
-         style="font-size:100px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#428310;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
-         xml:space="preserve"><tspan
-           y="961.81238"
-           x="32.303711"
-           id="tspan3840"
-           sodipodi:role="line">S</tspan></text>
-    </g>
-    <g
-       id="g5482"
-       transform="translate(2.1213203,10.67515)">
-      <path
-         inkscape:connector-curvature="0"
-         id="path3852-9"
-         d="m 26.084384,940.63929 -15.758139,0"
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#TriangleOutS)" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5480"
-         d="m 31.112698,873.46415 0,111.72287 -0.707107,0"
-         style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:5, 10;stroke-dashoffset:0" />
-    </g>
-    <g
-       transform="matrix(-1,0,0,1,189.31991,10.67515)"
-       id="g5482-5">
-      <path
-         inkscape:connector-curvature="0"
-         id="path3852-9-9"
-         d="m 26.084384,940.63929 -15.758139,0"
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#TriangleOutS)" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path5480-6"
-         d="m 31.112698,873.46415 0,111.72287 -0.707107,0"
-         style="fill:none;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:5, 10;stroke-dashoffset:0" />
-    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:110.51583862px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#428310;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       x="116.92247"
+       y="805.94531"
+       id="text3815"
+       sodipodi:linespacing="125%"
+       transform="scale(0.82791594,1.2078521)"><tspan
+         sodipodi:role="line"
+         id="tspan3817"
+         x="116.92247"
+         y="805.94531">A</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:120.56464386px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#428310;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       x="36.052559"
+       y="864.49573"
+       id="text3815-0"
+       sodipodi:linespacing="125%"
+       transform="scale(0.89894461,1.1124156)"><tspan
+         sodipodi:role="line"
+         id="tspan3840"
+         x="36.052559"
+         y="864.49573">S</tspan></text>
+    <rect
+       style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:8.92997551;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2985"
+       width="181.17093"
+       height="37.194912"
+       x="5.2678051"
+       y="993.52399"
+       ry="0" />
+    <rect
+       style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:9;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2985-9"
+       width="53.225876"
+       height="74.210152"
+       x="39.706669"
+       y="975.31879"
+       ry="0" />
   </g>
 </svg>
