@@ -32,7 +32,7 @@ function createPopupWindowDirectly() {
 function initialise() {
   if (window.chrome && window.chrome.runtime) {
     console.log("Initialising target tab for chrome extension");
-    handleTitleWindowRequests();
+    handleStyleSheetsRequests();
     createPopupWindowViaChromeRuntime();
   }
   else {

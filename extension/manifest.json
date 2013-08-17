@@ -14,8 +14,8 @@
   }, 
   "web_accessible_resources":
     [
-      "style-adjuster.js"
-      "initialise-popup.js"
+      "style-adjuster.js", 
+      "initialise-popup.js", 
       "help.html", 
       "style-adjuster-extension-popup.html", 
       "style-adjuster.css", 
