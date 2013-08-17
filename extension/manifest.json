@@ -10,7 +10,13 @@
     "persistent": false
   },  
   "browser_action": {
-    "default_title": "Style Adjuster"
+    "default_title": "Style Adjuster", 
+    "default_icon": "icons/icon19.png", 
+    "icons": { 
+      "19": "icons/icon19.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png" 
+    }
   }, 
   "web_accessible_resources":
     [
