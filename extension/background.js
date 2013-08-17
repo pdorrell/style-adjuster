@@ -31,6 +31,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript({ file: 'style-adjuster.js'}); 
+  chrome.tabs.executeScript({ file: 'style-adjuster-common.js'}); 
+  chrome.tabs.executeScript({ file: 'style-adjuster-stylesheets.js'}); 
   chrome.tabs.executeScript({ file: 'initialise-target-tab.js'}); 
 });
