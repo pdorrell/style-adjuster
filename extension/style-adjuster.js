@@ -749,15 +749,18 @@ var STYLE_ADJUSTER = {};
   }
   
   StyleSheets.prototype = {
+  public: {getStyleSheetObjects: true, updatePropertyValue: true}, 
+    
     /** "public" method */
-    getStyleSheetObjects: function(response) {
+    getStyleSheetObjects: function(request, response) {
       response(this.styleSheetObjects);
     }, 
     
     /** "public" method */
-    updatePropertyValue: function(index, ruleIndex, name, value, expectedSavedValue) {
+    updatePropertyValue: function(request, response) {
       try {
-        this.styleSheets[index].updatePropertyValue(ruleIndex, name, value, expectedSavedValue);
+        this.styleSheets[request.index].updatePropertyValue(request.ruleIndex, request.name, 
+                                                            request.value, request.expectedSavedValue);
       }
       catch(error) {
         console.log("Unexpected error from StyleSheets.updatePropertyValue:");
@@ -997,7 +1000,7 @@ var STYLE_ADJUSTER = {};
   StyleAdjusterModel.prototype = {
     initialise: function(response) {
       $this = this;
-      this.styleSheetObjects = this.styleSheets.getStyleSheetObjects(function(styleSheetObjects) {
+      this.styleSheetObjects = this.styleSheets.getStyleSheetObjects({}, function(styleSheetObjects) {
         $this.initialiseFrom(styleSheetObjects);
         response();
       });
@@ -1104,8 +1107,8 @@ var STYLE_ADJUSTER = {};
 
   StyleSheetModel.prototype = {
     updatePropertyValue: function(ruleIndex, name, value, expectedSavedValue) {
-      this.styleSheets.updatePropertyValue(this.styleSheet.index, ruleIndex, name, 
-                                           value, expectedSavedValue);
+      this.styleSheets.updatePropertyValue({index: this.styleSheet.index, ruleIndex: ruleIndex, 
+                                            name: name, value: value, expectedSavedValue: expectedSavedValue});
     }, 
     
     populateRules: function() {
