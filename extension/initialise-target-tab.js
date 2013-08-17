@@ -6,7 +6,6 @@ var styleSheets = new STYLE_ADJUSTER.StyleSheets(document.styleSheets);
 
 function handleStyleSheetsRequests() {
   chrome.runtime.onMessage.addListener(function(request, sender, handleResult) {
-    console.log("runtime message " + inspect(request));
     var requestType = request.type;
     if(styleSheets.public[requestType]) {
       styleSheets[requestType](request, handleResult);
@@ -18,7 +17,7 @@ function handleStyleSheetsRequests() {
 function createPopupWindowViaChromeRuntime() {
   chrome.runtime.sendMessage({type: "openPopupWindow"}, 
                              function(response) {
-                               console.log("chromeWindowsCreate, response = " + inspect(response));
+                               console.log("createPopupWindowViaChromeRuntime, response = " + inspect(response));
                              });
 }
 
@@ -26,7 +25,6 @@ function createPopupWindowDirectly() {
   var popupWindow = window.open('extension/style-adjuster-extension-popup.html','test-popup',
                                 'width=800,height=600,top=300,left=300,menubar=0,' + 
                                 'status=0,scrollbars=0,location=0,toolbar=0,resizable=1');
-  console.log("popupWindow = " + popupWindow);
 }
 
 function initialise() {

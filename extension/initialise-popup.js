@@ -16,6 +16,7 @@ StyleSheetsProxy.prototype = {
   }, 
   updatePropertyValue: function(request, handleResult) {
     chrome.tabs.sendMessage(this.tabId, {type: "updatePropertyValue", 
+                                         index: request.index, 
                                          ruleIndex: request.ruleIndex, 
                                          name: request.name, 
                                          value: request.value, 
