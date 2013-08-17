@@ -8,9 +8,12 @@ IMAGE_CSS_FILES = ["extension/libs/jquery-ui-1.10.3/themes/base/jquery-ui.css"]
 
 task :default => [:chrome_extension_css]
 
-CHROME_EXTENSION_URL_PREFIX = "chrome-extension://__MSG_@@extension_id__/"
+EXTENSION_ID = ENV["STYLE_ADJUSTER_CHROME_EXTENSION_ID"] || "__MSG_@@extension_id__"
+
+CHROME_EXTENSION_URL_PREFIX = "chrome-extension://#{EXTENSION_ID}/"
 
 task :chrome_extension_css do
+  puts "CHROME_EXTENSION_URL_PREFIX = #{CHROME_EXTENSION_URL_PREFIX}"
   for css_file in IMAGE_CSS_FILES do
     css_file_relative_dir = 'base'
     puts "css_file_relative_dir = #{css_file_relative_dir}"
