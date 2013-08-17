@@ -28,6 +28,8 @@ StyleSheetsProxy.prototype = {
 function initialiseFromStyleSheetsObject(styleSheets) {
   var styleAdjusterModel = new STYLE_ADJUSTER.StyleAdjusterModel(styleSheets);
   styleAdjusterModel.initialise(function() {
+    // Deselect stylesheets with no URL (typically come from browser extensions)
+    styleAdjusterModel.deselectStyleSheets(function(styleSheet)  { return styleSheet.href == null; });
     var styleAdjusterView = new STYLE_ADJUSTER.StyleAdjusterView(null, styleAdjusterModel);
   });
 }  
