@@ -31,10 +31,7 @@ var STYLE_ADJUSTER = {};
 
 (function(lib) {
   
-  var options = { helpHtmlUrl: "lib/help.html",
-                  jqueryUiCssUrl: "js/jquery-ui-1.10.3/themes/base/jquery-ui.css", 
-                  styleAdjusterCssUrl: "lib/style-adjuster.css", 
-                  returnJqueryToOpenerJavascriptUrl: "lib/return-jquery-to-opener.js", 
+  var options = { helpHtmlUrl: "extension/help.html",
                   dialogInNewWindow: true
                 }
 
