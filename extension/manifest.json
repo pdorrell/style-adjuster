@@ -22,7 +22,7 @@
   }, 
   "web_accessible_resources":
     [
-      "icons/icon19.png", 
+      "icons/tab-icon.png", 
       "style-adjuster-common.js", 
       "style-adjuster.js", 
       "initialise-popup.js", 

@@ -1380,7 +1380,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.addTab("changes", "Changes", "View and changes made in CSS format", this.changesView);
       
       this.helpView = new HelpView();
-      this.addTab("help", null, "Help", this.helpView, "icons/icon19.png");
+      this.addTab("help", null, "Help", this.helpView, "icons/tab-icon.png");
       
       $this = this;
       this.dom.tabs({active: 1, activate: function(event, ui) {
