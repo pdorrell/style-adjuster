@@ -1368,19 +1368,19 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.tabsById = {}
       
       this.styleSheetsView = new StyleSheetsView(styleAdjusterModel);
-      this.addTab("sheets", "Style Sheets", this.styleSheetsView);
+      this.addTab("sheets", "Style Sheets", "Select which document style sheets to work on", this.styleSheetsView);
       
       this.rulesView = new RulesView(this.styleAdjusterModel);
-      this.addTab("rules", "Rules", this.rulesView);
+      this.addTab("rules", "Rules", "Select which rule properties to edit", this.rulesView);
       
       this.editView = new EditView(this.styleAdjusterModel);
-      this.addTab("edit", "Edit", this.editView);
+      this.addTab("edit", "Edit", "Edit selected rule properties", this.editView);
       
       this.changesView = new ChangesView(this.styleAdjusterModel);
-      this.addTab("changes", "Changes", this.changesView);
+      this.addTab("changes", "Changes", "View and changes made in CSS format", this.changesView);
       
       this.helpView = new HelpView();
-      this.addTab("help", "Help", this.helpView);
+      this.addTab("help", null, "Help", this.helpView, "icons/icon19.png");
       
       $this = this;
       this.dom.tabs({active: 1, activate: function(event, ui) {
@@ -1390,14 +1390,20 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           $this.tabsById[tabId].activate();
         }
       }});
-      var iconDom = $("<li/>").append($("<img class='icon' src='icons/icon19.png'/>"));
-      this.tabsDom.find("> ul").prepend(iconDom);
       this.tabsDom.find("> ul > li:last-child").css("float", "right");
     }, 
     
-    addTab: function(id, label, view) {
+    addTab: function(id, label, tooltip, view, imageUrl) {
       this.tabsById[id] = view;
-      this.tabsHeadersDom.append($("<li/>").append($("<a/>").attr("href", "#" + id).text(label)));
+      var linkItemDom = $("<a/>").attr("href", "#" + id).attr("title", tooltip);
+      if (label) {
+        linkItemDom.text(label);
+      }
+      if (imageUrl) {
+        var iconDom = $("<img class='icon'/>").attr("src", imageUrl);
+        linkItemDom.append(iconDom);
+      }
+      this.tabsHeadersDom.append($("<li/>").append(linkItemDom));
       var tabDiv = $("<div class='tab'/>").attr("id", id).append(view.dom).appendTo(this.tabsDom);
     }, 
     toggle: function() {
