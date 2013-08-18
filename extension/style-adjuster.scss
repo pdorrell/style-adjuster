@@ -359,6 +359,9 @@ html {
     }
     .access-error {
 	color: hsl(0, 80%, 50%);
+	p {
+	    margin: 0.3em 0;
+	}
     }
 
     img.icon {

@@ -229,6 +229,8 @@ body {
     display: none; }
   .style-adjuster .access-error {
     color: #e61919; }
+    .style-adjuster .access-error p {
+      margin: 0.3em 0; }
   .style-adjuster img.icon {
     padding: 0 3px; }
 

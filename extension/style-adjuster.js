@@ -614,6 +614,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
 
   /** ===== Utility Functions & Classes ========================================================================= */
+  
+  function withNonBreakingHyphens(text) {
+    return text.replace(/-/g, "\u2011");
+  }
 
   // merge any number of objects, creating a new object
   function merge() {
@@ -1505,14 +1509,33 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.dom.toggleClass("filtering", this.styleAdjusterModel.rulesFilterText != "");
     }
   };
-
+  
   function StyleSheetRulesView(styleSheetModel) {
     this.styleSheetModel = styleSheetModel;
     this.dom = $("<div class='style-rules'></div>");
     hrefSpan("<h2 class='href'/>", styleSheetModel.styleSheet.href).appendTo(this.dom);
     var ruleModelsList = styleSheetModel.rulesList;
     if(styleSheetModel.accessError) {
-      $("<div class='access-error'/>").text("Failure to access rules for styleSheet " + styleSheetModel.styleSheet.href).appendTo(this.dom);
+      var styleSheetHref = styleSheetModel.styleSheet.href;
+      var accessErrorMessage = $("<div class='access-error'/>").appendTo(this.dom);
+      accessErrorMessage.append($("<p/>").append("Failed to access rules for styleSheet ", 
+                                                 $("<b/>").text(styleSheetHref), 
+                                                "."));
+      if (styleSheetHref) {
+        var httpMatch = styleSheetHref.match("^((?:https|http)://[^/]+/)");
+        if (httpMatch) {
+          $("<p/>").text("Style Adjuster cannot access stylesheets from " + 
+                         "HTTP/HTTPS servers on different domains.").appendTo(accessErrorMessage);
+        }
+        var fileMatch = styleSheetHref.match("^(file:)");
+        if (fileMatch) {
+          $("<p/>").append("To access stylesheets from ", 
+                           $("<b/>").text("file:"), 
+                           " URLs, Chrome (or Chromium) must be run with the ", 
+                           $("<b/>").text(withNonBreakingHyphens("--allow-file-access-from-files")), 
+                           " flag.").appendTo(accessErrorMessage);
+        }
+      }
     }
     this.ruleViews = [];
     for (var j=0; j<ruleModelsList.length; j++) {
