@@ -34,11 +34,12 @@ body {
     .style-adjuster .edit-style-sheet:first-child {
       margin-top: 0; }
     .style-adjuster .edit-style-sheet .href {
-      font-size: 1.1em;
+      font-size: 1.3em;
       font-weight: bold; }
   .style-adjuster .edit-rule {
     margin-left: 2em; }
     .style-adjuster .edit-rule .selector {
+      color: #400000;
       font-size: 1.3em; }
   .style-adjuster .edit-property {
     margin-left: 2em;
@@ -83,6 +84,7 @@ body {
   .style-adjuster .rules .property-error {
     background-color: #ffe0e0; }
   .style-adjuster .rules .rule .selector {
+    color: #400000;
     cursor: pointer; }
     .style-adjuster .rules .rule .selector:hover {
       background-color: yellow; }

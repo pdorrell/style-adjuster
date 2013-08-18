@@ -64,7 +64,7 @@ html {
 	    margin-top: 0;
 	}
 	.href {
-	    font-size: 1.1em;
+	    font-size: 1.3em;
 	    font-weight: bold;
 	}
     }
@@ -72,6 +72,7 @@ html {
     .edit-rule {
 	margin-left: 2em;
 	.selector {
+	    color: #400000;
 	    font-size: 1.3em;
 	}
     }
@@ -148,6 +149,7 @@ html {
 		&:hover {
 		    background-color: $selectable_hover_color;
 		}
+		color: #400000;
 		cursor: pointer;
 	    }
 	    .property-error {
