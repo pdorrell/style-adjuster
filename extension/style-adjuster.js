@@ -1409,10 +1409,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
       this.tabsHeadersDom.append($("<li/>").append(linkItemDom));
       var tabDiv = $("<div class='tab'/>").attr("id", id).append(view.dom).appendTo(this.tabsDom);
-    }, 
-    toggle: function() {
-      var isOpen = this.dom.dialog("isOpen");
-      this.dom.dialog (isOpen ? "close" : "open");
     }
   };
 
