@@ -227,6 +227,9 @@ body {
     display: none; }
   .style-adjuster .access-error {
     color: #e61919; }
+  .style-adjuster img.icon {
+    background-color: white;
+    padding: 5px; }
 
 .ui-tabs .ui-tabs-nav li a {
   padding: 0.2em 0.5em; }

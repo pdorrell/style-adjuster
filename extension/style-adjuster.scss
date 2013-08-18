@@ -358,6 +358,11 @@ html {
     .access-error {
 	color: hsl(0, 80%, 50%);
     }
+
+    img.icon {
+	background-color: white;
+	padding: 5px;
+    }
 }
 
 .ui-tabs {

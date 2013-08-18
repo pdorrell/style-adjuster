@@ -1390,6 +1390,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           $this.tabsById[tabId].activate();
         }
       }});
+      var iconDom = $("<li/>").append($("<img class='icon' src='icons/icon19.png'/>"));
+      this.tabsDom.find("> ul").prepend(iconDom);
       this.tabsDom.find("> ul > li:last-child").css("float", "right");
     }, 
     
