@@ -15,9 +15,9 @@
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="style-adjuster-icon.svg"
-   inkscape:export-filename="/home/philip/dev/projects/style-adjuster/extension/icons/tab-icon.png"
-   inkscape:export-xdpi="9.3802071"
-   inkscape:export-ydpi="9.3802071">
+   inkscape:export-filename="/home/philip/dev/projects/style-adjuster/extension/icons/icon128.png"
+   inkscape:export-xdpi="61.160172"
+   inkscape:export-ydpi="61.160172">
   <defs
      id="defs4">
     <marker
@@ -199,21 +199,25 @@
          id="tspan3840"
          x="36.052559"
          y="864.49573">S</tspan></text>
-    <rect
-       style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:8.92997551;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect2985"
-       width="181.17093"
-       height="37.194912"
-       x="5.2678051"
-       y="993.52399"
-       ry="0" />
-    <rect
-       style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:9;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect2985-9"
-       width="53.225876"
-       height="74.210152"
-       x="39.706669"
-       y="975.31879"
-       ry="0" />
+    <g
+       id="g3006"
+       transform="translate(0,-3.5355338)">
+      <rect
+         ry="0"
+         y="993.52399"
+         x="5.2678051"
+         height="37.194912"
+         width="181.17093"
+         id="rect2985"
+         style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:8.92997551;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         ry="0"
+         y="975.31879"
+         x="39.706669"
+         height="74.210152"
+         width="53.225876"
+         id="rect2985-9"
+         style="fill:#cedffd;fill-opacity:1;stroke:#06328b;stroke-width:9;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
   </g>
 </svg>
