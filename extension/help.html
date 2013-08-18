@@ -85,12 +85,14 @@ be useful, especially when searching for tags like <b>"a"</b> and <b>"p"</b>.</l
  <li>Special editing UI is only defined for those properties listed above.</li>
  <li>For some of the properties with special editing UI, the UI only works for a subset of possible property
 values. For example, <b>border-color</b> only has special editing UI when the value is a single color.</li>
- <li>To use <b>Style Adjuster</b> on a web page, it is necessary to inject two Javascript files
-into that page, and to make JQuery and JQuery UI Javascript, CSS and image files available to the popup window.
-A more convenient method of deployment would be to package <b>Style Adjuster</b> as a browser extension.</li>
 </ul>
 
 <h2>Browser Issues</h2>
+
+<p><b>Style Adjuster</b> be run in any browser by injecting the required CSS and Javascript files into
+the target web page.</p>
+
+<p>It is also available as a browswer extension for <b>Google Chrome</b> (and <b>Chromium</b>).</p>
 
 <p><b>Style Adjuster</b> depends on the browser's representation of CSS styles for a page in the 
 <b>document.styleSheets</b> object. It reads the CSS style information from that object, and it also

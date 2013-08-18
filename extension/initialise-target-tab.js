@@ -21,7 +21,7 @@ function createPopupWindowViaChromeRuntime() {
                              });
 }
 
-function createPopupWindowDirectly() {
+function openStyleAdjusterPopup() {
   var popupWindow = window.open('extension/style-adjuster-extension-popup.html','test-popup',
                                 'width=800,height=600,top=300,left=300,menubar=0,' + 
                                 'status=0,scrollbars=0,location=0,toolbar=0,resizable=1');
@@ -35,7 +35,6 @@ function initialise() {
   }
   else {
     console.log("Initialising outside of chrome extension");
-    createPopupWindowDirectly();
   }
 }
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html">
+<html lang="en" >
+<head><meta charset="utf-8">
+<title>Style Adjuster Test Page Loader</title>
+</head>
+
+<body onload="window.location='index.html?load'">
+<h1>Style AdjusterTest Page Loader</h1>
+
+<p>This web page can be used during development to test <b>Style Adjuster</b>.</p>
+
+<p>It should be invoked using the following command line:</p>
+
+<pre>chromium-browser --allow-file-access-from-files --disable-popup-blocking index_load.html</pre>
+
+<p>(Substitute the command for <b>Google Chrome</b> if that is your development browser.)</p>
+
+<p>The flags are required for the following reasons:</p>
+
+<ul>
+ <li><b>--allow-file-access-from-files</b> Style Adjuster does not work at all on <b>file:</b> URLs
+unless this flag is specified in the browser (whether it is run directly, or as a browser extension).</li>
+ <li><b>--disable-popup-blocking</b> For development purposes, it is convenient to immediately invoke
+the Style Adjuster popup. To do so, it is necessary to disable popup blocking.</li>
+</ul>
+
+</body>
+</html>

@@ -1,18 +1,22 @@
 <!DOCTYPE html">
 <html lang="en" >
 <head><meta charset="utf-8">
-<title>Style Adjuster Test Page</title>
+    <title>Style Adjuster Test Page</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="extension/style-adjuster-common.js"></script>
     <script type="text/javascript" src="extension/style-adjuster-stylesheets.js"></script>
     <script type="text/javascript" src="extension/initialise-target-tab.js"></script>
 </head>
 
-<body>
+<body onload='if (window.location.search == "?load") openStyleAdjusterPopup();'>
 <div class="test-page">
 <h1>Style Adjuster Test Page</h1>
 
-<div class="author"><a href="http://thinkinghard.com/">Philip Dorrell</a>, 13 August, 2013</div>
+<div class="author"><a href="http://thinkinghard.com/">Philip Dorrell</a>, 19 August, 2013</div>
+
+<p>
+<b>Run it now: </b><button onclick="openStyleAdjusterPopup();">Open the Style Adjuster Popup</button>
+</p>
 
 <h2>What is Style Adjuster?</h2>
 
@@ -22,22 +26,25 @@ of HTML-based editors to edit
 different types of CSS values.</p>
 
 <p><b>Style Adjuster</b> acts on CSS property definitions in CSS rules that exist in the
-web page. It is intended for use where you know that you wish to apply CSS properties,
-but you want to efficiently try different values for those properties and make a subjective
-judgement about them when seeing the changes made directly in the web page.</p>
+web page. It is intended for use where you have already defined properties in CSS rules that you know
+need to be included in your design, but you want to efficiently try different values for those 
+properties and make a subjective judgement about them when seeing the changes made directly in the web page.</p>
+
+<h3>Source Code</h3>
 
 <p>For some code, see the GitHub repository at 
 <a href="https://github.com/pdorrell/style-adjuster">github.com/pdorrell/style-adjuster</a>.</p>
+
+<h3>Chrome Browser Extension</h3>
+
+<p>To install Style Adjuster as a Chrome (or Chromium) browser extension, go to
+<a href="https://chrome.google.com/webstore/detail/style-adjuster/bmnmiidhocohelghddfcfbhojknfclba">https://chrome.google.com/webstore/detail/style-adjuster/bmnmiidhocohelghddfcfbhojknfclba</a>.</p>
 
 <h2>Some Text To Play With</h2>
 
 <p>Here is <span class="highlighted">some text that is highlighted.</span></p>
 
 <div class="box">Text in a box</div>
-
-<h2 style="margin-top: 5em;">A Screenshot</h2>
-
-<img class="screenshot" src="style-adjuster-screenshot.png"/>
 
 </div>
 
