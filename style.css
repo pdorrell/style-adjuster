@@ -20,7 +20,7 @@ h2 {
   font-size: 2em;
   color: #200df2;
   background-color: white;
-  margin: 0.5em 1pt 1px;
+  margin: 0.6em 1pt 6px;
   padding: 0; }
 
 h3 {
@@ -63,3 +63,17 @@ a {
   font-size: 2em;
   display: inline-block;
   border: 8pt solid #244e63; }
+
+.run-it-now {
+  margin: 2em; }
+  .run-it-now .label {
+    font-size: 1.3em;
+    margin-right: 0.7em;
+    vertical-align: middle;
+    font-weight: bold; }
+
+button.style-adjuster {
+  vertical-align: middle;
+  padding: 0.5em 1em; }
+  button.style-adjuster:hover {
+    background-color: white; }

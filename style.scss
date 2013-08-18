@@ -25,7 +25,7 @@ h2 {
     font-size: 2em;
     color: hsl(245, 90%, 50%);
     background-color: hsl(0, 100%, 100%);
-    margin: 0.5em 1pt 1px;
+    margin: 0.6em 1pt 6px;
     padding: 0;
 }
 
@@ -73,4 +73,22 @@ a {
     font-size: 2em;
     display: inline-block;
     border: 8pt solid rgb(36,78,99);
+}
+
+.run-it-now {
+    margin: 2em;
+    .label {
+	font-size: 1.3em;
+	margin-right: 0.7em;
+	vertical-align: middle;
+	font-weight: bold;
+    }
+}
+
+button.style-adjuster {
+    vertical-align: middle;
+    padding: 0.5em 1em;
+    &:hover {
+	background-color: white;
+    }
 }
