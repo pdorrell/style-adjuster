@@ -1363,7 +1363,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   StyleAdjusterView.prototype = {
     initialiseDom: function(parentDom, styleAdjusterModel) {
       this.outerDom = $("<div class='style-adjuster-outer'/>");
-      this.dom = $("<div title='Style Adjuster'/>").appendTo(this.outerDom);;
+      this.dom = $("<div/>").appendTo(this.outerDom);;
       if (parentDom) {
         this.outerDom.appendTo(parentDom);
       }
