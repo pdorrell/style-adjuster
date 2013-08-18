@@ -1,6 +1,6 @@
 {
   "name": "Style Adjuster",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "manifest_version": 2,
   "description": "Adjust your CSS styles, without taking your eyes off the result.",
   "homepage_url": "https://github.com/pdorrell/style-adjuster", 

@@ -1520,13 +1520,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (styleSheetHref) {
         var httpMatch = styleSheetHref.match("^((?:https|http)://[^/]+/)");
         if (httpMatch) {
-          $("<p/>").text("Style Adjuster cannot access stylesheets from " + 
+          $("<p/>").text("Style Adjuster cannot access stylesheets loaded from " + 
                          "HTTP/HTTPS servers on different domains.").appendTo(accessErrorMessage);
         }
         var fileMatch = styleSheetHref.match("^(file:)");
         if (fileMatch) {
-          $("<p/>").append("To access stylesheets from ", 
-                           $("<b/>").text("file:"), 
+          $("<p/>").append("To access stylesheets loaded from ", 
+                           $("<b/>").text("file"), 
                            " URLs, Chrome (or Chromium) must be run with the ", 
                            $("<b/>").text(withNonBreakingHyphens("--allow-file-access-from-files")), 
                            " flag.").appendTo(accessErrorMessage);
