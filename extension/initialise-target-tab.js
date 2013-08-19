@@ -6,9 +6,9 @@ var styleSheets = new STYLE_ADJUSTER.StyleSheets(document.styleSheets);
 
 function handleStyleSheetsRequests() {
   chrome.runtime.onMessage.addListener(function(request, sender, handleResult) {
-    var requestType = request.type;
-    if(styleSheets.public[requestType]) {
-      styleSheets[requestType](request, handleResult);
+    var method = request.$method;
+    if(styleSheets.public[method]) {
+      styleSheets[method](request, handleResult);
       return true;
     }
   });

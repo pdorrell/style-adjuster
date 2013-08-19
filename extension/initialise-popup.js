@@ -10,17 +10,13 @@ function StyleSheetsProxy(tabId) {
 
 StyleSheetsProxy.prototype = {
   getStyleSheetObjects: function(request, handleResult) {
-    chrome.tabs.sendMessage(this.tabId, 
-                            {type: "getStyleSheetObjects"}, 
+    request.$method = "getStyleSheetObjects";
+    chrome.tabs.sendMessage(this.tabId, request, 
                             function(result) { handleResult(result); });
   }, 
   updatePropertyValue: function(request, handleResult) {
-    chrome.tabs.sendMessage(this.tabId, {type: "updatePropertyValue", 
-                                         index: request.index, 
-                                         ruleIndex: request.ruleIndex, 
-                                         name: request.name, 
-                                         value: request.value, 
-                                         expectedSavedValue: request.expectedSavedValue}, 
+    request.$method = "updatePropertyValue";
+    chrome.tabs.sendMessage(this.tabId, request, 
                             function(result) { handleResult(result); });
   }
 };
