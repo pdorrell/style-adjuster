@@ -20,8 +20,13 @@ h1 {
     margin: 0;
     padding: 0;
     .style-adjuster {
+	background-color: white;
 	color: #428310;
 	font-weight: bold;
+    }
+    a.style-adjuster:hover {
+	background-color: hsl(60, 100%, 79%);
+	color: hsl(94, 100%, 23%);
     }
 }
 

@@ -16,8 +16,12 @@ h1 {
   margin: 0;
   padding: 0; }
   h1 .style-adjuster {
+    background-color: white;
     color: #428310;
     font-weight: bold; }
+  h1 a.style-adjuster:hover {
+    background-color: #ffff94;
+    color: #337500; }
 
 h2 {
   font-family: Arial, sans-serif;
