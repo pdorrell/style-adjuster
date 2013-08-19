@@ -1387,13 +1387,17 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.addTab("help", null, "Help", this.helpView, "icons/tab-icon.png");
       
       $this = this;
-      this.dom.tabs({active: 1, activate: function(event, ui) {
-        var tabId = ui.newPanel[0].id;
+      function activateTab(tabId) {
         var tabView = $this.tabsById[tabId];
         if (tabView.activate) {
           $this.tabsById[tabId].activate();
         }
+      }
+      this.dom.tabs({active: 1, activate: function(event, ui) {
+        var tabId = ui.newPanel[0].id;
+        activateTab(tabId);
       }});
+      activateTab("rules");
       this.tabsDom.find("> ul > li:last-child").css("float", "right");
     }, 
     
