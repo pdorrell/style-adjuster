@@ -20,6 +20,9 @@ task :extension do
   Dir.glob(File.join(BUILD_EXTENSION_DIR, "*.scss")) do |file|
     FileUtils.rm file, :verbose => true
   end
+  Dir.glob(File.join(BUILD_EXTENSION_DIR, ".sass-cache")) do |file|
+    FileUtils.rm_r file, :verbose => true
+  end
 end
 
 EXTENSION_ZIP_FILE = File.join(BASE_DIR, "build/extension.zip")
