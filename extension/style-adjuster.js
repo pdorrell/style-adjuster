@@ -2898,7 +2898,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   /** ----------------------------------------------------------------------------- */
-  var cssSizePattern = "([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc))";
+  var cssSizePattern = "([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
   
   var borderStylePattern = "(none|dotted|dashed|solid|double|groove|ridge|inset|outset)";
   
