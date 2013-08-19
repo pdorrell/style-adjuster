@@ -8,15 +8,19 @@
   background: linear-gradient(to bottom, #fffaf9, #fff8f7 20%, #fffaf9 50%, white 100%); }
 
 h1 {
-  font-family: Tahoma, sans-serif;
-  font-size: 3em;
+  font-family: Arial, sans-serif;
+  font-size: 4em;
+  font-weight: normal;
   color: black;
   background-color: white;
   margin: 0;
   padding: 0; }
+  h1 .style-adjuster {
+    color: #428310;
+    font-weight: bold; }
 
 h2 {
-  font-family: Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 2em;
   color: #200df2;
   background-color: white;
@@ -24,7 +28,7 @@ h2 {
   padding: 0; }
 
 h3 {
-  font-family: Tahoma, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 1.4em;
   color: #5400c2;
   background-color: white;

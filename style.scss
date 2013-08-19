@@ -1,4 +1,4 @@
-$headline_font_family: Tahoma,sans-serif;
+$headline_font_family: Arial,sans-serif;
 
 .test,   .test3  ,.test4,test5 {
     font-size: 2em;
@@ -13,11 +13,16 @@ $headline_font_family: Tahoma,sans-serif;
 
 h1 {
     font-family: $headline_font_family;
-    font-size: 3em;
-    color: hsl(0, 0%, 0%);
+    font-size: 4em;
+    font-weight: normal;
+    color: black;
     background-color: white;
     margin: 0;
     padding: 0;
+    .style-adjuster {
+	color: #428310;
+	font-weight: bold;
+    }
 }
 
 h2 {
