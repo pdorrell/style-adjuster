@@ -40,6 +40,10 @@ h3 {
   padding: 0; }
 
 p {
+  font-size: 1.1em;
+  width: 50em;
+  line-height: 130%;
+  font-family: Arial, sans-serif;
   margin: 0 0;
   padding-left: 1em;
   padding-right: 1em; }
@@ -75,7 +79,9 @@ a {
 .run-it-now {
   margin: 2em; }
   .run-it-now .label {
+    font-family: Arial, sans-serif;
     font-size: 1.3em;
+    color: #505050;
     margin-right: 0.7em;
     vertical-align: middle;
     font-weight: bold; }

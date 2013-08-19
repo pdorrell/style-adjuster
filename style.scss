@@ -1,4 +1,5 @@
 $headline_font_family: Arial,sans-serif;
+$text_font_family: Arial,sans-serif;
 
 .test,   .test3  ,.test4,test5 {
     font-size: 2em;
@@ -49,6 +50,10 @@ h3 {
 }
 
 p {
+    font-size: 1.1em;
+    width: 50em;
+    line-height: 130%;
+    font-family: $text_font_family;
     margin: 0 0;
     padding-left: 1em;
     padding-right: 1em;
@@ -88,7 +93,9 @@ a {
 .run-it-now {
     margin: 2em;
     .label {
+	font-family: $text_font_family;
 	font-size: 1.3em;
+	color: #505050;
 	margin-right: 0.7em;
 	vertical-align: middle;
 	font-weight: bold;
