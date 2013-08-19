@@ -14,3 +14,9 @@ Functions include:
   to update your CSS source files.
 
 You can try it out at http://pdorrell.github.io/style-adjuster/.
+
+Chrome Extension
+----------------
+
+**Style Adjuster** is available as a Google Chrome browser extension
+at https://chrome.google.com/webstore/detail/style-adjuster/bmnmiidhocohelghddfcfbhojknfclba.
