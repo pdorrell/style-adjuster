@@ -1270,6 +1270,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var extraEditorModel = this.extraEditorModel.get();
       if (extraEditorModel) {
         var prenormalised = extraEditorModel.prenormalise(value);
+        console.log(" prenormalised from extraEditorModel = " + inspect(prenormalised));
         if(prenormalised) {
           prenormalisedValue = prenormalised[0];
           valueObject = prenormalised[1];
@@ -2190,25 +2191,28 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     prenormalise: function(valueString) {
+      console.log("ComponentsEditorModel.prenormalise " + inspect(valueString));
       var parsedValue = this.valueParserAndBuilder.parseValue(valueString);
       if (parsedValue == null) {
         return null;
       }
       else { // recursively prenormalise
-        var newValueString = this.valueParserAndBuilder.buildValue(parsedValue);
+        console.log(" recursively ...");
         var newValueObject = merge(parsedValue);
         var labels = parsedValue.labels;
         for (var i=0; i<labels.length; i++) {
           var label = labels[i];
+          console.log("  label " + label);
           var editorModel = this.editorModels[label];
           if (editorModel) {
             var prenormalisedComponent = editorModel.prenormalise(parsedValue[label]);
+            console.log("   prenormalisedComponent = " + inspect(prenormalisedComponent));
             if (prenormalisedComponent) {
-              newValueString[label] = prenormalisedComponent[0];
               newValueObject[label] = prenormalisedComponent[1];
             }
           }
         }
+        var newValueString = this.valueParserAndBuilder.buildValue(newValueObject);
         return [newValueString, newValueObject];
       }
     }, 
@@ -2474,6 +2478,29 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return this.sizeString + this.unit;
     }
   };
+  
+  var cssSizeParser = {
+    regex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
+    
+    parse: function(valueString) {
+      var match = this.regex.exec(valueString);
+      if (match) {
+        var numberString = match[1];
+        var number = parseFloat(numberString);
+        var unit = match[2];
+        return new CssSize(number, numberString, unit);
+      }
+      else {
+        return null;
+      }
+    }
+  };
+  
+  CssSize.prototype = {
+    toString: function() {
+      return this.sizeString + this.unit;
+    }
+  };
 
   function CssSizeEditorModel(negativeAllowed) {
     SizeEditorModel.call(this, negativeAllowed);
@@ -2482,6 +2509,18 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   CssSizeEditorModel.prototype = merge(SizeEditorModel.prototype, {
 
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
+    
+    prenormalise: function(valueString) {
+      valueString = trim(valueString);
+      var sizeObject = cssSizeParser.parse(valueString);
+      if (sizeObject) {
+        if (sizeObject.unit == "") {
+          sizeObject.unit = "px";
+          valueString = sizeObject.toString();
+        }
+      }
+      return [valueString, sizeObject];
+    }, 
     
     getRangesForUnit: function() {
       return cssUnitRanges[this.unit];
