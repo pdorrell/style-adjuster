@@ -386,7 +386,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
       else if (format == "hsl") {
         var hslValues = colorConverter.rgb2hsl([this.red, this.green, this.blue]);
-        return new HslColor(Math.round(hslValues[0]), Math.round(hslValues[1]), Math.round(hslValues[2]));
+        return new HslColor(Math.round(hslValues[0]), new Percentage(Math.round(hslValues[1])), 
+                            new Percentage(Math.round(hslValues[2])));
       }
       else if (format == "hsla") {
         return this.convertToFormat("hsl").convertToFormat("hsla");
@@ -445,7 +446,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
       else if (format == "hsla") {
         var hslValues = colorConverter.rgb2hsl([this.red, this.green, this.blue]);
-        return new HslaColor(Math.round(hslValues[0]), Math.round(hslValues[1]), Math.round(hslValues[2]), this.alpha);
+        return new HslaColor(Math.round(hslValues[0]), 
+                             new Percentage(Math.round(hslValues[1])), 
+                             new Percentage(Math.round(hslValues[2])), this.alpha);
       }
       else if (format = "hsl") {
         return this.convertToFormat("hsla").convertToFormat("hsl");
@@ -466,7 +469,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   HslColor.prototype = {
     format: "hsl", 
     labels: ["hue", "saturation", "lightness"], 
-    regex: /^hsl\(([0-9]+),\s*([0-9]+)%,\s*([0-9]+)%\)$/, 
+    regex: /^hsl\(([0-9]+),\s*([0-9]+%),\s*([0-9]+%)\)$/, 
     
     withComponentUpdated: function(label, value) {
       var clone = new HslColor(this.hue, this.saturation, this.lightness);
@@ -477,7 +480,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     parse: function (colorString) {
       var match = colorString.match(HslColor.prototype.regex);
       if (match) {
-        return new HslColor(parseInt(match[1]), parseInt(match[2]), parseInt(match[3]));
+        return new HslColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]));
       }
       else {
         return null;
@@ -497,7 +500,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new HslaColor(this.hue, this.saturation, this.lightness, 1.0);
       }
       else if (format == "rgb" || format == "hex") {
-        var rgbValues = colorConverter.hsl2rgb([this.hue, this.saturation, this.lightness]);
+        var rgbValues = colorConverter.hsl2rgb([this.hue, this.saturation.number, this.lightness.number]);
         return new RgbColor(Math.round(rgbValues[0]), Math.round(rgbValues[1]), Math.round(rgbValues[2]), format);
       }
       else if (format = "rgba") {
@@ -506,7 +509,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
 
     toString: function() {
-      return "hsl(" + this.hue + ", " + this.saturation + "%, " + this.lightness + "%)";
+      return "hsl(" + this.hue + ", " + this.saturation + ", " + this.lightness + ")";
     }
   };
 
@@ -520,7 +523,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   HslaColor.prototype = {
     format: "hsla", 
     labels: ["hue", "saturation", "lightness", "alpha"], 
-    regex: /^hsla\(([0-9]+),\s*([0-9]+)%,\s*([0-9]+)%,\s*([0-9.]+)\)$/, 
+    regex: /^hsla\(([0-9]+),\s*([0-9]+%),\s*([0-9]+%),\s*([0-9.]+)\)$/, 
     
     withComponentUpdated: function(label, value) {
       var clone = new HslaColor(this.hue, this.saturation, this.lightness, this.alpha);
@@ -531,7 +534,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     parse: function (colorString) {
       var match = colorString.match(HslaColor.prototype.regex);
       if (match) {
-        return new HslaColor(parseInt(match[1]), parseInt(match[2]), parseInt(match[3]), parseFloat(match[4]));
+        return new HslaColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]), parseFloat(match[4]));
       }
       else {
         return null;
@@ -551,7 +554,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new HslColor(this.hue, this.saturation, this.lightness);
       }
       else if (format == "rgba") {
-        var rgbValues = colorConverter.hsl2rgb([this.hue, this.saturation, this.lightness]);
+        var rgbValues = colorConverter.hsl2rgb([this.hue, this.saturation.number, this.lightness.number]);
         return new RgbaColor(Math.round(rgbValues[0]), Math.round(rgbValues[1]), Math.round(rgbValues[2]), this.alpha);
       }
       else if (format == "rgb" || format == "hex") {
@@ -560,7 +563,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
 
     toString: function() {
-      return "hsla(" + this.hue + ", " + this.saturation + "%, " + this.lightness + "%, " + this.alpha + ")";
+      return "hsla(" + this.hue + ", " + this.saturation + ", " + this.lightness + ", " + this.alpha + ")";
     }
   };
 
@@ -568,19 +571,25 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   function ColorParser() {
   }
+  
+  function Percentage(number) {
+    this.number = number;
+  }
+  
+  Percentage.prototype = {
+    toString: function() {
+      return this.number + "%";
+    }
+  };
 
   function parsePercentage(percentage) {
     var match = percentage.match(/^([0-9]+)%/);
     if(match) {
-      return parseInt(match[1]);
+      return new Percentage(parseInt(match[1]));
     }
     else {
       throw new Error("Invalid percentage: " + inspect(percentage));
     }
-  }
-
-  function formatPercentage(percentage) {
-    return percentage + "%";
   }
 
   ColorParser.prototype = {
@@ -596,19 +605,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         parsedColor = this.colorParsers[i](valueString);
       }
       return parsedColor;
-    }, 
-    
-    componentParsers: {red: parseInt, green: parseInt, blue: parseInt, alpha: parseFloat, 
-                       hue: parseInt, saturation: parsePercentage, lightness: parsePercentage, name: toString}, 
-    
-    componentFormatters: {saturation: formatPercentage, lightness: formatPercentage}, 
-    
-    parseComponent: function(label, value) {
-      return this.componentParsers[label](value);
-    }, 
-    formatComponent: function(label, value) {
-      var formatter = this.componentFormatters[label];
-      return formatter ? formatter(value) : value.toString();
     }
   };
 
@@ -1238,11 +1234,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         the value object supplied by the extra editor. Also update the state of the
         extra editor. */
     echoUpdateBackToExtraEditor: function(extraEditorModel, valueObject, source) {
+      console.log("echoUpdateBackToExtraEditor, valueObject = " + inspect(valueObject));
       var propertyModel = this.propertyModel.get();
       var updatedValue = propertyModel.value.get();
-      var fixedUpdateValue = extraEditorModel.echoAndFixUpdatedValue(updatedValue, valueObject); //todo implement echoAndFixUpdatedValue
+      var fixedUpdateValue = extraEditorModel.echoAndFixUpdatedValue(updatedValue, valueObject);
       if (fixedUpdateValue) {
-        propertyModel.updateFixedValue(fixedUpdateValue); // todo implement updateFixedValue
+        propertyModel.updateFixedValue(fixedUpdateValue);
         this.updateFromPropertyModelUpdate(propertyModel);
       }
     }, 
@@ -2064,13 +2061,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ObjectParserAndBuilder.prototype = {
     getFormattedComponentValue: function(parsedValue, label) {
-      return this.objectParser.formatComponent(label, parsedValue[label]);
+      return parsedValue[label].toString();
     }, 
     parseValue: function(value) {
       return this.objectParser.parse(value);
     }, 
     updateValue: function(parsedValue, label, value) {
-      parsedValue[label] = this.objectParser.parseComponent(label, value);
+      parsedValue[label] = value;
     },
     buildValue: function(parsedValue) {
       return parsedValue.toString();
@@ -2159,16 +2156,20 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ComponentsEditorModel.prototype = {
     echoAndFixUpdatedValue: function (updatedValue, valueObject) {
+      console.log("ComponentsEditorModel.echoAndFixUpdatedValue ");
       var parsedUpdatedValue = this.valueParserAndBuilder.parseValue(updatedValue);
       var anyFixed = false;
       
       for (var i=0; i<this.labels.length; i++) {
         var label = this.labels[i];
         var updatedComponent = parsedUpdatedValue[label];
+        console.log(" label = " + label + ", updatedComponent = " + inspect(updatedComponent));
         var componentValue = valueObject[label];
+        console.log("  componentValue = " + inspect(componentValue));
         var editorModel = this.editorModels[label];
         if (editorModel && componentValue) {
           var fixedComponentValue = editorModel.echoAndFixUpdatedValue(updatedComponent, componentValue);
+          console.log("    fixedComponentValue for label " + label + " = " + fixedComponentValue);
           if (fixedComponentValue) {
             anyFixed = true;
             this.valueParserAndBuilder.updateValue(parsedUpdatedValue, label, fixedComponentValue);
@@ -2215,6 +2216,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       this.parsedValue = this.valueParserAndBuilder.parseValue(valueString);
+      console.log("ComponentsEditorModel.receiveValueString " + inspect(valueString));
+      console.log("  this.parsedValue = " + inspect(this.parsedValue));
       if(!this.parsedValue) {
         this.parsedLabels.set([]);
       }
@@ -2288,6 +2291,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     sendValueFromUser: function(value, valueObject, source) {
       if (value != null && this.sendValueFromUser != null) {
+        console.log("ComponentsEditorModel.sendValueFromUser " + inspect(value) + ", " + inspect(valueObject));
         this.sendValueFromUserHandler(value, valueObject, source);
       }
     },      
@@ -2295,13 +2299,18 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     updatedValueObjectToSendOn: function(label, valueObject) {
       var updatedValueObject = merge(this.valueObject);
       updatedValueObject[label] = valueObject;
+      console.log("  updatedValueObjectToSendOn = " + inspect(updatedValueObjectToSendOn));
       return updatedValueObject;
     }, 
     
     handleLabelValueFromUser: function(parsedValue, label, value, valueObject, source) {
+      console.log("ComponentsEditorModel.handleLabelValueFromUser, parsedValue = " + 
+                  inspect(parsedValue) + ", label = " + label + ", value = " + inspect(value) +
+                  ", valueObject = " + inspect(valueObject));
       if (this.valueParserAndBuilder) {
         this.valueParserAndBuilder.updateValue(this.parsedValue, label, value);
         var newValue = this.valueParserAndBuilder.buildValue(this.parsedValue);
+        console.log(" newValue = " + inspect(newValue));
         var wrappedSource = {};
         wrappedSource[label] = source;
         this.sendValueFromUser(newValue, this.updatedValueObjectToSendOn(label, valueObject), 
@@ -2424,6 +2433,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     sendValueFromUser: function(value, valueObject, source) {
+      console.log("SizeEditorModel.sendValueFromUser " + inspect(value) + ", object = " + inspect(valueObject));
       if (this.sendValueFromUserHandler != null) {
         this.sendValueFromUserHandler(value, valueObject, source);
       }
@@ -2448,6 +2458,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (this.sliderControlModel) {
         this.sliderControlModel.updateValue(this.valueString);
       }
+      console.log("this.sendValueFromUser(" + inspect(this.valueString) + ", " + this.valueObject);
       this.sendValueFromUser(this.valueString, this.valueObject, "slide");
     }
   };
@@ -2484,7 +2495,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     getRangesForUnit: function() {
       return colorRange;
+    }, 
+
+    setValueObject: function() {
+      this.valueObject = this.size;
     }
+    
   });
 
   function HueComponentEditorModel() {
@@ -2497,8 +2513,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     getRangesForUnit: function() {
       return hueRange;
-    }
+    }, 
 
+    setValueObject: function() {
+      this.valueObject = this.size;
+    }      
+    
   });
 
   function PercentageComponentEditorModel() {
@@ -2511,7 +2531,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     getRangesForUnit: function() {
       return percentageRange;
-    }
+    }, 
+    
+    setValueObject: function() {
+      this.valueObject = this.size == null ? null : new Percentage(this.size);
+    }     
     
   });
 
@@ -2525,7 +2549,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     getRangesForUnit: function() {
       return alphaRange;
-    }
+    }, 
+    
+    setValueObject: function() {
+      this.valueObject = this.size;
+    } 
+    
   });
 
   function FormatsStateModel() {
@@ -3109,10 +3138,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
 
     updatedValueObjectToSendOn: function(label, valueObject) {
-      return this.valueObject.withComponentUpdated(label, valueObject.size);
+      console.log("ColorEditorModel updatedValueObjectToSendOn " + label + ", " + inspect(valueObject));
+      return this.valueObject.withComponentUpdated(label, valueObject);
     }, 
 
     echoAndFixUpdatedValue: function (updatedValue, valueObject) {
+      console.log("ColorEditorModel.echoAndFixUpdatedValue, updatedValue = " + inspect(updatedValue) + 
+                  ", valueObject = " + inspect(valueObject));
       var parsedColor = this.valueParserAndBuilder.parseValue(updatedValue);
       var fixedValue = this.formatsController.resetUpdatedValue(updatedValue, valueObject, 
                                                                 this.formatsStateModel);
