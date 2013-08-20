@@ -2308,7 +2308,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                   inspect(parsedValue) + ", label = " + label + ", value = " + inspect(value) +
                   ", valueObject = " + inspect(valueObject));
       if (this.valueParserAndBuilder) {
-        this.valueParserAndBuilder.updateValue(this.parsedValue, label, value);
+        this.valueParserAndBuilder.updateValue(this.parsedValue, label, valueObject);
         var newValue = this.valueParserAndBuilder.buildValue(this.parsedValue);
         console.log(" newValue = " + inspect(newValue));
         var wrappedSource = {};
