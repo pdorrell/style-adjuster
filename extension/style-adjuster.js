@@ -2299,7 +2299,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     updatedValueObjectToSendOn: function(label, valueObject) {
       var updatedValueObject = merge(this.valueObject);
       updatedValueObject[label] = valueObject;
-      console.log("  updatedValueObjectToSendOn = " + inspect(updatedValueObjectToSendOn));
+      console.log("updatedValueObjectToSendOn, " + label + " updatedValueObject " + inspect(updatedValueObject));
       return updatedValueObject;
     }, 
     
@@ -2462,6 +2462,18 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.sendValueFromUser(this.valueString, this.valueObject, "slide");
     }
   };
+  
+  function CssSize(size, sizeString, unit) {
+    this.size = size;
+    this.sizeString = sizeString;
+    this.unit = unit;
+  }
+  
+  CssSize.prototype = {
+    toString: function() {
+      return this.sizeString + this.unit;
+    }
+  };
 
   function CssSizeEditorModel(negativeAllowed) {
     SizeEditorModel.call(this, negativeAllowed);
@@ -2481,6 +2493,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           fixedValue = "0" + valueObject.unit;
       }
       return fixedValue;
+    }, 
+    
+    setValueObject: function() {
+      this.valueObject = this.size == null ? null : new CssSize(this.size, this.sizeString, this.unit);
     }
     
   });
