@@ -30,6 +30,7 @@
       "initialise-popup.js", 
       "help.html", 
       "style-adjuster-extension-popup.html", 
+      "rule-prechecker.css", 
       "style-adjuster.css", 
       "libs/jquery-ui-1.10.3/themes/base/jquery-ui.extension.css", 
       "libs/jquery-ui-1.10.3/themes/base/images/animated-overlay.gif", 
