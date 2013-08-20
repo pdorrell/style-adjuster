@@ -2009,51 +2009,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function RegexValueFormat(regex, matchLabels) {
-    this.regex = regex;
-    this.matchLabels = matchLabels;
-    this.labels = []
-    for (var i=0; i<this.matchLabels.length; i++) {
-      var matchLabel = this.matchLabels[i];
-      if (matchLabel != null) {
-        this.labels.push(matchLabel);
-      }
-    }
-  }
-
-  RegexValueFormat.prototype = {
-    parseValue: function(value) {
-      var match = value.match(this.regex);
-      if (match == null) {
-        return null;
-      }
-      else {
-        var values = {};
-        for (var i=0; i<this.matchLabels.length; i++) {
-          var matchLabel = this.matchLabels[i];
-          if (matchLabel != null) {
-            values[matchLabel] = match[i];
-          }
-        }
-      }
-      return values;
-    }, 
-    buildValue: function(values) {
-      var result = [];
-      for (var i=0; i<this.matchLabels.length; i++) {
-        var matchLabel = this.matchLabels[i];
-        if (matchLabel != null) {
-          var value = values[matchLabel];
-          if (value) {
-            result.push(value);
-          }
-        }
-      }
-      return result.join(" ");
-    }
-      
-  };
-  
   function ObjectParserAndBuilder(objectParser) {
     this.objectParser = objectParser;
   }
@@ -2072,65 +2027,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return parsedValue.toString();
     }
   };
-
-  function ValueFormatsParserAndBuilder(valueFormats) {
-    this.valueFormats = valueFormats;
-  }
-  
-  ValueFormatsParserAndBuilder.prototype = {
-    getFormattedComponentValue: function(parsedValue, label) {
-      return parsedValue[label];
-    }, 
-    parseValue: function(value) {
-      var parsedValue = null;
-      var matchedValueFormat = null;
-      var parsedLabels = [];
-      for (var i=0; i<this.valueFormats.length && this.parsedValue == null; i++) {
-        var valueFormat = this.valueFormats[i];
-        parsedValue = valueFormat.parseValue(value);
-        if (parsedValue != null) {
-          matchedValueFormat = valueFormat;
-          var parserLabels = valueFormat.labels;
-          parsedLabels = [];
-          for (var i=0; i<parserLabels.length; i++) {
-            var parserLabel = parserLabels[i];
-            if (parsedValue[parserLabel]) {
-              parsedLabels.push(parserLabel);
-            }
-          }
-        }
-      }
-      if (parsedValue) {
-        parsedValue.labels = parsedLabels;
-        parsedValue.matchedValueFormat = matchedValueFormat;
-      }
-      return parsedValue;
-    }, 
-
-    cloneValue: function(value) {
-      var clone = {};
-      for (var i=0; i<value.labels.length; i++) {
-        var label = value.labels[i];
-        clone[label] = value[label];
-        clone.labels = value.labels;
-        clone.matchedValueFormat = value.matchedValueFormat;
-      }
-      return clone;
-    }, 
-    
-    updateValue: function(parsedValue, label, value) {
-      parsedValue[label] = value;
-    },
-    
-    buildValue: function(parsedValue) {
-      if (parsedValue.matchedValueFormat == null) {
-        return null;
-      }
-      else {
-        return parsedValue.matchedValueFormat.buildValue(parsedValue);
-      }
-    }
-  }
 
   function ComponentsEditorModel(valueParserAndBuilder, labels, componentDescriptions, 
                                  editorModels) {
@@ -3059,11 +2955,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   var borderPattern = itemsPattern([cssSizePattern, borderStylePattern, colorStylePattern]);
   
-  function BorderFormat() {
-    RegexValueFormat.call(this, new RegExp(borderPattern), 
-                          [null, "width", "style", "color"]);
-  }
-  
   function BorderProperty(width, style, color) {
     this.width = width;
     this.style = style;
@@ -3099,8 +2990,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var borderComponentDescriptions = new ComponentDescriptions({width: ["W", "Width"], 
                                                                style: ["S", "Style"], 
                                                                color: ["C", "Color"]});
-  
-  BorderFormat.prototype = RegexValueFormat.prototype;
   
   function borderEditorModel() {
     var model = new ComponentsEditorModel(new ObjectParserAndBuilder(borderPropertyParser), 
