@@ -569,9 +569,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   var colorConverter = new ColorConverter();
 
-  function ColorParser() {
-  }
-  
   function Percentage(number) {
     this.number = number;
   }
@@ -592,7 +589,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   }
 
-  ColorParser.prototype = {
+  var colorParser = {
     colorParsers: [NamedColor.prototype.parse, 
                    RgbColor.prototype.parse, 
                    RgbaColor.prototype.parse, 
@@ -600,6 +597,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                    HslaColor.prototype.parse], 
     
     parse: function(valueString) {
+      console.log("colorParser, valueString = " + inspect(valueString));
       var parsedColor = null;
       for (var i=0; i<this.colorParsers.length && parsedColor == null; i++) {
         parsedColor = this.colorParsers[i](valueString);
@@ -607,7 +605,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return parsedColor;
     }
   };
-
 
   /** ===== Utility Functions & Classes ========================================================================= */
   
@@ -1237,9 +1234,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       console.log("echoUpdateBackToExtraEditor, valueObject = " + inspect(valueObject));
       var propertyModel = this.propertyModel.get();
       var updatedValue = propertyModel.value.get();
-      var fixedUpdateValue = extraEditorModel.echoAndFixUpdatedValue(updatedValue, valueObject);
-      if (fixedUpdateValue) {
-        propertyModel.updateFixedValue(fixedUpdateValue);
+      var updatedValueObject = extraEditorModel.parseValue(updatedValue);
+      var fixedUpdateValueObject = extraEditorModel.echoAndFixUpdatedValueObject(updatedValueObject, valueObject);
+      if (fixedUpdateValueObject) {
+        propertyModel.updateFixedValue(fixedUpdateValueObject.toString());
         this.updateFromPropertyModelUpdate(propertyModel);
       }
     }, 
@@ -2156,32 +2154,36 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   ComponentsEditorModel.prototype = {
-    echoAndFixUpdatedValue: function (updatedValue, valueObject) {
-      console.log("ComponentsEditorModel.echoAndFixUpdatedValue ");
-      var parsedUpdatedValue = this.valueParserAndBuilder.parseValue(updatedValue);
+    parseValue: function(valueString) {
+      return this.valueParserAndBuilder.parseValue(valueString);
+    }, 
+    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      console.log("ComponentsEditorModel.echoAndFixUpdatedValueObject ");
+      console.log("  updatedValueObject = " + inspect(updatedValueObject));
+      console.log("  valueObject = " + inspect(valueObject));
       var anyFixed = false;
       
       for (var i=0; i<this.labels.length; i++) {
         var label = this.labels[i];
-        var updatedComponent = parsedUpdatedValue[label];
+        var updatedComponent = updatedValueObject[label];
         console.log(" label = " + label + ", updatedComponent = " + inspect(updatedComponent));
         var componentValue = valueObject[label];
         console.log("  componentValue = " + inspect(componentValue));
         var editorModel = this.editorModels[label];
         if (editorModel && componentValue) {
-          var fixedComponentValue = editorModel.echoAndFixUpdatedValue(updatedComponent, componentValue);
+          var fixedComponentValue = editorModel.echoAndFixUpdatedValueObject(updatedComponent, componentValue);
           console.log("    fixedComponentValue for label " + label + " = " + fixedComponentValue);
           if (fixedComponentValue) {
             anyFixed = true;
-            this.valueParserAndBuilder.updateValue(parsedUpdatedValue, label, fixedComponentValue);
+            this.valueParserAndBuilder.updateValue(updatedValueObject, label, fixedComponentValue);
           }
         }
       }
-      anyFixed = anyFixed || this.fixParsedValue(parsedUpdatedValue, valueObject);
+      anyFixed = anyFixed || this.fixParsedValue(updatedValueObject, valueObject);
       if (anyFixed) {
         this.valueObject = valueObject;
       }
-      return anyFixed ? this.valueParserAndBuilder.buildValue(parsedUpdatedValue) : null;
+      return anyFixed ? updatedValueObject : null;
     }, 
     
     // A hook to make fixes at the structural level, i.e. fill in deleted components
@@ -2510,6 +2512,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
     
+    parseValue: function(valueString) {
+      return cssSizeParser.parse(valueString);
+    }, 
+
     prenormalise: function(valueString) {
       valueString = trim(valueString);
       var sizeObject = cssSizeParser.parse(valueString);
@@ -2526,12 +2532,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return cssUnitRanges[this.unit];
     }, 
     
-    echoAndFixUpdatedValue: function (updatedValue, valueObject) {
-      var fixedValue = null;
-      if (updatedValue == "0px" && valueObject.unit != "px") {
-          fixedValue = "0" + valueObject.unit;
+    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      var fixedValueObject = null;
+      if (updatedValueObject.size == 0 && updatedValueObject.unit == "px" && valueObject.unit != "px") {
+        fixedValueObject = new CssSize(0, "0", valueObject.unit);
       }
-      return fixedValue;
+      return fixedValueObject;
     }, 
     
     setValueObject: function() {
@@ -2700,40 +2706,31 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   ColorFormatsController.prototype = {
-    colorParser: new ColorParser(), 
-    
     parseValue: function(value) {
-      return this.colorParser.parse(value);
+      return colorParser.parse(value);
     }, 
     
-    resetUpdatedValue: function(updatedValueString, parsedInputValue, formatsStateModel) {
-      var parsedUpdatedValue = this.parseValue(updatedValueString);
-      if (parsedUpdatedValue == null) {
-        console.log("resetUpdatedValue, failed to reparse " + inspect(updatedValueString));
-        return null;
-      }
-      else {
-        var newValue = parsedUpdatedValue;
-        if (parsedUpdatedValue.format != parsedInputValue.format) {
-          var reconstructibleFormats = parsedUpdatedValue.reconstructibleFormats();
-          if ($.inArray(parsedInputValue.format, reconstructibleFormats) != -1) {
-            newValue = parsedUpdatedValue.convertToFormat(parsedInputValue.format);
-            //console.log(" newValue from conversion to " + parsedInputValue.format + " = " + newValue);
-          }
-          else {
-            var testNewValue = parsedUpdatedValue.convertToFormat(parsedInputValue.format);
-            if (testNewValue) {
-              //console.log("Input format " + parsedInputValue.format + ", updated format " + parsedUpdatedValue.format);
-              //console.log("                        input value = " + parsedInputValue);
-              //console.log("Reconstuction                        = " + testNewValue);
-              //console.log("");
-            }
-            newValue = parsedInputValue;
-          }
+    resetUpdatedValueObject: function(updatedValueObject, parsedInputValue, formatsStateModel) {
+      var newValue = updatedValueObject;
+      if (updatedValueObject.format != parsedInputValue.format) {
+        var reconstructibleFormats = updatedValueObject.reconstructibleFormats();
+        if ($.inArray(parsedInputValue.format, reconstructibleFormats) != -1) {
+          newValue = updatedValueObject.convertToFormat(parsedInputValue.format);
+          //console.log(" newValue from conversion to " + parsedInputValue.format + " = " + newValue);
         }
-        this.valueChanged(newValue, formatsStateModel);
-        return newValue.toString();
+        else {
+          var testNewValue = updatedValueObject.convertToFormat(parsedInputValue.format);
+          if (testNewValue) {
+            //console.log("Input format " + parsedInputValue.format + ", updated format " + parsedUpdatedValue.format);
+            //console.log("                        input value = " + parsedInputValue);
+            //console.log("Reconstuction                        = " + testNewValue);
+            //console.log("");
+          }
+          newValue = parsedInputValue;
+        }
       }
+      this.valueChanged(newValue, formatsStateModel);
+      return newValue;
     }, 
     
     setInitialValue: function(valueString, formatsStateModel) {
@@ -3067,6 +3064,38 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                           [null, "width", "style", "color"]);
   }
   
+  function BorderProperty(width, style, color) {
+    this.width = width;
+    this.style = style;
+    this.color = color;
+  }
+  
+  BorderProperty.prototype = {
+    labels: ["width", "style", "color"], 
+    toString: function() {
+      return this.width.toString() + " " + this.style.toString() + " " + this.color.toString();
+    }, 
+    withComponentUpdated: function(label, value) {
+      var clone = new BorderProperty(this.width, this.style, this.color);
+      clone[label] = value;
+      return clone;
+    }
+  };
+  
+  var borderPropertyParser = {
+    regex: new RegExp(borderPattern), 
+    parse: function(valueString) {
+      console.log("borderPropertyParser.parse " + inspect(valueString));
+      var match = valueString.match(this.regex);
+      console.log(" this.regex = " + this.regex);
+      console.log("   match = " + inspect(match));
+      var width = cssSizeParser.parse(match[1]);
+      var style = match[2];
+      var color = colorParser.parse(match[3]);
+      return new BorderProperty(width, style, color);
+    }
+  }
+  
   var borderComponentDescriptions = new ComponentDescriptions({width: ["W", "Width"], 
                                                                style: ["S", "Style"], 
                                                                color: ["C", "Color"]});
@@ -3074,7 +3103,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   BorderFormat.prototype = RegexValueFormat.prototype;
   
   function borderEditorModel() {
-    var model = new ComponentsEditorModel(new ValueFormatsParserAndBuilder([new BorderFormat()]), 
+    var model = new ComponentsEditorModel(new ObjectParserAndBuilder(borderPropertyParser), 
                                           ["width", "style", "color"], 
                                           borderComponentDescriptions, 
                                           {width: cssSizeEditor(false), 
@@ -3195,7 +3224,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   function ColorEditorModel() {
     ComponentsEditorModel.call (this, 
-                                new ObjectParserAndBuilder(new ColorParser()), 
+                                new ObjectParserAndBuilder(colorParser), 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions, 
                                 {red: colorComponentEditor(), 
@@ -3242,13 +3271,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return this.valueObject.withComponentUpdated(label, valueObject);
     }, 
 
-    echoAndFixUpdatedValue: function (updatedValue, valueObject) {
-      console.log("ColorEditorModel.echoAndFixUpdatedValue, updatedValue = " + inspect(updatedValue) + 
+    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      console.log("ColorEditorModel.echoAndFixUpdatedValueObject, updatedValue = " + inspect(updatedValueObject) + 
                   ", valueObject = " + inspect(valueObject));
-      var parsedColor = this.valueParserAndBuilder.parseValue(updatedValue);
-      var fixedValue = this.formatsController.resetUpdatedValue(updatedValue, valueObject, 
-                                                                this.formatsStateModel);
-      return fixedValue;
+      var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
+                                                                            this.formatsStateModel);
+      return fixedValueObject;
     }, 
     
     setValueObject: function() {
