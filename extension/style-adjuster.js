@@ -534,7 +534,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     parse: function (colorString) {
       var match = colorString.match(HslaColor.prototype.regex);
       if (match) {
-        return new HslaColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]), parseFloat(match[4]));
+        return new HslaColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]), 
+                             parseFloat(match[4]));
       }
       else {
         return null;
@@ -2009,25 +2010,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ObjectParserAndBuilder(objectParser) {
-    this.objectParser = objectParser;
-  }
-
-  ObjectParserAndBuilder.prototype = {
-    getFormattedComponentValue: function(parsedValue, label) {
-      return parsedValue[label].toString();
-    }, 
-    parseValue: function(value) {
-      return this.objectParser.parse(value);
-    }, 
-    updateValue: function(parsedValue, label, value) {
-      parsedValue[label] = value;
-    },
-    buildValue: function(parsedValue) {
-      return parsedValue.toString();
-    }
-  };
-
   function ComponentsEditorModel(valueParser, labels, componentDescriptions, 
                                  editorModels) {
     this.divClass = "components";
@@ -2090,7 +2072,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     prenormalise: function(valueString) {
       console.log("ComponentsEditorModel.prenormalise " + inspect(valueString));
-      var parsedValue = this.valueParser.parse(valueString);
+      var parsedValue = this.parseValue(valueString);
       if (parsedValue == null) {
         return null;
       }
@@ -2116,7 +2098,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
-      this.parsedValue = this.valueParser.parse(valueString);
+      this.parsedValue = this.parseValue(valueString);
       console.log("ComponentsEditorModel.receiveValueString " + inspect(valueString));
       console.log("  this.parsedValue = " + inspect(this.parsedValue));
       if(!this.parsedValue) {
