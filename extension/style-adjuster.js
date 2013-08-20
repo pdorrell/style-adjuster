@@ -598,7 +598,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                    HslaColor.prototype.parse], 
     
     parse: function(valueString) {
-      console.log("colorParser, valueString = " + inspect(valueString));
       var parsedColor = null;
       for (var i=0; i<this.colorParsers.length && parsedColor == null; i++) {
         parsedColor = this.colorParsers[i](valueString);
@@ -1232,7 +1231,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         the value object supplied by the extra editor. Also update the state of the
         extra editor. */
     echoUpdateBackToExtraEditor: function(extraEditorModel, valueObject, source) {
-      console.log("echoUpdateBackToExtraEditor, valueObject = " + inspect(valueObject));
       var propertyModel = this.propertyModel.get();
       var updatedValue = propertyModel.value.get();
       var updatedValueObject = extraEditorModel.parseValue(updatedValue);
@@ -1269,7 +1267,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var extraEditorModel = this.extraEditorModel.get();
       if (extraEditorModel) {
         var prenormalised = extraEditorModel.prenormalise(value);
-        console.log(" prenormalised from extraEditorModel = " + inspect(prenormalised));
         if(prenormalised) {
           prenormalisedValue = prenormalised[0];
           valueObject = prenormalised[1];
@@ -2036,21 +2033,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return this.valueParser.parse(valueString);
     }, 
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
-      console.log("ComponentsEditorModel.echoAndFixUpdatedValueObject ");
-      console.log("  updatedValueObject = " + inspect(updatedValueObject));
-      console.log("  valueObject = " + inspect(valueObject));
       var anyFixed = false;
       
       for (var i=0; i<this.labels.length; i++) {
         var label = this.labels[i];
         var updatedComponent = updatedValueObject[label];
-        console.log(" label = " + label + ", updatedComponent = " + inspect(updatedComponent));
         var componentValue = valueObject[label];
-        console.log("  componentValue = " + inspect(componentValue));
         var editorModel = this.editorModels[label];
         if (editorModel && componentValue) {
           var fixedComponentValue = editorModel.echoAndFixUpdatedValueObject(updatedComponent, componentValue);
-          console.log("    fixedComponentValue for label " + label + " = " + fixedComponentValue);
           if (fixedComponentValue) {
             anyFixed = true;
             updatedValueObject[label] = fixedComponentValue;
@@ -2071,22 +2062,18 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     prenormalise: function(valueString) {
-      console.log("ComponentsEditorModel.prenormalise " + inspect(valueString));
       var parsedValue = this.parseValue(valueString);
       if (parsedValue == null) {
         return null;
       }
       else { // recursively prenormalise
-        console.log(" recursively ...");
         var newValueObject = merge(parsedValue);
         var labels = parsedValue.labels;
         for (var i=0; i<labels.length; i++) {
           var label = labels[i];
-          console.log("  label " + label);
           var editorModel = this.editorModels[label];
           if (editorModel) {
             var prenormalisedComponent = editorModel.prenormalise(parsedValue[label].toString());
-            console.log("   prenormalisedComponent = " + inspect(prenormalisedComponent));
             if (prenormalisedComponent) {
               newValueObject[label] = prenormalisedComponent[1];
             }
@@ -2099,8 +2086,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       this.parsedValue = this.parseValue(valueString);
-      console.log("ComponentsEditorModel.receiveValueString " + inspect(valueString));
-      console.log("  this.parsedValue = " + inspect(this.parsedValue));
       if(!this.parsedValue) {
         this.parsedLabels.set([]);
       }
@@ -2173,7 +2158,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     sendValueFromUser: function(value, valueObject, source) {
       if (value != null && this.sendValueFromUser != null) {
-        console.log("ComponentsEditorModel.sendValueFromUser " + inspect(value) + ", " + inspect(valueObject));
         this.sendValueFromUserHandler(value, valueObject, source);
       }
     },      
@@ -2181,14 +2165,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     updatedValueObjectToSendOn: function(label, valueObject) {
       var updatedValueObject = merge(this.valueObject);
       updatedValueObject[label] = valueObject;
-      console.log("updatedValueObjectToSendOn, " + label + " updatedValueObject " + inspect(updatedValueObject));
       return updatedValueObject;
     }, 
     
     handleLabelValueFromUser: function(parsedValue, label, value, valueObject, source) {
-      console.log("ComponentsEditorModel.handleLabelValueFromUser, parsedValue = " + 
-                  inspect(parsedValue) + ", label = " + label + ", value = " + inspect(value) +
-                  ", valueObject = " + inspect(valueObject));
       this.parsedValue[label] = valueObject;
       var wrappedSource = {};
       wrappedSource[label] = source;
@@ -2311,7 +2291,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     sendValueFromUser: function(value, valueObject, source) {
-      console.log("SizeEditorModel.sendValueFromUser " + inspect(value) + ", object = " + inspect(valueObject));
       if (this.sendValueFromUserHandler != null) {
         this.sendValueFromUserHandler(value, valueObject, source);
       }
@@ -2336,7 +2315,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (this.sliderControlModel) {
         this.sliderControlModel.updateValue(this.valueString);
       }
-      console.log("this.sendValueFromUser(" + inspect(this.valueString) + ", " + this.valueObject);
       this.sendValueFromUser(this.valueString, this.valueObject, "slide");
     }
   };
@@ -2424,7 +2402,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.bottom = bottom;
     this.left = left;
     this.setLabels();
-    console.log("FourCssSizes, this = " + inspect(this.toString()) + ", labels = " + inspect(this.labels));
   }
   
   FourCssSizes.prototype = {
@@ -2454,15 +2431,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
                                     cssSizePattern, cssSizePattern])), 
     parse: function(valueString) {
-      console.log("fourCssSizesParser.parse " + inspect(valueString));
       var match = valueString.match(this.regex);
-      console.log(" this.regex = " + this.regex);
-      console.log("   match = " + inspect(match));
       if(match && match[1]) {
         var size = [null, null, null, null];
         for (var i=0; i<4; i++) {
           size[i] = match[i+1] ? cssSizeParser.parse(match[i+1]) : null;
-          console.log("  match[i+1] = " + inspect(match[i+1]) + ", size[i] = " + inspect(size[i]));
         }
         return new FourCssSizes(size[0], size[1], size[2], size[3]);
       }
@@ -2588,16 +2561,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         var reconstructibleFormats = updatedValueObject.reconstructibleFormats();
         if ($.inArray(parsedInputValue.format, reconstructibleFormats) != -1) {
           newValue = updatedValueObject.convertToFormat(parsedInputValue.format);
-          //console.log(" newValue from conversion to " + parsedInputValue.format + " = " + newValue);
         }
         else {
+          // test conversion, but don't actually use the result ...
           var testNewValue = updatedValueObject.convertToFormat(parsedInputValue.format);
-          if (testNewValue) {
-            //console.log("Input format " + parsedInputValue.format + ", updated format " + parsedUpdatedValue.format);
-            //console.log("                        input value = " + parsedInputValue);
-            //console.log("Reconstuction                        = " + testNewValue);
-            //console.log("");
-          }
+          
           newValue = parsedInputValue;
         }
       }
@@ -2952,10 +2920,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var borderPropertyParser = {
     regex: new RegExp(borderPattern), 
     parse: function(valueString) {
-      console.log("borderPropertyParser.parse " + inspect(valueString));
       var match = valueString.match(this.regex);
-      console.log(" this.regex = " + this.regex);
-      console.log("   match = " + inspect(match));
       if (match) {
         var width = cssSizeParser.parse(match[1]);
         var style = match[2];
@@ -3136,13 +3101,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
 
     updatedValueObjectToSendOn: function(label, valueObject) {
-      console.log("ColorEditorModel updatedValueObjectToSendOn " + label + ", " + inspect(valueObject));
       return this.valueObject.withComponentUpdated(label, valueObject);
     }, 
 
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
-      console.log("ColorEditorModel.echoAndFixUpdatedValueObject, updatedValue = " + inspect(updatedValueObject) + 
-                  ", valueObject = " + inspect(valueObject));
       var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
                                                                             this.formatsStateModel);
       return fixedValueObject;
