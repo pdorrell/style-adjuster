@@ -2205,7 +2205,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           console.log("  label " + label);
           var editorModel = this.editorModels[label];
           if (editorModel) {
-            var prenormalisedComponent = editorModel.prenormalise(parsedValue[label]);
+            var prenormalisedComponent = editorModel.prenormalise(parsedValue[label].toString());
             console.log("   prenormalisedComponent = " + inspect(prenormalisedComponent));
             if (prenormalisedComponent) {
               newValueObject[label] = prenormalisedComponent[1];
@@ -2539,6 +2539,60 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
     
   });
+  
+  function FourCssSizes(top, right, bottom, left) {
+    this.top = top;
+    this.right = right;
+    this.bottom = bottom;
+    this.left = left;
+    this.setLabels();
+    console.log("FourCssSizes, this = " + inspect(this.toString()) + ", labels = " + inspect(this.labels));
+  }
+  
+  FourCssSizes.prototype = {
+    setLabels: function() {
+      this.labels = this.left ? ["top", "right", "bottom", "left"]
+        : (this.bottom ? ["top", "right", "bottom"]
+           : (this.right ? ["top", "right"] : ["top"]));
+    }, 
+    
+    toString: function() {
+      return this.top.toString() 
+        + (this.right ? (" " + this.right.toString()) : "")
+        + (this.bottom ? (" " + this.bottom.toString()) : "")
+        + (this.left ? (" " + this.left.toString()) : "");
+    }, 
+    
+    withComponentUpdated: function(label, value) {
+      var clone = new FourCssSizes(this.top, this.right, this.bottom, this.left);
+      clone[label] = value;
+      return clone;
+    }
+  };
+  
+  var cssSizePattern =  "((?:[-]?[0-9.]+)(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
+  
+  var fourCssSizesParser = {
+    regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
+                                    cssSizePattern, cssSizePattern])), 
+    parse: function(valueString) {
+      console.log("fourCssSizesParser.parse " + inspect(valueString));
+      var match = valueString.match(this.regex);
+      console.log(" this.regex = " + this.regex);
+      console.log("   match = " + inspect(match));
+      var size = [];
+      for (var i=0; i<4; i++) {
+        size[i] = match[i+1] ? cssSizeParser.parse(match[i+1]) : null;
+        console.log("  match[i+1] = " + inspect(match[i+1]) + ", size[i] = " + inspect(size[i]));
+      }
+      if (match && match[1]) {
+        return new FourCssSizes(size[0], size[1], size[2], size[3]);
+      }
+      else {
+        return null;
+      }
+    }
+  }
 
   function ColorComponentEditorModel() {
     SizeEditorModel.call(this, false);
@@ -3060,18 +3114,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   CssPositionType.prototype = CssSizeType.prototype;
 
   /** ----------------------------------------------------------------------------- */
-  var fourCssSizesPattern = itemsPattern([cssSizePattern, cssSizePattern, cssSizePattern, cssSizePattern]);
-
-  function FourCssSizesFormat() {
-    RegexValueFormat.call(this, new RegExp(fourCssSizesPattern), 
-                          [null, "top", "right", "bottom", "left"]);
-  }
-  
-  FourCssSizesFormat.prototype = RegexValueFormat.prototype;
-  
   function FourCssSizesEditorModel(allowNegative) {
     ComponentsEditorModel.call(this, 
-                               new ValueFormatsParserAndBuilder([new FourCssSizesFormat()]), 
+                               new ObjectParserAndBuilder(fourCssSizesParser), 
                                ["top", "right", "bottom", "left"], 
                                new TrblDescriptions(), 
                                {top: cssSizeEditor(allowNegative), 
