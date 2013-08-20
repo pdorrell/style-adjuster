@@ -2918,7 +2918,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                            right: this.descriptions.rightAndLeft, 
                                            bottom: this.descriptions.bottom}, 
                                           {top: this.descriptions.top, 
-                                           right: this.descriptions.rightAndLeft, 
+                                           right: this.descriptions.right, 
                                            bottom: this.descriptions.bottom, 
                                            left: this.descriptions.left}];
   }
