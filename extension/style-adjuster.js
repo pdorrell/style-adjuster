@@ -2028,11 +2028,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ComponentsEditorModel(valueParserAndBuilder, labels, componentDescriptions, 
+  function ComponentsEditorModel(valueParser, labels, componentDescriptions, 
                                  editorModels) {
     this.divClass = "components";
     this.view = null;
-    this.valueParserAndBuilder = valueParserAndBuilder;
+    this.valueParser = valueParser;
     this.labels = labels;
     this.componentDescriptions = componentDescriptions;
     this.firstEditorModel = null;
@@ -2051,7 +2051,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ComponentsEditorModel.prototype = {
     parseValue: function(valueString) {
-      return this.valueParserAndBuilder.parseValue(valueString);
+      return this.valueParser.parse(valueString);
     }, 
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
       console.log("ComponentsEditorModel.echoAndFixUpdatedValueObject ");
@@ -2071,7 +2071,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           console.log("    fixedComponentValue for label " + label + " = " + fixedComponentValue);
           if (fixedComponentValue) {
             anyFixed = true;
-            this.valueParserAndBuilder.updateValue(updatedValueObject, label, fixedComponentValue);
+            updatedValueObject[label] = fixedComponentValue;
           }
         }
       }
@@ -2090,7 +2090,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     prenormalise: function(valueString) {
       console.log("ComponentsEditorModel.prenormalise " + inspect(valueString));
-      var parsedValue = this.valueParserAndBuilder.parseValue(valueString);
+      var parsedValue = this.valueParser.parse(valueString);
       if (parsedValue == null) {
         return null;
       }
@@ -2110,14 +2110,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
             }
           }
         }
-        var newValueString = this.valueParserAndBuilder.buildValue(newValueObject);
-        return [newValueString, newValueObject];
+        return [newValueObject.toString(), newValueObject];
       }
     }, 
 
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
-      this.parsedValue = this.valueParserAndBuilder.parseValue(valueString);
+      this.parsedValue = this.valueParser.parse(valueString);
       console.log("ComponentsEditorModel.receiveValueString " + inspect(valueString));
       console.log("  this.parsedValue = " + inspect(this.parsedValue));
       if(!this.parsedValue) {
@@ -2134,8 +2133,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
             if (this.firstEditorModel == null) {
               this.firstEditorModel = editorModel;
             }
-            var formattedComponentValue = this.valueParserAndBuilder.getFormattedComponentValue(this.parsedValue, label);
-            editorModel.receiveValueString(formattedComponentValue, descriptions[label]);
+            editorModel.receiveValueString(this.parsedValue[label].toString(), descriptions[label]);
           }
         }
         this.parsedLabels.set(labels);
@@ -2209,15 +2207,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       console.log("ComponentsEditorModel.handleLabelValueFromUser, parsedValue = " + 
                   inspect(parsedValue) + ", label = " + label + ", value = " + inspect(value) +
                   ", valueObject = " + inspect(valueObject));
-      if (this.valueParserAndBuilder) {
-        this.valueParserAndBuilder.updateValue(this.parsedValue, label, valueObject);
-        var newValue = this.valueParserAndBuilder.buildValue(this.parsedValue);
-        console.log(" newValue = " + inspect(newValue));
-        var wrappedSource = {};
-        wrappedSource[label] = source;
-        this.sendValueFromUser(newValue, this.updatedValueObjectToSendOn(label, valueObject), 
-                               wrappedSource);
-      }
+      this.parsedValue[label] = valueObject;
+      var wrappedSource = {};
+      wrappedSource[label] = source;
+      this.sendValueFromUser(parsedValue.toString(), this.updatedValueObjectToSendOn(label, valueObject), 
+                             wrappedSource);
     }
   };
 
@@ -2482,12 +2476,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var match = valueString.match(this.regex);
       console.log(" this.regex = " + this.regex);
       console.log("   match = " + inspect(match));
-      var size = [];
-      for (var i=0; i<4; i++) {
-        size[i] = match[i+1] ? cssSizeParser.parse(match[i+1]) : null;
-        console.log("  match[i+1] = " + inspect(match[i+1]) + ", size[i] = " + inspect(size[i]));
-      }
-      if (match && match[1]) {
+      if(match && match[1]) {
+        var size = [null, null, null, null];
+        for (var i=0; i<4; i++) {
+          size[i] = match[i+1] ? cssSizeParser.parse(match[i+1]) : null;
+          console.log("  match[i+1] = " + inspect(match[i+1]) + ", size[i] = " + inspect(size[i]));
+        }
         return new FourCssSizes(size[0], size[1], size[2], size[3]);
       }
       else {
@@ -2980,10 +2974,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var match = valueString.match(this.regex);
       console.log(" this.regex = " + this.regex);
       console.log("   match = " + inspect(match));
-      var width = cssSizeParser.parse(match[1]);
-      var style = match[2];
-      var color = colorParser.parse(match[3]);
-      return new BorderProperty(width, style, color);
+      if (match) {
+        var width = cssSizeParser.parse(match[1]);
+        var style = match[2];
+        var color = colorParser.parse(match[3]);
+        return new BorderProperty(width, style, color);
+      }
+      else {
+        return null;
+      }
     }
   }
   
@@ -2992,7 +2991,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                                                color: ["C", "Color"]});
   
   function borderEditorModel() {
-    var model = new ComponentsEditorModel(new ObjectParserAndBuilder(borderPropertyParser), 
+    var model = new ComponentsEditorModel(borderPropertyParser, 
                                           ["width", "style", "color"], 
                                           borderComponentDescriptions, 
                                           {width: cssSizeEditor(false), 
@@ -3034,7 +3033,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   function FourCssSizesEditorModel(allowNegative) {
     ComponentsEditorModel.call(this, 
-                               new ObjectParserAndBuilder(fourCssSizesParser), 
+                               fourCssSizesParser, 
                                ["top", "right", "bottom", "left"], 
                                new TrblDescriptions(), 
                                {top: cssSizeEditor(allowNegative), 
@@ -3113,7 +3112,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   function ColorEditorModel() {
     ComponentsEditorModel.call (this, 
-                                new ObjectParserAndBuilder(colorParser), 
+                                colorParser, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions, 
                                 {red: colorComponentEditor(), 
@@ -3145,13 +3144,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
     prenormalise: function(valueString) {
-      var parsedValue = this.valueParserAndBuilder.parseValue(valueString);
+      var parsedValue = this.valueParser.parse(valueString);
       if (parsedValue == null) {
         return null;
       }
       else {
-        var newValueString = this.valueParserAndBuilder.buildValue(parsedValue);
-        return [newValueString, parsedValue];
+        return [parsedValue.toString(), parsedValue];
       }
     }, 
 
