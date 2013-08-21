@@ -625,6 +625,39 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       textRange.select();
     }
   }
+  
+  // Pre-normalise object if necessary, return true if any changes made
+  function prenormalise(valueObject) {
+    console.log("prenormalise " + inspect(valueObject) + " ...");
+    var changed = false;
+    // prenormalise prenormalisable components first
+    if(valueObject.prenormalisables) {
+      console.log(" prenormalising compoonents " + inspect(valueObject.prenormalisables));
+      for (var i=0; i<valueObject.prenormalisables.length; i++) {
+        var label = valueObject.prenormalisables[i];
+        var componentValue = valueObject[label];
+        if (componentValue) {
+          if (prenormalise(componentValue)) {
+            changed = true;
+            console.log("component " + label + " changed.");
+          }
+        }
+      }
+    }
+    // then call any "prenormalise" method defined
+    if(valueObject.prenormalise) {
+      console.log(" call valueObject.prenormalise ... ");
+      if (valueObject.prenormalise()) {
+        changed = true;
+        console.log(" changed");
+      }
+    }
+    console.log("   final changed = " + changed);
+    if (changed) {
+      console.log("   changed valueObject = " + inspect(valueObject));
+    }
+    return changed;
+  }
 
   function Observable(value) {
     this.value = value;
@@ -1248,17 +1281,18 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.value.set(value); // (to re-sync value field)
       value = trim(value);
       this.value.set(value); // (to re-sync value field)
-      var prenormalisedValue = value;
+      var valueToSave = value;
       var valueObject = null;
       var extraEditorModel = this.extraEditorModel.get();
       if (extraEditorModel) {
-        var prenormalised = extraEditorModel.prenormalise(value);
-        if(prenormalised) {
-          prenormalisedValue = prenormalised.toString();
-          valueObject = prenormalised;
+        var valueObject = extraEditorModel.type.parse(value);
+        if (valueObject) {
+          prenormalise(valueObject);
+          valueToSave = valueObject.toString();
         }
       }
-      this.savePropertyValue(prenormalisedValue);
+      // attempt to save value (even if extraEditorModel failed to parse it)
+      this.savePropertyValue(valueToSave);
       if (valueObject) {
         this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject, "text");
       }
@@ -2055,28 +2089,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
     }, 
     
-    prenormalise: function(valueString) {
-      var parsedValue = this.type.parse(valueString);
-      if (parsedValue == null) {
-        return null;
-      }
-      else { // recursively prenormalise
-        var newValueObject = merge(parsedValue);
-        var labels = parsedValue.labels;
-        for (var i=0; i<labels.length; i++) {
-          var label = labels[i];
-          var editorModel = this.editorModels[label];
-          if (editorModel) {
-            var prenormalisedComponent = editorModel.prenormalise(parsedValue[label].toString());
-            if (prenormalisedComponent) {
-              newValueObject[label] = prenormalisedComponent;
-            }
-          }
-        }
-        return newValueObject;
-      }
-    }, 
-
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       this.parsedValue = this.type.parse(valueString);
@@ -2215,10 +2227,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   DimensionEditorModel.prototype = {
     viewClass: DimensionEditorView, 
     
-    prenormalise: function(valueString) {
-      return null;
-    }, 
-    
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       this.valueString = valueString;
@@ -2322,12 +2330,19 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   CssSize.prototype = {
-    toString: function() {
-      return this.sizeString + this.unit;
-    }
-  };
-  
-  CssSize.prototype = {
+    /* prenormalise values without a unit to "px", to avoid problems 
+       that happen in extension mode (for unknown reason), where the target window
+       fails to write empty-unit values to "px", e.g. "2" => "2px". */
+    prenormalise: function() {
+      if (this.unit == "") {
+        this.unit = "px";
+        return true;
+      }
+      else {
+        return false;
+      }
+    }, 
+    
     toString: function() {
       return this.sizeString + this.unit;
     }
@@ -2340,17 +2355,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   CssDimensionEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
-    
-    prenormalise: function(valueString) {
-      var sizeObject = this.type.parse(valueString);
-      if (sizeObject) {
-        if (sizeObject.unit == "") {
-          sizeObject.unit = "px";
-          valueString = sizeObject.toString();
-        }
-      }
-      return sizeObject;
-    }, 
     
     getRangesForUnit: function() {
       return cssUnitRanges[this.unit];
@@ -2379,6 +2383,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   FourCssSizes.prototype = {
+    
+    prenormalisables: ["top", "right", "bottom", "left"], 
+    
     setLabels: function() {
       this.labels = this.left ? ["top", "right", "bottom", "left"]
         : (this.bottom ? ["top", "right", "bottom"]
@@ -2846,6 +2853,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   BorderProperty.prototype = {
     labels: ["width", "style", "color"], 
+    
+    prenormalisables: ["width"], 
+    
     toString: function() {
       return this.width.toString() + " " + this.style.toString() + " " + this.color.toString();
     }, 
@@ -2915,6 +2925,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
                                     cssSizePattern, cssSizePattern])), 
+
     parse: function(valueString) {
       var match = valueString.match(this.regex);
       if(match && match[1]) {
@@ -3061,10 +3072,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
     viewClass: ColorEditorView, 
     
-    prenormalise: function(valueString) {
-      return this.type.parse(valueString);
-    }, 
-
     updatedValueObjectToSendOn: function(label, valueObject) {
       return this.valueObject.withComponentUpdated(label, valueObject);
     }, 
