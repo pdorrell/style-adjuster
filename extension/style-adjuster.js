@@ -1326,7 +1326,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (extraEditorModel) {
         valueObject = maybeParse(extraEditorModel.type, value);
         if (valueObject) {
-          console.log("valueObject to prenormalise = " + inspect(valueObject));
           prenormalise(valueObject);
           valueToSave = valueObject.toString();
         }
@@ -2161,7 +2160,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
-      console.log("receiveValueString " + inspect(valueString));
       this.valueObject = maybeParse(this.type, valueString);
       if (this.valueObject) {
         this.receiveValueObject();
@@ -2291,12 +2289,17 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         this.size = parseFloat(this.sizeString);
         this.unit = match.length >= 3 ? match[2] : "";
         this.resetRange(); // this will cause UI to update
-        this.setValueObject();
+        this.setSizeValueObject();
       }
       else {
         this.valueObject = null;
       }
       this.setDescription(description);
+    }, 
+    
+    setSizeValueObject: function() {
+      this.valueObject = this.size == null ? null 
+        : this.type.getSizeObject(this.size, this.sizeString, this.unit);
     }, 
     
     getSliderModels: function(sliderModels) {
@@ -2376,7 +2379,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.sizeString = this.range.get().valueAtPosition(position);
       this.size = parseFloat(this.sizeString);
       this.valueString = this.sizeString + this.unit;
-      this.setValueObject();
+      this.setSizeValueObject();
       if (this.sliderControlModel) {
         this.sliderControlModel.updateValue(this.valueString);
       }
@@ -2421,10 +2424,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         fixedValueObject = new CssSize(0, "0", valueObject.unit);
       }
       return fixedValueObject;
-    }, 
-    
-    setValueObject: function() {
-      this.valueObject = this.size == null ? null : new CssSize(this.size, this.sizeString, this.unit);
     }
     
   });
@@ -2461,54 +2460,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  function ColorComponentEditorModel(type) {
-    DimensionEditorModel.call(this, type);
-  }
-
-  ColorComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
-
-    setValueObject: function() {
-      this.valueObject = this.size;
-    }
-    
-  });
-
-  function HueComponentEditorModel(type) {
-    DimensionEditorModel.call(this, type, false);
-  }
-
-  HueComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
-
-    setValueObject: function() {
-      this.valueObject = this.size;
-    }      
-    
-  });
-
-  function PercentageComponentEditorModel(type) {
-    DimensionEditorModel.call(this, type, false);
-  }
-
-  PercentageComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
-
-    setValueObject: function() {
-      this.valueObject = this.size == null ? null : new Percentage(this.size);
-    }     
-    
-  });
-
-  function AlphaComponentEditorModel(type) {
-    DimensionEditorModel.call(this, type, false);
-  }
-
-  AlphaComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
-
-    setValueObject: function() {
-      this.valueObject = this.size;
-    } 
-    
-  });
-
   function FormatsStateModel() {
     this.formats = new Observable(null);
     this.selectedFormat = new Observable(null);
@@ -2914,6 +2865,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     parseRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
     
+    getSizeObject: function(size, sizeString, unit) {
+      return new CssSize(size, sizeString, unit);
+    }, 
+    
     getRangesForUnit: function(unit) {
       return cssUnitRanges[unit];
     }, 
@@ -2935,7 +2890,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var cssSizeType = new CssDimensionType(false, "Size");
   var cssPositionType = new CssDimensionType(true, "Position");
   
-    function CompoundType(object) {
+  function CompoundType(object) {
     setRequiredProperties(this, object, 
                           ["description", "valueClass", "labels", "componentTypes", 
                            "componentDescriptions", "editorModelClass"]);
@@ -3014,29 +2969,41 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var colorComponentType = {
     allowNegative: false, 
     parseRegex: /^([-]?[0-9.]+)$/, 
-    editorModelClass: ColorComponentEditorModel, 
-    range: colorRange
+    editorModelClass: DimensionEditorModel, 
+    range: colorRange, 
+    getSizeObject: function (size, sizeString, unit) {
+      return size;
+    }
   };
   
   var hueType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)$/, 
-    editorModelClass: HueComponentEditorModel, 
-    range: hueRange
+    editorModelClass: DimensionEditorModel, 
+    range: hueRange, 
+    getSizeObject: function (size, sizeString, unit) {
+      return size;
+    }
   };
   
   var percentageType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)(%)$/, 
-    editorModelClass: PercentageComponentEditorModel, 
-    range: percentageRange
+    editorModelClass: DimensionEditorModel, 
+    range: percentageRange, 
+    getSizeObject: function (size, sizeString, unit) {
+      return new Percentage(size);
+    }
   };
   
   var alphaType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)$/, 
-    editorModelClass: AlphaComponentEditorModel, 
-    range: alphaRange
+    editorModelClass: DimensionEditorModel, 
+    range: alphaRange, 
+    getSizeObject: function (size, sizeString, unit) {
+      return size;
+    }
   };
 
   var colorType = {
@@ -3177,5 +3144,3 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
 
 })(window.STYLE_ADJUSTER);
-
-
