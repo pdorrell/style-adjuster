@@ -3070,7 +3070,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-    viewClass: ComponentsEditorView, 
     
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
       var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
