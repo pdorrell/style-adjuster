@@ -2951,21 +2951,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     return model;
   }
   
-  var cssSizeType = new CssSizeType();
-  
-  var colorType = new ColorType();
-  
-  function BorderType() {
-    this.description = "Border";
-    this.componentTypes = {width: cssSizeType, style: stringType, color: colorType};
-  }
-  
-  BorderType.prototype = {
-    getEditorModel: function() {
-      return borderEditorModel(this);
-    }    
-  };
-  
   /** ----------------------------------------------------------------------------- */
   function CssDimensionType(allowNegative) {
     this.allowNegative = allowNegative;
@@ -3187,13 +3172,28 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.description = "Color";
     this.componentTypes = {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
                            hue: hueType, saturation: percentageType, lightness: percentageType, 
-                           alpha: alphaType, name: stringType}
+                           alpha: alphaType, name: stringType};
   }
 
   ColorType.prototype = {
     getEditorModel: function() {
       return colorEditorModel(this);
     }
+  };
+  
+  var cssSizeType = new CssSizeType();
+  
+  var colorType = new ColorType();
+  
+  function BorderType() {
+    this.description = "Border";
+    this.componentTypes = {width: cssSizeType, style: stringType, color: colorType};
+  }
+  
+  BorderType.prototype = {
+    getEditorModel: function() {
+      return borderEditorModel(this);
+    }    
   };
   
   /** ----------------------------------------------------------------------------- */
