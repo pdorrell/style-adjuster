@@ -628,33 +628,24 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   // Pre-normalise object if necessary, return true if any changes made
   function prenormalise(valueObject) {
-    console.log("prenormalise " + inspect(valueObject) + " ...");
     var changed = false;
     // prenormalise prenormalisable components first
     if(valueObject.prenormalisables) {
-      console.log(" prenormalising compoonents " + inspect(valueObject.prenormalisables));
       for (var i=0; i<valueObject.prenormalisables.length; i++) {
         var label = valueObject.prenormalisables[i];
         var componentValue = valueObject[label];
         if (componentValue) {
           if (prenormalise(componentValue)) {
             changed = true;
-            console.log("component " + label + " changed.");
           }
         }
       }
     }
     // then call any "prenormalise" method defined
     if(valueObject.prenormalise) {
-      console.log(" call valueObject.prenormalise ... ");
       if (valueObject.prenormalise()) {
         changed = true;
-        console.log(" changed");
       }
-    }
-    console.log("   final changed = " + changed);
-    if (changed) {
-      console.log("   changed valueObject = " + inspect(valueObject));
     }
     return changed;
   }
@@ -2427,7 +2418,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   });
 
   function HueComponentEditorModel(type) {
-    console.log("HueComponentEditorModel, type = " + inspect(type));
     DimensionEditorModel.call(this, type, false);
   }
 
