@@ -1275,7 +1275,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if(extraEditorModel) {
         extraEditorModel.onSendValueFromUser(function(value, valueObject, source) {
           $this.savePropertyValue(value);
-          $this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject, source);
+          $this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject);
           if (source == "format") {
             $this.updateSliderControlModel(extraEditorModel);
           }
@@ -1286,7 +1286,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     /** After doing an update from the extra editor, check the updated value against
         the value object supplied by the extra editor. Also update the state of the
         extra editor. */
-    echoUpdateBackToExtraEditor: function(extraEditorModel, valueObject, source) {
+    echoUpdateBackToExtraEditor: function(extraEditorModel, valueObject) {
       var propertyModel = this.propertyModel.get();
       var updatedValue = propertyModel.value.get();
       var updatedValueObject = extraEditorModel.type.parse(updatedValue);
@@ -1333,7 +1333,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       // attempt to save value (even if extraEditorModel failed to parse it)
       this.savePropertyValue(valueToSave);
       if (valueObject) {
-        this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject, "text");
+        this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject);
       }
       this.updateExtraEditorModel();
     }, 
@@ -2225,9 +2225,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     handleLabelValueFromUser: function(parsedValue, label, value, componentValueObject, source) {
       this.valueObject = this.valueObject.withComponentUpdated(label, componentValueObject);
-      var wrappedSource = {};
-      wrappedSource[label] = source;
-      this.sendValueFromUser(parsedValue.toString(), this.valueObject, wrappedSource);
+      this.sendValueFromUser(parsedValue.toString(), this.valueObject, source);
     }
   };
 
