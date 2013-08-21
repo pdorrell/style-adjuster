@@ -290,7 +290,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     regex: /^[a-z]+$/, 
     
-    parse: function(value) {
+    maybeParse: function(value) {
       if (value.match(NamedColor.prototype.regex)) {
         return new NamedColor(value);
       }
@@ -344,7 +344,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return clone;
     }, 
     
-    parse: function (colorString) {
+    maybeParse: function (colorString) {
       var match = colorString.match(RgbColor.prototype.regex);
       if (match) {
         return new RgbColor(parseInt(match[1]), parseInt(match[2]), parseInt(match[3]), "rgb");
@@ -422,7 +422,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return clone;
     }, 
     
-    parse: function (colorString) {
+    maybeParse: function (colorString) {
       var match = colorString.match(RgbaColor.prototype.regex);
       if (match) {
         return new RgbaColor(parseInt(match[1]), parseInt(match[2]), parseInt(match[3]), parseFloat(match[4]));
@@ -477,7 +477,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return clone;
     }, 
     
-    parse: function (colorString) {
+    maybeParse: function (colorString) {
       var match = colorString.match(HslColor.prototype.regex);
       if (match) {
         return new HslColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]));
@@ -531,7 +531,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return clone;
     }, 
     
-    parse: function (colorString) {
+    maybeParse: function (colorString) {
       var match = colorString.match(HslaColor.prototype.regex);
       if (match) {
         return new HslaColor(parseInt(match[1]), parsePercentage(match[2]), parsePercentage(match[3]), 
@@ -591,6 +591,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   /** ===== Utility Functions & Classes ========================================================================= */
+
+  function ParseError(typeDescription, value) {
+    this.typeDescription = typeDescription;
+    this.value = value;
+    this.message = "Error parsing " + typeDescription + " from value " + inspect(value);
+  }
   
   function withNonBreakingHyphens(text) {
     return text.replace(/-/g, "\u2011");
@@ -1276,8 +1282,20 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var valueObject = null;
       var extraEditorModel = this.extraEditorModel.get();
       if (extraEditorModel) {
-        var valueObject = extraEditorModel.type.parse(value);
+        try {
+          valueObject = extraEditorModel.type.parse(value);
+        }
+        catch(error) {
+          if (error instanceof ParseError) {
+            // if parse error, then just pass value string to browser to save anyway
+            valueObject = null;
+          }
+          else {
+            throw error;
+          }
+        }
         if (valueObject) {
+          console.log("valueObject to prenormalise = " + inspect(valueObject));
           prenormalise(valueObject);
           valueToSave = valueObject.toString();
         }
@@ -2861,6 +2879,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     toString: function() {
       return this.width.toString() + " " + this.style.toString() + " " + this.color.toString();
     }, 
+    
     withComponentUpdated: function(label, value) {
       var clone = new BorderProperty(this.width, this.style, this.color);
       clone[label] = value;
@@ -2901,7 +2920,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new CssSize(number, numberString, unit);
       }
       else {
-        return null;
+        throw new ParseError("CSS dimension", valueString);
       }
     }
   };
@@ -2938,7 +2957,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new FourCssSizes(size[0], size[1], size[2], size[3]);
       }
       else {
-        return null;
+        throw new ParseError("Top/Right/Bottom/Left CSS dimensions", valueString);
       }
     }, 
     
@@ -3007,18 +3026,21 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
 
-    editorModelClass: ColorEditorModel, 
+    editorModelClass: ComponentsEditorModel, 
     
-    colorParsers: [NamedColor.prototype.parse, 
-                   RgbColor.prototype.parse, 
-                   RgbaColor.prototype.parse, 
-                   HslColor.prototype.parse, 
-                   HslaColor.prototype.parse], 
+    colorParsers: [NamedColor.prototype.maybeParse, 
+                   RgbColor.prototype.maybeParse, 
+                   RgbaColor.prototype.maybeParse, 
+                   HslColor.prototype.maybeParse, 
+                   HslaColor.prototype.maybeParse], 
     
     parse: function(valueString) {
       var parsedColor = null;
       for (var i=0; i<this.colorParsers.length && parsedColor == null; i++) {
         parsedColor = this.colorParsers[i](valueString);
+      }
+      if (parsedColor == null) {
+        throw new ParseError("Color", valueString);
       }
       return parsedColor;
     }
@@ -3044,18 +3066,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new BorderProperty(width, style, color);
       }
       else {
-        return null;
+        throw new ParseError("Border", valueString);
       }
     }
   };
-  
-  /** ----------------------------------------------------------------------------- */
-  function ColorEditorModel(type) {
-    ComponentsEditorModel.call (this, type);
-  }
-  
-  ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-  });
   
   /** ----------------------------------------------------------------------------- */
   function addTopLeftBottomRightTypes(types, beforePart, afterPart, type) {
