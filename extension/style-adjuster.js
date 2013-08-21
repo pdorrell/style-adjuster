@@ -3152,20 +3152,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ColorType() {
-    this.description = "Color";
-    this.componentTypes = {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
-                           hue: hueType, saturation: percentageType, lightness: percentageType, 
-                           alpha: alphaType, name: stringType};
-  }
-
-  ColorType.prototype = {
+  var colorType = {
+    description: "Color", 
+    componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
+                     hue: hueType, saturation: percentageType, lightness: percentageType, 
+                     alpha: alphaType, name: stringType}, 
     getEditorModel: function() {
       return colorEditorModel(this);
     }
   };
-  
-  var colorType = new ColorType();
   
   var borderType = {
     description: "Border", 
@@ -3203,9 +3198,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                  ["padding", "border-width"]);
     this.setType(cssSizeType, 
                  ["font-size", "width", "min-width", "max-width"]);
-    this.setType(new ColorType(), 
+    this.setType(colorType, 
                  ["color", "background-color", "border-color"]);
-    this.setType(new ColorType(), 
+    this.setType(colorType, 
                  this.templatedTrbl(["border-{trbl}-color"]))
     
     this.setType(cssSizeType, 
