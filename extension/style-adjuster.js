@@ -3185,12 +3185,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   var colorType = new ColorType();
   
-  function BorderType() {
-    this.description = "Border";
-    this.componentTypes = {width: cssSizeType, style: stringType, color: colorType};
-  }
-  
-  BorderType.prototype = {
+  var borderType = {
+    description: "Border", 
+    componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
     getEditorModel: function() {
       return borderEditorModel(this);
     }    
@@ -3233,8 +3230,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                  this.templatedTrbl(["padding-{trbl}", "border-{trbl}-width"]))
     this.setType(new CssPositionType(), 
                  this.templatedTrbl(["margin-{trbl}"]))
-    
-    this.setType(new BorderType(), ["border"]);
+    this.setType(borderType, ["border"]);
   }
 
   PropertyTypes.prototype = {
