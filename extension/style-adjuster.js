@@ -2326,23 +2326,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var cssSizeParser = {
-    regex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
-    
-    parse: function(valueString) {
-      var match = this.regex.exec(valueString);
-      if (match) {
-        var numberString = match[1];
-        var number = parseFloat(numberString);
-        var unit = match[2];
-        return new CssSize(number, numberString, unit);
-      }
-      else {
-        return null;
-      }
-    }
-  };
-  
   CssSize.prototype = {
     toString: function() {
       return this.sizeString + this.unit;
@@ -2358,11 +2341,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
     
     parseValue: function(valueString) {
-      return cssSizeParser.parse(valueString);
+      return this.type.parse(valueString);
     }, 
 
     prenormalise: function(valueString) {
-      var sizeObject = cssSizeParser.parse(valueString);
+      var sizeObject = this.type.parse(valueString);
       if (sizeObject) {
         if (sizeObject.unit == "") {
           sizeObject.unit = "px";
@@ -2420,24 +2403,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   };
   
   var cssSizePattern =  "((?:[-]?[0-9.]+)(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
-  
-  var fourCssDimensionsParser = {
-    regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
-                                    cssSizePattern, cssSizePattern])), 
-    parse: function(valueString) {
-      var match = valueString.match(this.regex);
-      if(match && match[1]) {
-        var size = [null, null, null, null];
-        for (var i=0; i<4; i++) {
-          size[i] = match[i+1] ? cssSizeParser.parse(match[i+1]) : null;
-        }
-        return new FourCssSizes(size[0], size[1], size[2], size[3]);
-      }
-      else {
-        return null;
-      }
-    }
-  }
   
   function ColorComponentEditorModel(type) {
     DimensionEditorModel.call(this, type);
@@ -2906,29 +2871,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var borderPropertyParser = {
-    regex: new RegExp(borderPattern), 
-    parse: function(valueString) {
-      var match = valueString.match(this.regex);
-      if (match) {
-        var width = cssSizeParser.parse(match[1]);
-        var style = match[2];
-        var color = colorType.parse(match[3]);
-        return new BorderProperty(width, style, color);
-      }
-      else {
-        return null;
-      }
-    }
-  }
-  
   var borderComponentDescriptions = new ComponentDescriptions({width: ["W", "Width"], 
                                                                style: ["S", "Style"], 
                                                                color: ["C", "Color"]});
   
   function BorderEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type, borderPropertyParser, 
+                               type, type, 
                                ["width", "style", "color"], 
                                borderComponentDescriptions);
   }
@@ -2954,7 +2903,22 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   CssDimensionType.prototype = {
-    editorModelClass: CssDimensionEditorModel
+    editorModelClass: CssDimensionEditorModel, 
+    
+    regex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
+    
+    parse: function(valueString) {
+      var match = this.regex.exec(valueString);
+      if (match) {
+        var numberString = match[1];
+        var number = parseFloat(numberString);
+        var unit = match[2];
+        return new CssSize(number, numberString, unit);
+      }
+      else {
+        return null;
+      }
+    }
   };
     
   var cssSizeType = new CssDimensionType(false, "Size");
@@ -2963,8 +2927,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type, 
-                               fourCssDimensionsParser, 
+                               type, type, 
                                ["top", "right", "bottom", "left"], 
                                new TrblDescriptions());
   }
@@ -2990,13 +2953,30 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   function FourCssDimensionsType(componentType) {
     this.allowNegative = componentType.allowNegative;
+    this.componentType = componentType;
     this.componentTypes = {top: componentType, right: componentType, 
-                           bottom: componentType, left: componentType}
+                           bottom: componentType, left: componentType};
     this.description = componentType.description + "s for top/right/bottom/left";
   }
-                           
+  
   FourCssDimensionsType.prototype = {
-    editorModelClass: FourCssDimensionsEditorModel
+    editorModelClass: FourCssDimensionsEditorModel, 
+    
+    regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
+                                    cssSizePattern, cssSizePattern])), 
+    parse: function(valueString) {
+      var match = valueString.match(this.regex);
+      if(match && match[1]) {
+        var size = [null, null, null, null];
+        for (var i=0; i<4; i++) {
+          size[i] = match[i+1] ? this.componentType.parse(match[i+1]) : null;
+        }
+        return new FourCssSizes(size[0], size[1], size[2], size[3]);
+      }
+      else {
+        return null;
+      }
+    }
   };
   
   var fourCssSizesType = new FourCssDimensionsType(cssSizeType);
@@ -3006,7 +2986,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, 
                                 type, 
-                                colorType, 
+                                type, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions);
     this.divClass = 'color';
@@ -3113,7 +3093,21 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var borderType = {
     description: "Border", 
     componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
-    editorModelClass: BorderEditorModel
+    editorModelClass: BorderEditorModel, 
+    regex: new RegExp(borderPattern), 
+    
+    parse: function(valueString) {
+      var match = valueString.match(this.regex);
+      if (match) {
+        var width = this.componentTypes.width.parse(match[1]);
+        var style = match[2];
+        var color = this.componentTypes.color.parse(match[3]);
+        return new BorderProperty(width, style, color);
+      }
+      else {
+        return null;
+      }
+    }
   };
   
   /** ----------------------------------------------------------------------------- */
