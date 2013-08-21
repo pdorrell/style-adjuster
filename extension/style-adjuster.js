@@ -590,22 +590,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   }
 
-  var colorParser = {
-    colorParsers: [NamedColor.prototype.parse, 
-                   RgbColor.prototype.parse, 
-                   RgbaColor.prototype.parse, 
-                   HslColor.prototype.parse, 
-                   HslaColor.prototype.parse], 
-    
-    parse: function(valueString) {
-      var parsedColor = null;
-      for (var i=0; i<this.colorParsers.length && parsedColor == null; i++) {
-        parsedColor = this.colorParsers[i](valueString);
-      }
-      return parsedColor;
-    }
-  };
-
   /** ===== Utility Functions & Classes ========================================================================= */
   
   function withNonBreakingHyphens(text) {
@@ -2563,7 +2547,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ColorFormatsController.prototype = {
     parseValue: function(value) {
-      return colorParser.parse(value);
+      return colorType.parse(value);
     }, 
     
     resetUpdatedValueObject: function(updatedValueObject, parsedInputValue, formatsStateModel) {
@@ -2929,7 +2913,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (match) {
         var width = cssSizeParser.parse(match[1]);
         var style = match[2];
-        var color = colorParser.parse(match[3]);
+        var color = colorType.parse(match[3]);
         return new BorderProperty(width, style, color);
       }
       else {
@@ -3022,7 +3006,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, 
                                 type, 
-                                colorParser, 
+                                colorType, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions);
     this.divClass = 'color';
@@ -3108,7 +3092,22 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
-    editorModelClass: ColorEditorModel
+
+    editorModelClass: ColorEditorModel, 
+    
+    colorParsers: [NamedColor.prototype.parse, 
+                   RgbColor.prototype.parse, 
+                   RgbaColor.prototype.parse, 
+                   HslColor.prototype.parse, 
+                   HslaColor.prototype.parse], 
+    
+    parse: function(valueString) {
+      var parsedColor = null;
+      for (var i=0; i<this.colorParsers.length && parsedColor == null; i++) {
+        parsedColor = this.colorParsers[i](valueString);
+      }
+      return parsedColor;
+    }
   };
   
   var borderType = {
