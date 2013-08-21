@@ -2705,7 +2705,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   DimensionEditorView.prototype = {
-    modelClass: DimensionEditorView, 
+    editorModelClass: DimensionEditorView, 
     focusOnSlider: function() {
       this.sliderDom.find(".ui-slider-handle").focus();
     }
@@ -2956,14 +2956,24 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   /** ----------------------------------------------------------------------------- */
+  function getEditorModel(type) {
+    var editorModelClass = type.editorModelClass;
+    var editorModel = new editorModelClass(type);
+    var viewClass = editorModel.viewClass;
+    new viewClass(editorModel);
+    return editorModel;
+  }
+    
   function CssDimensionType(allowNegative, description) {
     this.allowNegative = allowNegative;
     this.description = description;
   }
   
   CssDimensionType.prototype = {
+    editorModelClass: CssDimensionEditorModel, 
+    
     getEditorModel: function() {
-      return cssDimensionEditor(this);
+      return getEditorModel(this);
     }
   };
     
