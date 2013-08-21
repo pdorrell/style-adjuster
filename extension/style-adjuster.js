@@ -3004,7 +3004,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     return model;
   }
   
-  function FourCssDimensionsType(allowNegative, componentType) {
+  function FourCssDimensionsType(componentType) {
     this.allowNegative = componentType.allowNegative;
     this.componentTypes = {top: componentType, right: componentType, 
                            bottom: componentType, left: componentType}
