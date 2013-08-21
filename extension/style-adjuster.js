@@ -3005,9 +3005,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   function FourCssDimensionsType(allowNegative, componentType) {
-    this.allowNegative = allowNegative;
+    this.allowNegative = componentType.allowNegative;
     this.componentTypes = {top: componentType, right: componentType, 
                            bottom: componentType, left: componentType}
+    this.description = componentType.description + "s for top/right/bottom/left";
   }
                            
   FourCssDimensionsType.prototype = {
@@ -3015,18 +3016,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return fourCssDimensionsEditorModel(this);
     }    
   };
-
-  function FourCssSizesType() {
-    FourCssDimensionsType.call(this, false, cssSizeType);
-    this.description = "Sizes for top/right/bottom/left";
-  }
-  FourCssSizesType.prototype = FourCssDimensionsType.prototype;
-
-  function FourCssPositionsType() {
-    FourCssDimensionsType.call(this, true, cssPositionType);
-    this.description = "Positions for top/right/bottom/left";
-  }
-  FourCssPositionsType.prototype = FourCssDimensionsType.prototype;
+  
+  var fourCssSizesType = new FourCssDimensionsType(cssSizeType);
+  var fourCssPositionsType = new FourCssDimensionsType(cssPositionType);
 
   /** ----------------------------------------------------------------------------- */
   function colorComponentEditor(type) {
@@ -3205,9 +3197,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   function PropertyTypes() {
     this.types = {};
-    this.setType(new FourCssPositionsType(), 
+    this.setType(fourCssPositionsType, 
                  ["margin"]);
-    this.setType(new FourCssSizesType(), 
+    this.setType(fourCssSizesType, 
                  ["padding", "border-width"]);
     this.setType(cssSizeType, 
                  ["font-size", "width", "min-width", "max-width"]);
