@@ -2851,11 +2851,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  function BorderEditorModel(type) {
-    ComponentsEditorModel.call(this, type);
-  }
-  BorderEditorModel.prototype = ComponentsEditorModel.prototype;
-  
   /** ----------------------------------------------------------------------------- */
   function getEditorModel(type) {
     var editorModelClass = type.editorModelClass;
@@ -3023,8 +3018,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
                                                       style: ["S", "Style"], 
                                                       color: ["C", "Color"]}), 
-
-    editorModelClass: BorderEditorModel, 
+    editorModelClass: ComponentsEditorModel, 
     regex: new RegExp(borderPattern), 
     
     parse: function(valueString) {
