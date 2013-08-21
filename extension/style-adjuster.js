@@ -2106,6 +2106,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
+      console.log("receiveValueString " + inspect(valueString));
       this.parsedValue = this.type.parse(valueString);
       if(!this.parsedValue) {
         this.parsedLabels.set([]);
@@ -2133,20 +2134,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     setValueObject: function() {
-      if (this.parsedValue) {
-        this.valueObject = merge(this.parsedValue);
-        var labels = this.parsedValue.labels;
-        for (var i=0; i<labels.length; i++) {
-          var label = labels[i];
-          var editorModel = this.editorModels[label];
-          if (editorModel) {
-            this.valueObject[label] = editorModel.valueObject;
-          }
-        }
-      }
-      else {
-        this.valueObject = null;
-      }
+      console.log("  setValueObject, this.parsedValue = " + inspect(this.parsedValue));
+      this.valueObject = this.parsedValue;
     }, 
     
     getSliderModels: function(sliderModels) {
@@ -3072,6 +3061,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     setValueObject: function() {
+      console.log("ColorEditorModel.setValueObject to parsedValue " + inspect(this.parsedValue));
       this.valueObject = this.parsedValue;
     }
   });
