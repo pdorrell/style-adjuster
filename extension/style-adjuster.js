@@ -596,6 +596,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.typeDescription = typeDescription;
     this.value = value;
     this.message = "Error parsing " + typeDescription + " from value " + inspect(value);
+    console.log("ParseError: " + this.message);
   }
   
   function maybeParse(type, valueString) {
@@ -2266,7 +2267,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     receiveValueString: function(valueString, description) {
       this.valueString = valueString;
       this.size = null;
-      var match = this.sizeRegex.exec(valueString);
+      var match = this.type.parseRegex.exec(valueString);
       if (match) {
         this.sizeString = match[1];
         this.size = parseFloat(this.sizeString);
@@ -2387,8 +2388,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   CssDimensionEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
-    
     getRangesForUnit: function() {
       return cssUnitRanges[this.unit];
     }, 
@@ -2439,16 +2438,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var cssSizePattern =  "((?:[-]?[0-9.]+)(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
-  
   function ColorComponentEditorModel(type) {
     DimensionEditorModel.call(this, type);
   }
 
   ColorComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    sizeRegex: /^([-]?[0-9.]+)$/, 
-    
     getRangesForUnit: function() {
       return colorRange;
     }, 
@@ -2465,8 +2460,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   HueComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    sizeRegex: /^([0-9.]+)$/, 
-    
     getRangesForUnit: function() {
       return hueRange;
     }, 
@@ -2483,8 +2476,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   PercentageComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    sizeRegex: /^([0-9.]+)(%)$/, 
-    
     getRangesForUnit: function() {
       return percentageRange;
     }, 
@@ -2501,8 +2492,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   AlphaComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    sizeRegex: /^([0-9.]+)$/, 
-    
     getRangesForUnit: function() {
       return alphaRange;
     }, 
@@ -2848,11 +2837,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
-  var cssSizePattern = "([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
-  
-  var borderStylePattern = "(none|dotted|dashed|solid|double|groove|ridge|inset|outset)";
-  
-  var colorStylePattern = "((?:rgba|rgb|hsla|hsl)\\([^)]*\\)|#[a-zA-Z0-9]+|[a-zA-Z]+)";
+  var borderStyleType = {
+    lexRegex: /(none|dotted|dashed|solid|double|groove|ridge|inset|outset)/
+  };
   
 
   /** Return a regex for a sequence of items (all optional, but there will always be at least one
@@ -2868,8 +2855,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   /** ----------------------------------------------------------------------------- */
-  var borderPattern = itemsPattern([cssSizePattern, borderStylePattern, colorStylePattern]);
-  
   function BorderProperty(width, style, color) {
     this.width = width;
     this.style = style;
@@ -2914,10 +2899,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   CssDimensionType.prototype = {
     editorModelClass: CssDimensionEditorModel, 
     
-    regex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
+    lexRegex: /([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))/, 
+    
+    parseRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
     
     parse: function(valueString) {
-      var match = this.regex.exec(valueString);
+      var match = this.parseRegex.exec(valueString);
       if (match) {
         var numberString = match[1];
         var number = parseFloat(numberString);
@@ -2949,11 +2936,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     componentDescriptions: new TrblDescriptions(), 
     
-    regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
-                                    cssSizePattern, cssSizePattern])), 
+    parseRegex: new RegExp(itemsPattern([cssSizeType.lexRegex.source, 
+                                    cssSizeType.lexRegex.source, 
+                                    cssSizeType.lexRegex.source, 
+                                    cssSizeType.lexRegex.source])), 
 
     parse: function(valueString) {
-      var match = valueString.match(this.regex);
+      var match = valueString.match(this.parseRegex);
       if(match && match[1]) {
         var size = [null, null, null, null];
         for (var i=0; i<4; i++) {
@@ -2992,21 +2981,25 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   var colorComponentType = {
     allowNegative: false, 
+    parseRegex: /^([-]?[0-9.]+)$/, 
     editorModelClass: ColorComponentEditorModel
   };
   
   var hueType = {
     allowNegative: false, 
+    parseRegex: /^([0-9.]+)$/, 
     editorModelClass: HueComponentEditorModel
   };
   
   var percentageType = {
     allowNegative: false, 
+    parseRegex: /^([0-9.]+)(%)$/, 
     editorModelClass: PercentageComponentEditorModel
   };
   
   var alphaType = {
     allowNegative: false, 
+    parseRegex: /^([0-9.]+)$/, 
     editorModelClass: AlphaComponentEditorModel
   };
 
@@ -3016,6 +3009,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     labels: ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
     
     divClass: "color", 
+    
+    lexRegex: /((?:rgba|rgb|hsla|hsl)\([^)]*\)|#[a-zA-Z0-9]+|[a-zA-Z]+)/, 
     
     componentDescriptions: new ComponentDescriptions({red: ["R", "Red"], 
                                                       green: ["G", "Green"], 
@@ -3053,17 +3048,20 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   var borderType = {
     description: "Border", 
-    componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
+    componentTypes: {width: cssSizeType, style: borderStyleType, color: colorType}, 
     labels: ["width", "style", "color"], 
     
     componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
                                                       style: ["S", "Style"], 
                                                       color: ["C", "Color"]}), 
     editorModelClass: ComponentsEditorModel, 
-    regex: new RegExp(borderPattern), 
+
+    parseRegex: new RegExp(itemsPattern([cssSizeType.lexRegex.source, 
+                                         borderStyleType.lexRegex.source, 
+                                         colorType.lexRegex.source])), 
     
     parse: function(valueString) {
-      var match = valueString.match(this.regex);
+      var match = valueString.match(this.parseRegex);
       if (match) {
         var width = this.componentTypes.width.parse(match[1]);
         var style = match[2];
@@ -3071,6 +3069,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         return new BorderProperty(width, style, color);
       }
       else {
+        console.log("borderType.parseRegex = " + borderType.parseRegex);
         throw new ParseError("Border", valueString);
       }
     }
