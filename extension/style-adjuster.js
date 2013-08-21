@@ -2898,13 +2898,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var cssPositionType = new CssDimensionType(true, "Position");
   
   /** ----------------------------------------------------------------------------- */
-  function FourCssDimensionsEditorModel(type) {
-    ComponentsEditorModel.call(this, type);
-  }
-  
-  FourCssDimensionsEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-  });
-
   function FourCssDimensionsType(componentType) {
     this.allowNegative = componentType.allowNegative;
     this.componentType = componentType;
@@ -2914,7 +2907,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   FourCssDimensionsType.prototype = {
-    editorModelClass: FourCssDimensionsEditorModel, 
+    editorModelClass: ComponentsEditorModel, 
     
     labels: ["top", "right", "bottom", "left"], 
     
