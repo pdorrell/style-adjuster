@@ -1993,12 +1993,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ComponentsEditorModel(type, labels, componentDescriptions) {
+  function ComponentsEditorModel(type) {
     this.divClass = "components";
     this.view = null;
     this.type = type;
-    this.labels = labels;
-    this.componentDescriptions = componentDescriptions;
+    this.labels = type.labels;
+    this.componentDescriptions = type.componentDescriptions;
     this.firstEditorModel = null;
     this.updateValueHandler = null;
     this.parsedLabels = new Observable([]);
@@ -2809,15 +2809,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   });
   
-  var colorComponentDescriptions = 
-    new ComponentDescriptions({red: ["R", "Red"], 
-                               green: ["G", "Green"], 
-                               blue: ["B", "Blue"], 
-                               hue: ["H", "Hue"], 
-                               saturation: ["S", "Saturation"], 
-                               lightness: ["L", "Lightness"], 
-                               alpha: ["A", "Alpha"]});
-  
   /** ===== Specific model editors ==================================================== */
   
   var cssSizePattern = "([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
@@ -2860,14 +2851,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var borderComponentDescriptions = new ComponentDescriptions({width: ["W", "Width"], 
-                                                               style: ["S", "Style"], 
-                                                               color: ["C", "Color"]});
-  
   function BorderEditorModel(type) {
-    ComponentsEditorModel.call(this, 
-                               type, type.labels, 
-                               borderComponentDescriptions);
+    ComponentsEditorModel.call(this, type);
   }
   BorderEditorModel.prototype = ComponentsEditorModel.prototype;
   
@@ -2914,9 +2899,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsEditorModel(type) {
-    ComponentsEditorModel.call(this, 
-                               type, type.labels, 
-                               new TrblDescriptions());
+    ComponentsEditorModel.call(this, type);
   }
   
   FourCssDimensionsEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
@@ -2950,6 +2933,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     editorModelClass: FourCssDimensionsEditorModel, 
     
     labels: ["top", "right", "bottom", "left"], 
+    
+    componentDescriptions: new TrblDescriptions(), 
     
     regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
                                     cssSizePattern, cssSizePattern])), 
@@ -2999,6 +2984,14 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     labels: ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
     
+    componentDescriptions: new ComponentDescriptions({red: ["R", "Red"], 
+                                                      green: ["G", "Green"], 
+                                                      blue: ["B", "Blue"], 
+                                                      hue: ["H", "Hue"], 
+                                                      saturation: ["S", "Saturation"], 
+                                                      lightness: ["L", "Lightness"], 
+                                                      alpha: ["A", "Alpha"]}), 
+    
     formats: ["name", "rgb", "rgba", "hsl", "hsla", "hex"], 
 
     componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
@@ -3026,6 +3019,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     description: "Border", 
     componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
     labels: ["width", "style", "color"], 
+    
+    componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
+                                                      style: ["S", "Style"], 
+                                                      color: ["C", "Color"]}), 
 
     editorModelClass: BorderEditorModel, 
     regex: new RegExp(borderPattern), 
@@ -3048,10 +3045,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   /** ----------------------------------------------------------------------------- */
   function ColorEditorModel(type) {
-    ComponentsEditorModel.call (this, 
-                                type, 
-                                type.labels, 
-                                colorComponentDescriptions);
+    ComponentsEditorModel.call (this, type);
     this.divClass = 'color';
     this.formatsStateModel = new FormatsStateModel();
     this.formatsController = colorFormatsController;
