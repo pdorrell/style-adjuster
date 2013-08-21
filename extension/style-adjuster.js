@@ -2942,17 +2942,22 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                                                color: ["C", "Color"]});
   
   function borderEditorModel(type) {
-    var model = new ComponentsEditorModel(new BorderType(), borderPropertyParser, 
+    var model = new ComponentsEditorModel(type, borderPropertyParser, 
                                           ["width", "style", "color"], 
                                           borderComponentDescriptions, 
-                                          {width: cssDimensionEditor(false), 
-                                           color: colorEditorModel()});
+                                          {width: cssDimensionEditor(type.componentTypes.width), 
+                                           color: colorEditorModel(type.componentTypes.color)});
     new ComponentsEditorView(model);
     return model;
   }
   
+  var cssSizeType = new CssSizeType();
+  
+  var colorType = new ColorType();
+  
   function BorderType() {
     this.description = "Border";
+    this.componentTypes = {width: cssSizeType, style: stringType, color: colorType};
   }
   
   BorderType.prototype = {
