@@ -2866,8 +2866,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   function BorderEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type,
-                               ["width", "style", "color"], 
+                               type, type.labels, 
                                borderComponentDescriptions);
   }
   BorderEditorModel.prototype = ComponentsEditorModel.prototype;
@@ -2916,8 +2915,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type, 
-                               ["top", "right", "bottom", "left"], 
+                               type, type.labels, 
                                new TrblDescriptions());
   }
   
@@ -2950,6 +2948,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   FourCssDimensionsType.prototype = {
     editorModelClass: FourCssDimensionsEditorModel, 
+    
+    labels: ["top", "right", "bottom", "left"], 
     
     regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
                                     cssSizePattern, cssSizePattern])), 
@@ -2997,6 +2997,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var colorType = {
     description: "Color", 
     
+    labels: ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
+    
     formats: ["name", "rgb", "rgba", "hsl", "hsla", "hex"], 
 
     componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
@@ -3023,6 +3025,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var borderType = {
     description: "Border", 
     componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
+    labels: ["width", "style", "color"], 
+
     editorModelClass: BorderEditorModel, 
     regex: new RegExp(borderPattern), 
     
@@ -3046,7 +3050,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, 
                                 type, 
-                                ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
+                                type.labels, 
                                 colorComponentDescriptions);
     this.divClass = 'color';
     this.formatsStateModel = new FormatsStateModel();
