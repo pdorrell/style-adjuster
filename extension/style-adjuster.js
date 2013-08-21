@@ -2214,7 +2214,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function SizeEditorModel(negativeAllowed) {
+  function SizeEditorModel(type, negativeAllowed) {
+    this.type = type;
     this.negativeAllowed = negativeAllowed;
     this.sliderControlModel = null;
     this.initialise();
@@ -2357,8 +2358,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function CssSizeEditorModel(negativeAllowed) {
-    SizeEditorModel.call(this, negativeAllowed);
+  function CssSizeEditorModel(type, negativeAllowed) {
+    SizeEditorModel.call(this, type, negativeAllowed);
   }
 
   CssSizeEditorModel.prototype = merge(SizeEditorModel.prototype, {
@@ -2872,8 +2873,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
-  function cssSizeEditor(negativeAllowed) {
-    var model = new CssSizeEditorModel(negativeAllowed);
+  function cssSizeEditor(type, negativeAllowed) {
+    var model = new CssSizeEditorModel(type, negativeAllowed);
     new SizeEditorView(model);
     return model;
   }
@@ -2939,8 +2940,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                                                style: ["S", "Style"], 
                                                                color: ["C", "Color"]});
   
-  function borderEditorModel() {
-    var model = new ComponentsEditorModel(borderPropertyParser, 
+  function borderEditorModel(type) {
+    var model = new ComponentsEditorModel(new BorderType(), borderPropertyParser, 
                                           ["width", "style", "color"], 
                                           borderComponentDescriptions, 
                                           {width: cssSizeEditor(false), 
@@ -2955,7 +2956,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   BorderType.prototype = {
     getEditorModel: function() {
-      return borderEditorModel();
+      return borderEditorModel(this);
     }    
   };
   
@@ -2967,7 +2968,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   CssSizeType.prototype = {
     getEditorModel: function() {
-      return cssSizeEditor(this.allowNegative);
+      return cssSizeEditor(this, this.allowNegative);
     }
   };
 
