@@ -598,6 +598,21 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.message = "Error parsing " + typeDescription + " from value " + inspect(value);
   }
   
+  function maybeParse(type, valueString) {
+    try {
+      return type.parse(valueString);
+    }
+    catch(error) {
+      if (error instanceof ParseError) {
+        // if parse error, then just pass value string to browser to save anyway
+        return null;
+      }
+      else {
+        throw error;
+      }
+    }
+  }
+  
   function withNonBreakingHyphens(text) {
     return text.replace(/-/g, "\u2011");
   }
@@ -1201,6 +1216,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.formatsStateModel = new FormatsStateModel();
     this.sliderControlModel = new SliderControlModel();
     this.extraEditorModel = new Observable(null);
+    this.valueParsed = new Observable(false);
     var $this = this;
   }
 
@@ -1216,6 +1232,14 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.changed.set(false);
       this.errorMessage.set(null);
     }, 
+    
+    sendValueStringToExtraEditorModel: function(extraEditorModel, valueString) {
+      if(extraEditorModel) {
+        extraEditorModel.receiveValueString(valueString, [null, null]);
+        this.updateSliderControlModel(extraEditorModel);
+      }
+      this.valueParsed.set(extraEditorModel && extraEditorModel.valueObject != null);
+    }, 
 
     /** Start editing a property from current value */
     editProperty: function(propertyModel) {
@@ -1228,9 +1252,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var extraEditorModel = propertyModel.getExtraEditorModel();
       this.extraEditorModel.set(extraEditorModel);
       var $this = this;
+      this.sendValueStringToExtraEditorModel(extraEditorModel, this.value.get());
       if(extraEditorModel) {
-        extraEditorModel.receiveValueString(this.value.get(), [null, null]);
-        this.updateSliderControlModel(extraEditorModel);
         extraEditorModel.onSendValueFromUser(function(value, valueObject, source) {
           $this.savePropertyValue(value);
           $this.echoUpdateBackToExtraEditor(extraEditorModel, valueObject, source);
@@ -1282,18 +1305,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var valueObject = null;
       var extraEditorModel = this.extraEditorModel.get();
       if (extraEditorModel) {
-        try {
-          valueObject = extraEditorModel.type.parse(value);
-        }
-        catch(error) {
-          if (error instanceof ParseError) {
-            // if parse error, then just pass value string to browser to save anyway
-            valueObject = null;
-          }
-          else {
-            throw error;
-          }
-        }
+        valueObject = maybeParse(extraEditorModel.type, value);
         if (valueObject) {
           console.log("valueObject to prenormalise = " + inspect(valueObject));
           prenormalise(valueObject);
@@ -1341,12 +1353,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     updateExtraEditorModel: function() {
       var extraEditorModel = this.extraEditorModel.get();
-      if (extraEditorModel) {
-        var propertyModel = this.propertyModel.get();
-        var value = propertyModel.value.get();
-        extraEditorModel.receiveValueString(value, [null, null]);
-        this.updateSliderControlModel(extraEditorModel);
-      }
+      var propertyModel = this.propertyModel.get();
+      var value = propertyModel.value.get();
+      this.sendValueStringToExtraEditorModel(extraEditorModel, value);
     }
     
   };
@@ -1842,14 +1851,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.valueEditorModel.extraEditorModel.nowAndOnChange(function(extraEditorModel) {
       $this.extraEditorDom.children().detach();
       var extraEditorView = extraEditorModel == null ? null : extraEditorModel.view;
-      if (extraEditorView == null) {
-        $this.extraEditorDom.hide();
-      }
-      else {
+      if(extraEditorView != null) {
         $this.extraEditorDom.append(extraEditorView.dom);
         $this.extraEditorDom.append($this.sliderControlView.dom);
-        $this.extraEditorDom.show();
       };
+    });
+    this.valueEditorModel.valueParsed.nowAndOnChange(function(valueParsed) {
+      $this.extraEditorDom.toggle(valueParsed);
     });
   }
 
@@ -2135,28 +2143,29 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       console.log("receiveValueString " + inspect(valueString));
-      this.valueObject = this.type.parse(valueString);
-      if(!this.valueObject) {
-        this.parsedLabels.set([]);
+      this.valueObject = maybeParse(this.type, valueString);
+      if (this.valueObject) {
+        this.receiveValueObject();
       }
-      else {
-        var labels = this.valueObject.labels;
-        this.firstEditorModel = null;
-        var descriptions = this.componentDescriptions.getDescriptions(labels);
-        for (var i=0; i<labels.length; i++) {
-          var label = labels[i];
-          var editorModel = this.editorModels[label];
-          if (editorModel) {
-            if (this.firstEditorModel == null) {
-              this.firstEditorModel = editorModel;
-            }
-            editorModel.receiveValueString(this.valueObject[label].toString(), descriptions[label]);
+    }, 
+    
+    receiveValueObject: function() {
+      var labels = this.valueObject.labels;
+      this.firstEditorModel = null;
+      var descriptions = this.componentDescriptions.getDescriptions(labels);
+      for (var i=0; i<labels.length; i++) {
+        var label = labels[i];
+        var editorModel = this.editorModels[label];
+        if (editorModel) {
+          if (this.firstEditorModel == null) {
+            this.firstEditorModel = editorModel;
           }
+          editorModel.receiveValueString(this.valueObject[label].toString(), descriptions[label]);
         }
-        this.parsedLabels.set(labels);
       }
+      this.parsedLabels.set(labels);
       if (this.formatsStateModel) {
-        this.formatsStateModel.setFormatsController(this.formatsController, valueString);
+        this.formatsStateModel.setFormatsController(this.formatsController, this.valueObject);
       }
     }, 
     
@@ -2263,9 +2272,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         this.size = parseFloat(this.sizeString);
         this.unit = match.length >= 3 ? match[2] : "";
         this.resetRange(); // this will cause UI to update
+        this.setValueObject();
+      }
+      else {
+        this.valueObject = null;
       }
       this.setDescription(description);
-      this.setValueObject();
     }, 
     
     getSliderModels: function(sliderModels) {
@@ -2521,7 +2533,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         this.setFormatsActive(false);
       }
       else {
-        formatsController.setInitialValue(initialValue, this);
+        this.setFormatsActive(true);
+        formatsController.valueChanged(initialValue, this);
       }
     }, 
     
@@ -2552,14 +2565,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
       this.valueChanged(newValue, formatsStateModel);
       return newValue;
-    }, 
-    
-    setInitialValue: function(valueString, formatsStateModel) {
-      var value = this.type.parse(valueString);
-      formatsStateModel.setFormatsActive(value != null);
-      if (value) {
-        this.valueChanged(value, formatsStateModel);
-      }
     }, 
     
     valueChanged: function(value, formatsStateModel) {
