@@ -2260,11 +2260,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.setValueObject();
     }, 
     
-    setValueObject: function() {
-      this.valueObject = this.size == null ? null 
-        : {size: this.size, sizeString: this.sizeString, unit: this.unit};
-    },      
-    
     getSliderModels: function(sliderModels) {
       sliderModels.push(this);
     }, 
