@@ -2028,10 +2028,34 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.updateValueHandler = null;
     this.parsedLabels = new Observable([]);
     this.initialiseEditorModel();
+    if(type.formats) {
+      this.initialiseFormatsStateModel();
+    }
+    if (type.divClass) {
+      this.divClass = type.divClass;
+    }
   }
 
   ComponentsEditorModel.prototype = {
     viewClass: ComponentsEditorView, 
+    
+    initialiseFormatsStateModel: function() {
+      this.formatsStateModel = new FormatsStateModel();
+      this.formatsController = new FormatsController(this.type);
+      var $this = this;
+      this.formatsStateModel.selectedFormat.onChange(function(selectedFormat) {
+        var value = $this.formatsStateModel.value;
+        if (value.format != selectedFormat) {
+          var newValue = value.convertToFormat(selectedFormat);
+          if(!newValue) {
+            throw new Error("Failed to convert " + value + " to format " + inspect(selectedFormat));
+          }
+          var newValueString = newValue.toString();
+          $this.receiveValueString(newValueString); // update itself first before sending new data out
+          $this.sendValueFromUser(newValueString, newValue, "format");
+        }
+      });
+    }, 
     
     initialiseEditorModel: function() {
       this.editorModels = {};
@@ -2979,6 +3003,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     labels: ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
     
+    divClass: "color", 
+    
     componentDescriptions: new ComponentDescriptions({red: ["R", "Red"], 
                                                       green: ["G", "Green"], 
                                                       blue: ["B", "Blue"], 
@@ -3035,28 +3061,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var colorFormatsController = new FormatsController(colorType);
-
   /** ----------------------------------------------------------------------------- */
   function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, type);
-    this.divClass = 'color';
-    this.formatsStateModel = new FormatsStateModel();
-    this.formatsController = colorFormatsController;
-    var $this = this;
-    this.formatsStateModel.selectedFormat.onChange(function(selectedFormat) {
-      var value = $this.formatsStateModel.value;
-      if (value.format != selectedFormat) {
-        var newValue = value.convertToFormat(selectedFormat);
-        if(!newValue) {
-          throw new Error("Failed to convert " + value + " to format " + inspect(selectedFormat));
-        }
-        var newValueString = newValue.toString();
-        $this.receiveValueString(newValueString); // update itself first before sending new data out
-        $this.sendValueFromUser(newValueString, newValue, "format");
-      }
-    });
-
   }
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
