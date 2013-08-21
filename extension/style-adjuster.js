@@ -2071,7 +2071,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
-      return this.echoAndFixUpdatedValueObjectComponents(updatedValueObject, valueObject);
+      if (this.formatsController) {
+        return this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
+                                                              this.formatsStateModel);
+      }
+      else {
+        return this.echoAndFixUpdatedValueObjectComponents(updatedValueObject, valueObject);
+      }
     }, 
     
     echoAndFixUpdatedValueObjectComponents: function (updatedValueObject, valueObject) {
@@ -3049,12 +3055,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-    
-    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
-      var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
-                                                                            this.formatsStateModel);
-      return fixedValueObject;
-    }
   });
   
   /** ----------------------------------------------------------------------------- */
