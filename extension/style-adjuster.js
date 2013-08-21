@@ -2352,6 +2352,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
     }, 
     
+    getRangesForUnit: function() {
+      if (this.type.range) {
+        return this.type.range;
+      }
+      else {
+        return this.type.getRangesForUnit(this.unit);
+      }
+    }, 
+    
     zoomByFactor: function(zoomFactor) {
       var rangesForUnit = this.getRangesForUnit();
       this.range.set(rangesForUnit.getZoomedRange(this.size, this.negativeAllowed, 
@@ -2406,10 +2415,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   CssDimensionEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    getRangesForUnit: function() {
-      return cssUnitRanges[this.unit];
-    }, 
-    
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
       var fixedValueObject = null;
       if (updatedValueObject.size == 0 && updatedValueObject.unit == "px" && valueObject.unit != "px") {
@@ -2462,10 +2467,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ColorComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    getRangesForUnit: function() {
-      return colorRange;
-    }, 
-
     setValueObject: function() {
       this.valueObject = this.size;
     }
@@ -2477,10 +2478,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   HueComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
-
-    getRangesForUnit: function() {
-      return hueRange;
-    }, 
 
     setValueObject: function() {
       this.valueObject = this.size;
@@ -2494,10 +2491,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   PercentageComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    getRangesForUnit: function() {
-      return percentageRange;
-    }, 
-    
     setValueObject: function() {
       this.valueObject = this.size == null ? null : new Percentage(this.size);
     }     
@@ -2510,10 +2503,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   AlphaComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
-    getRangesForUnit: function() {
-      return alphaRange;
-    }, 
-    
     setValueObject: function() {
       this.valueObject = this.size;
     } 
@@ -2925,6 +2914,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     parseRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc|)$/, 
     
+    getRangesForUnit: function(unit) {
+      return cssUnitRanges[unit];
+    }, 
+    
     parse: function(valueString) {
       var match = this.parseRegex.exec(valueString);
       if (match) {
@@ -3021,25 +3014,29 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var colorComponentType = {
     allowNegative: false, 
     parseRegex: /^([-]?[0-9.]+)$/, 
-    editorModelClass: ColorComponentEditorModel
+    editorModelClass: ColorComponentEditorModel, 
+    range: colorRange
   };
   
   var hueType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)$/, 
-    editorModelClass: HueComponentEditorModel
+    editorModelClass: HueComponentEditorModel, 
+    range: hueRange
   };
   
   var percentageType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)(%)$/, 
-    editorModelClass: PercentageComponentEditorModel
+    editorModelClass: PercentageComponentEditorModel, 
+    range: percentageRange
   };
   
   var alphaType = {
     allowNegative: false, 
     parseRegex: /^([0-9.]+)$/, 
-    editorModelClass: AlphaComponentEditorModel
+    editorModelClass: AlphaComponentEditorModel, 
+    range: alphaRange
   };
 
   var colorType = {
