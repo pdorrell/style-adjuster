@@ -2127,6 +2127,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         this.parsedLabels.set(labels);
       }
       this.setValueObject();
+      if (this.formatsStateModel) {
+        this.formatsStateModel.setFormatsController(this.formatsController, valueString);
+      }
     }, 
     
     setValueObject: function() {
@@ -2210,6 +2213,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (editorModel) {
         this.dom.append(editorModel.view.dom);
       }
+    }
+    if (componentsEditorModel.formatsStateModel) {
+      this.formatsStateView = new FormatsView(componentsEditorModel.formatsStateModel);
+      this.dom.prepend(this.formatsStateView.dom);
     }
     var $this = this;
     componentsEditorModel.parsedLabels.nowAndOnChange(function(parsedLabels) {
@@ -3019,7 +3026,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
 
-    editorModelClass: ColorEditorModel, 
+    editorModelClass: ComponentsEditorModel, 
     
     colorParsers: [NamedColor.prototype.parse, 
                    RgbColor.prototype.parse, 
@@ -3067,7 +3074,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-    viewClass: ColorEditorView, 
+    viewClass: ComponentsEditorView, 
     
     updatedValueObjectToSendOn: function(label, valueObject) {
       return this.valueObject.withComponentUpdated(label, valueObject);
@@ -3081,22 +3088,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     setValueObject: function() {
       this.valueObject = this.parsedValue;
-    }, 
-    
-    receiveValueString: function(valueString) {
-      ComponentsEditorModel.prototype.receiveValueString.call(this, valueString);
-      this.formatsStateModel.setFormatsController(this.formatsController, valueString);
     }
   });
   
-  function ColorEditorView(colorEditorModel) {
-    ComponentsEditorView.call(this, colorEditorModel);
-    this.formatsStateView = new FormatsView(colorEditorModel.formatsStateModel);
-    this.dom.prepend(this.formatsStateView.dom);
-  }
-  
-  ColorEditorView.prototype = ComponentsEditorView.prototype;
-    
   /** ----------------------------------------------------------------------------- */
   function addTopLeftBottomRightTypes(types, beforePart, afterPart, type) {
     var positions = ["top", "left", "bottom", "right"];
