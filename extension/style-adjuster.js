@@ -1270,8 +1270,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       if (extraEditorModel) {
         var prenormalised = extraEditorModel.prenormalise(value);
         if(prenormalised) {
-          prenormalisedValue = prenormalised[0];
-          valueObject = prenormalised[1];
+          prenormalisedValue = prenormalised.toString();
+          valueObject = prenormalised;
         }
       }
       this.savePropertyValue(prenormalisedValue);
@@ -2077,11 +2077,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           if (editorModel) {
             var prenormalisedComponent = editorModel.prenormalise(parsedValue[label].toString());
             if (prenormalisedComponent) {
-              newValueObject[label] = prenormalisedComponent[1];
+              newValueObject[label] = prenormalisedComponent;
             }
           }
         }
-        return [newValueObject.toString(), newValueObject];
+        return newValueObject;
       }
     }, 
 
@@ -2376,7 +2376,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
           valueString = sizeObject.toString();
         }
       }
-      return [valueString, sizeObject];
+      return sizeObject;
     }, 
     
     getRangesForUnit: function() {
@@ -3092,13 +3092,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
     prenormalise: function(valueString) {
-      var parsedValue = this.valueParser.parse(valueString);
-      if (parsedValue == null) {
-        return null;
-      }
-      else {
-        return [parsedValue.toString(), parsedValue];
-      }
+      return this.valueParser.parse(valueString);
     }, 
 
     updatedValueObjectToSendOn: function(label, valueObject) {
