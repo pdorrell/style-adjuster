@@ -2032,6 +2032,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   ComponentsEditorModel.prototype = {
+    viewClass: ComponentsEditorView, 
+    
     parseValue: function(valueString) {
       return this.valueParser.parse(valueString);
     }, 
@@ -2222,6 +2224,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   DimensionEditorModel.prototype = {
+    viewClass: DimensionEditorView, 
     
     prenormalise: function(valueString) {
       return null;
@@ -2702,6 +2705,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   DimensionEditorView.prototype = {
+    modelClass: DimensionEditorView, 
     focusOnSlider: function() {
       this.sliderDom.find(".ui-slider-handle").focus();
     }
@@ -3079,6 +3083,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
+    viewClass: ColorEditorView, 
+    
     prenormalise: function(valueString) {
       return this.valueParser.parse(valueString);
     }, 
