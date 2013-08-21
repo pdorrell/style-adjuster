@@ -2044,10 +2044,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       return anyFixed ? updatedValueObject : null;
     }, 
     
-    // A hook to make fixes at the structural level, i.e. fill in deleted components
+    // Make fixes at the structural level, i.e. fill in deleted components - delete call to this.type
     fixParsedValue: function(parsedUpdatedValue, valueObject) {
-      // default do nothing
-      return false;
+      if (this.type.fixedParsedValue) {
+        return this.type.fixedParsedValue(parsedUpdatedValue, valueObject);
+      }
+      else {
+        // default do nothing
+        return false;
+      }
     }, 
     
     prenormalise: function(valueString) {
@@ -2898,22 +2903,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   FourCssDimensionsEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-    defaultLabelForMissingLabel: {right: "top", bottom: "top", left: "right"}, 
-    
-    fixParsedValue: function(parsedUpdatedValue, valueObject) {
-      var numLabelsInUpdate = parsedUpdatedValue.labels.length;
-      var numLabelsInValue = valueObject.labels.length;
-      var anyToFix = numLabelsInUpdate < numLabelsInValue;
-      if (anyToFix) {
-        for (var i=numLabelsInUpdate; i<numLabelsInValue; i++) {
-          var missingLabel = valueObject.labels[i];
-          parsedUpdatedValue[missingLabel] = 
-            parsedUpdatedValue[this.defaultLabelForMissingLabel[missingLabel]];
-          parsedUpdatedValue.labels.push(missingLabel);
-        }
-      }
-      return anyToFix;
-    }
   });
 
   function FourCssDimensionsType(componentType) {
@@ -2945,6 +2934,23 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       else {
         return null;
       }
+    }, 
+    
+    defaultLabelForMissingLabel: {right: "top", bottom: "top", left: "right"}, 
+    
+    fixParsedValue: function(parsedUpdatedValue, valueObject) {
+      var numLabelsInUpdate = parsedUpdatedValue.labels.length;
+      var numLabelsInValue = valueObject.labels.length;
+      var anyToFix = numLabelsInUpdate < numLabelsInValue;
+      if (anyToFix) {
+        for (var i=numLabelsInUpdate; i<numLabelsInValue; i++) {
+          var missingLabel = valueObject.labels[i];
+          parsedUpdatedValue[missingLabel] = 
+            parsedUpdatedValue[this.defaultLabelForMissingLabel[missingLabel]];
+          parsedUpdatedValue.labels.push(missingLabel);
+        }
+      }
+      return anyToFix;
     }
   };
   
