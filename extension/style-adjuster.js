@@ -2071,6 +2071,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      return this.echoAndFixUpdatedValueObjectComponents(updatedValueObject, valueObject);
+    }, 
+    
+    echoAndFixUpdatedValueObjectComponents: function (updatedValueObject, valueObject) {
       var anyFixed = false;
       
       for (var i=0; i<this.labels.length; i++) {
