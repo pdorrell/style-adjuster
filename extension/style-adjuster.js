@@ -2646,9 +2646,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function SizeEditorView(sizeEditorModel) {
-    this.sizeEditorModel = sizeEditorModel;
-    sizeEditorModel.view = this;
+  function DimensionEditorView(dimensionEditorModel) {
+    this.dimensionEditorModel = dimensionEditorModel;
+    dimensionEditorModel.view = this;
     this.dom = $("<div class='size-slider'/>");
     var shortDescriptionWrapperDom = $("<span/>");
     this.shortDescriptionDom = $("<div class='short-description'/>").appendTo(shortDescriptionWrapperDom);;
@@ -2664,44 +2664,44 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     function sliderChanged(event, ui) {
       if (!$this.ignoreValueChanges) {
         var position = ui.value / 100.0;
-        sizeEditorModel.setSizeFromUser(position);
+        dimensionEditorModel.setSizeFromUser(position);
       }
     };
     this.sliderDom.slider({min: 0, max: 100, slide: sliderChanged, change: sliderChanged});
     this.sliderDom.focusin(function() {
-      $this.sizeEditorModel.setAsFocussedModel();
+      $this.dimensionEditorModel.setAsFocussedModel();
     });
     
-    this.sizeEditorModel.focussed.nowAndOnChange(function (focussed) {
+    this.dimensionEditorModel.focussed.nowAndOnChange(function (focussed) {
       $this.dom.toggleClass("focussed", focussed);
     });
     
-    this.sizeEditorModel.shortDescription.nowAndOnChange(function(shortdescription) {
+    this.dimensionEditorModel.shortDescription.nowAndOnChange(function(shortdescription) {
       shortDescriptionWrapperDom.toggle(shortdescription != null);
       $this.shortDescriptionDom.text(shortdescription == null ? "" : shortdescription);
     });
     
-    this.sizeEditorModel.range.onChange(function(range) {
+    this.dimensionEditorModel.range.onChange(function(range) {
       $this.lowerValueDom.text(range.lowerString);
       $this.upperValueDom.text(range.upperString);
       $this.ignoreValueChanges = true;
-      var newPosition = range.positionForValue(sizeEditorModel.size);
+      var newPosition = range.positionForValue(dimensionEditorModel.size);
       $this.sliderDom.slider("option", "value", 100 * newPosition);
       $this.unitDom.text(range.unit);
       $this.ignoreValueChanges = false;
     });
     
-    $(this.sizeEditorModel).on("zoomEdited", function() {
+    $(this.dimensionEditorModel).on("zoomEdited", function() {
       $this.focusOnSlider();
     });
     
-    $(this.sizeEditorModel).on("modelFocus", function() {
+    $(this.dimensionEditorModel).on("modelFocus", function() {
       $this.focusOnSlider();
     });
     
   }
 
-  SizeEditorView.prototype = {
+  DimensionEditorView.prototype = {
     focusOnSlider: function() {
       this.sliderDom.find(".ui-slider-handle").focus();
     }
@@ -2876,7 +2876,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   function cssDimensionEditor(type) {
     var model = new CssDimensionEditorModel(type);
-    new SizeEditorView(model);
+    new DimensionEditorView(model);
     return model;
   }
 
@@ -3023,25 +3023,25 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   function colorComponentEditor(type) {
     var model = new ColorComponentEditorModel(type);
-    new SizeEditorView(model);
+    new DimensionEditorView(model);
     return model;
   }
 
   function hueComponentEditor(type) {
     var model = new HueComponentEditorModel(type);
-    new SizeEditorView(model);
+    new DimensionEditorView(model);
     return model;
   }
 
   function percentageComponentEditor(type) {
     var model = new PercentageComponentEditorModel(type);
-    new SizeEditorView(model);
+    new DimensionEditorView(model);
     return model;
   }
 
   function alphaComponentEditor(type) {
     var model = new AlphaComponentEditorModel(type);
-    new SizeEditorView(model);
+    new DimensionEditorView(model);
     return model;
   }
   
