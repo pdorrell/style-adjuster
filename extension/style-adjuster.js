@@ -1077,7 +1077,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     getExtraEditorModel: function() {
       if (this.type) {
-        return this.type.getEditorModel();
+        return getEditorModel(this.type);
       }
       else {
         return null;
@@ -2945,23 +2945,28 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                                                style: ["S", "Style"], 
                                                                color: ["C", "Color"]});
   
-  function borderEditorModel(type) {
-    var model = new ComponentsEditorModel(type, borderPropertyParser, 
-                                          ["width", "style", "color"], 
-                                          borderComponentDescriptions, 
-                                          {width: cssDimensionEditor(type.componentTypes.width), 
-                                           color: colorEditorModel(type.componentTypes.color)});
-    new ComponentsEditorView(model);
-    return model;
+  function BorderEditorModel(type) {
+    ComponentsEditorModel.call(this, 
+                               type, borderPropertyParser, 
+                               ["width", "style", "color"], 
+                               borderComponentDescriptions, 
+                               {width: cssDimensionEditor(type.componentTypes.width), 
+                                color: colorEditorModel(type.componentTypes.color)});
   }
+  BorderEditorModel.prototype = ComponentsEditorModel.prototype;
   
   /** ----------------------------------------------------------------------------- */
   function getEditorModel(type) {
     var editorModelClass = type.editorModelClass;
-    var editorModel = new editorModelClass(type);
-    var viewClass = editorModel.viewClass;
-    new viewClass(editorModel);
-    return editorModel;
+    if (editorModelClass) {
+      var editorModel = new editorModelClass(type);
+      var viewClass = editorModel.viewClass;
+      new viewClass(editorModel);
+      return editorModel;
+    }
+    else {
+      return null;
+    }
   }
     
   function CssDimensionType(allowNegative, description) {
@@ -2970,11 +2975,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   CssDimensionType.prototype = {
-    editorModelClass: CssDimensionEditorModel, 
-    
-    getEditorModel: function() {
-      return getEditorModel(this);
-    }
+    editorModelClass: CssDimensionEditorModel
   };
     
   var cssSizeType = new CssDimensionType(false, "Size");
@@ -3026,9 +3027,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
                            
   FourCssDimensionsType.prototype = {
-    getEditorModel: function() {
-      return fourCssDimensionsEditorModel(this);
-    }    
+    editorModelClass: FourCssDimensionsEditorModel
   };
   
   var fourCssSizesType = new FourCssDimensionsType(cssSizeType);
@@ -3135,37 +3134,26 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   var stringType = {
-    getEditorModel: function() {
-      return null;
-    }
   };
   
   var colorComponentType = {
     allowNegative: false, 
-    getEditorModel: function() {
-      return new ColorComponentEditorModel(this);
-    }
+    editorModelClass: ColorComponentEditorModel
   };
   
   var hueType = {
     allowNegative: false, 
-    getEditorModel: function() {
-      return new HueComponentEditorModel(this);
-    }
+    editorModelClass: HueComponentEditorModel
   };
   
   var percentageType = {
     allowNegative: false, 
-    getEditorModel: function() {
-      return new PercentageComponentEditorModel(this);
-    }
+    editorModelClass: PercentageComponentEditorModel
   };
   
   var alphaType = {
     allowNegative: false, 
-    getEditorModel: function() {
-      return new AlphaComponentEditorModel(this);
-    }
+    editorModelClass: AlphaComponentEditorModel
   };
 
   var colorType = {
@@ -3173,17 +3161,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
-    getEditorModel: function() {
-      return colorEditorModel(this);
-    }
+    editorModelClass: ColorEditorModel
   };
   
   var borderType = {
     description: "Border", 
     componentTypes: {width: cssSizeType, style: stringType, color: colorType}, 
-    getEditorModel: function() {
-      return borderEditorModel(this);
-    }    
+    editorModelClass: BorderEditorModel
   };
   
   /** ----------------------------------------------------------------------------- */
