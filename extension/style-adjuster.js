@@ -2855,10 +2855,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   /** ----------------------------------------------------------------------------- */
-  function BorderProperty(width, style, color) {
-    this.width = width;
-    this.style = style;
-    this.color = color;
+  function BorderProperty(object) {
+    this.width = object.width;
+    this.style = object.style;
+    this.color = object.color;
   }
   
   BorderProperty.prototype = {
@@ -2871,7 +2871,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     withComponentUpdated: function(label, value) {
-      var clone = new BorderProperty(this.width, this.style, this.color);
+      var clone = new BorderProperty(this);
       clone[label] = value;
       return clone;
     }
@@ -2922,7 +2922,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsType(componentType) {
-    this.allowNegative = componentType.allowNegative;
     this.componentType = componentType;
     this.componentTypes = {top: componentType, right: componentType, 
                            bottom: componentType, left: componentType};
@@ -2937,9 +2936,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     componentDescriptions: new TrblDescriptions(), 
     
     parseRegex: new RegExp(itemsPattern([cssSizeType.lexRegex.source, 
-                                    cssSizeType.lexRegex.source, 
-                                    cssSizeType.lexRegex.source, 
-                                    cssSizeType.lexRegex.source])), 
+                                         cssSizeType.lexRegex.source, 
+                                         cssSizeType.lexRegex.source, 
+                                         cssSizeType.lexRegex.source])), 
 
     parse: function(valueString) {
       var match = valueString.match(this.parseRegex);
@@ -3063,10 +3062,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     parse: function(valueString) {
       var match = valueString.match(this.parseRegex);
       if (match) {
-        var width = this.componentTypes.width.parse(match[1]);
-        var style = match[2];
-        var color = this.componentTypes.color.parse(match[3]);
-        return new BorderProperty(width, style, color);
+        return new BorderProperty({width: this.componentTypes.width.parse(match[1]), 
+                                   style: match[2], 
+                                   color: this.componentTypes.color.parse(match[3])});
       }
       else {
         console.log("borderType.parseRegex = " + borderType.parseRegex);
