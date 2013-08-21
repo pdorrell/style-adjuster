@@ -2882,13 +2882,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
-  function cssDimensionEditor(type) {
-    var model = new CssDimensionEditorModel(type);
-    new DimensionEditorView(model);
-    return model;
-  }
-
-  /** ----------------------------------------------------------------------------- */
   var cssSizePattern = "([-]?[0-9.]+(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
   
   var borderStylePattern = "(none|dotted|dashed|solid|double|groove|ridge|inset|outset)";
@@ -3011,12 +3004,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   });
 
-  function fourCssDimensionsEditorModel(type) {
-    var model = new FourCssDimensionsEditorModel(type);
-    new ComponentsEditorView(model);
-    return model;
-  }
-  
   function FourCssDimensionsType(componentType) {
     this.allowNegative = componentType.allowNegative;
     this.componentTypes = {top: componentType, right: componentType, 
@@ -3032,30 +3019,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var fourCssPositionsType = new FourCssDimensionsType(cssPositionType);
 
   /** ----------------------------------------------------------------------------- */
-  function colorComponentEditor(type) {
-    var model = new ColorComponentEditorModel(type);
-    new DimensionEditorView(model);
-    return model;
-  }
-
-  function hueComponentEditor(type) {
-    var model = new HueComponentEditorModel(type);
-    new DimensionEditorView(model);
-    return model;
-  }
-
-  function percentageComponentEditor(type) {
-    var model = new PercentageComponentEditorModel(type);
-    new DimensionEditorView(model);
-    return model;
-  }
-
-  function alphaComponentEditor(type) {
-    var model = new AlphaComponentEditorModel(type);
-    new DimensionEditorView(model);
-    return model;
-  }
-  
   function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, 
                                 type, 
@@ -3117,12 +3080,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   ColorEditorView.prototype = merge(ComponentsEditorView.prototype, {
   });
     
-  function colorEditorModel(type) {
-    var model = new ColorEditorModel(type);
-    new ColorEditorView(model);
-    return model;
-  }
-  
   var stringType = {
   };
   
