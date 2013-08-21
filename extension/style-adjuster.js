@@ -2194,7 +2194,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                              this.valueObject.withComponentUpdated(label, componentValueObject), 
                              wrappedSource);
     }
-    
   };
 
   function ComponentsEditorView(componentsEditorModel) {
@@ -3017,7 +3016,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
 
-    editorModelClass: ComponentsEditorModel, 
+    editorModelClass: ColorEditorModel, 
     
     colorParsers: [NamedColor.prototype.parse, 
                    RgbColor.prototype.parse, 
