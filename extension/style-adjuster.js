@@ -2107,12 +2107,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
       console.log("receiveValueString " + inspect(valueString));
-      this.parsedValue = this.type.parse(valueString);
-      if(!this.parsedValue) {
+      this.valueObject = this.type.parse(valueString);
+      if(!this.valueObject) {
         this.parsedLabels.set([]);
       }
       else {
-        var labels = this.parsedValue.labels;
+        var labels = this.valueObject.labels;
         this.firstEditorModel = null;
         var descriptions = this.componentDescriptions.getDescriptions(labels);
         for (var i=0; i<labels.length; i++) {
@@ -2122,20 +2122,14 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
             if (this.firstEditorModel == null) {
               this.firstEditorModel = editorModel;
             }
-            editorModel.receiveValueString(this.parsedValue[label].toString(), descriptions[label]);
+            editorModel.receiveValueString(this.valueObject[label].toString(), descriptions[label]);
           }
         }
         this.parsedLabels.set(labels);
       }
-      this.setValueObject();
       if (this.formatsStateModel) {
         this.formatsStateModel.setFormatsController(this.formatsController, valueString);
       }
-    }, 
-    
-    setValueObject: function() {
-      console.log("  setValueObject, this.parsedValue = " + inspect(this.parsedValue));
-      this.valueObject = this.parsedValue;
     }, 
     
     getSliderModels: function(sliderModels) {
@@ -2165,7 +2159,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     handleValueSentFrom: function(label, editorModel) {
       var $this = this;
       editorModel.onSendValueFromUser(function(value, valueObject, source) {
-        $this.handleLabelValueFromUser($this.parsedValue, label, value, valueObject, source);
+        $this.handleLabelValueFromUser($this.valueObject, label, value, valueObject, source);
       });
     }, 
     
@@ -2176,12 +2170,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     },      
     
     handleLabelValueFromUser: function(parsedValue, label, value, componentValueObject, source) {
-      this.parsedValue[label] = componentValueObject;
+      this.valueObject = this.valueObject.withComponentUpdated(label, componentValueObject);
       var wrappedSource = {};
       wrappedSource[label] = source;
-      this.sendValueFromUser(parsedValue.toString(), 
-                             this.valueObject.withComponentUpdated(label, componentValueObject), 
-                             wrappedSource);
+      this.sendValueFromUser(parsedValue.toString(), this.valueObject, wrappedSource);
     }
   };
 
@@ -3058,11 +3050,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
                                                                             this.formatsStateModel);
       return fixedValueObject;
-    }, 
-    
-    setValueObject: function() {
-      console.log("ColorEditorModel.setValueObject to parsedValue " + inspect(this.parsedValue));
-      this.valueObject = this.parsedValue;
     }
   });
   
