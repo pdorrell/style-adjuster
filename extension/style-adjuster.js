@@ -592,6 +592,22 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   /** ===== Utility Functions & Classes ========================================================================= */
 
+  function requiredProperty(object, property) {
+    var value = object[property];
+    if(!value) {
+      throw new Error("Required property " + inspect(property) + " missing from object " + 
+                       inspect(object));
+    }
+    return value;
+  }
+  
+  function setRequiredProperties(target, source, properties) {
+    for (var i=0; i<properties.length; i++) {
+      var property = properties[i];
+      target[property] = requiredProperty(source, property);
+    }
+  }
+  
   function ParseError(typeDescription, value) {
     this.typeDescription = typeDescription;
     this.value = value;
@@ -2838,7 +2854,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ===== Specific model editors ==================================================== */
   
   var borderStyleType = {
-    lexRegex: /(none|dotted|dashed|solid|double|groove|ridge|inset|outset)/
+    lexRegex: /(none|dotted|dashed|solid|double|groove|ridge|inset|outset)/, 
+    
+    parse: function(valueString) {
+      return valueString;
+    }
   };
   
 
@@ -3045,34 +3065,46 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var borderType = {
-    description: "Border", 
-    componentTypes: {width: cssSizeType, style: borderStyleType, color: colorType}, 
-    labels: ["width", "style", "color"], 
-    
-    componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
-                                                      style: ["S", "Style"], 
-                                                      color: ["C", "Color"]}), 
-    editorModelClass: ComponentsEditorModel, 
-
-    parseRegex: new RegExp(itemsPattern([cssSizeType.lexRegex.source, 
-                                         borderStyleType.lexRegex.source, 
-                                         colorType.lexRegex.source])), 
-    
+  function CompoundType(object) {
+    setRequiredProperties(this, object, 
+                          ["description", "valueClass", "labels", "componentTypes", 
+                           "componentDescriptions", "editorModelClass"]);
+    var componentPatterns = [];
+    for (var i=0; i<this.labels.length; i++) {
+      var label = labels[i];
+      componentPatterns.push(this.componentTypes[label].lexRegex.source);
+    }
+    this.parseRegex = new Regexp(itemsPattern(componentPatterns));
+  }
+  
+  CompoundType.prototype = {
     parse: function(valueString) {
       var match = valueString.match(this.parseRegex);
       if (match) {
-        return new BorderProperty({width: this.componentTypes.width.parse(match[1]), 
-                                   style: match[2], 
-                                   color: this.componentTypes.color.parse(match[3])});
+        var object = {};
+        for (var i=0; i<labels.length; i++) {
+          var label = labels[i];
+          object[label] = this.componentTypes.label.parse(match[i+1]);
+        }
+        return new this.valueClass(object);
       }
       else {
-        console.log("borderType.parseRegex = " + borderType.parseRegex);
-        throw new ParseError("Border", valueString);
+        throw new ParseError(this.description, valueString);
       }
     }
   };
   
+  var borderType = new CompoundType({
+    description: "Border", 
+    valueClass: BorderProperty, 
+    labels: ["width", "style", "color"], 
+    componentTypes: {width: cssSizeType, style: borderStyleType, color: colorType}, 
+    componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
+                                                      style: ["S", "Style"], 
+                                                      color: ["C", "Color"]}), 
+    editorModelClass: ComponentsEditorModel
+  });
+    
   /** ----------------------------------------------------------------------------- */
   function addTopLeftBottomRightTypes(types, beforePart, afterPart, type) {
     var positions = ["top", "left", "bottom", "right"];
