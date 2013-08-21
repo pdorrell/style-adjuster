@@ -1217,7 +1217,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     echoUpdateBackToExtraEditor: function(extraEditorModel, valueObject, source) {
       var propertyModel = this.propertyModel.get();
       var updatedValue = propertyModel.value.get();
-      var updatedValueObject = extraEditorModel.parseValue(updatedValue);
+      var updatedValueObject = extraEditorModel.type.parse(updatedValue);
       var fixedUpdateValueObject = extraEditorModel.echoAndFixUpdatedValueObject(updatedValueObject, valueObject);
       if (fixedUpdateValueObject) {
         propertyModel.updateFixedValue(fixedUpdateValueObject.toString());
@@ -1993,11 +1993,10 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ComponentsEditorModel(type, valueParser, labels, componentDescriptions) {
+  function ComponentsEditorModel(type, labels, componentDescriptions) {
     this.divClass = "components";
     this.view = null;
     this.type = type;
-    this.valueParser = valueParser;
     this.labels = labels;
     this.componentDescriptions = componentDescriptions;
     this.firstEditorModel = null;
@@ -2022,9 +2021,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
     }, 
     
-    parseValue: function(valueString) {
-      return this.valueParser.parse(valueString);
-    }, 
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
       var anyFixed = false;
       
@@ -2055,7 +2051,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     prenormalise: function(valueString) {
-      var parsedValue = this.parseValue(valueString);
+      var parsedValue = this.type.parse(valueString);
       if (parsedValue == null) {
         return null;
       }
@@ -2078,7 +2074,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
     receiveValueString: function(valueString, description) {
-      this.parsedValue = this.parseValue(valueString);
+      this.parsedValue = this.type.parse(valueString);
       if(!this.parsedValue) {
         this.parsedLabels.set([]);
       }
@@ -2340,10 +2336,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
     
-    parseValue: function(valueString) {
-      return this.type.parse(valueString);
-    }, 
-
     prenormalise: function(valueString) {
       var sizeObject = this.type.parse(valueString);
       if (sizeObject) {
@@ -2534,7 +2526,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     setInitialValue: function(valueString, formatsStateModel) {
-      var value = this.parseValue(valueString);
+      var value = this.type.parse(valueString);
       formatsStateModel.setFormatsActive(value != null);
       if (value) {
         this.valueChanged(value, formatsStateModel);
@@ -2877,7 +2869,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   function BorderEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type, type, 
+                               type,
                                ["width", "style", "color"], 
                                borderComponentDescriptions);
   }
@@ -2927,7 +2919,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsEditorModel(type) {
     ComponentsEditorModel.call(this, 
-                               type, type, 
+                               type, 
                                ["top", "right", "bottom", "left"], 
                                new TrblDescriptions());
   }
