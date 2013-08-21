@@ -1262,6 +1262,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       
     saveTextValue: function(value) {
       this.value.set(value); // (to re-sync value field)
+      value = trim(value);
+      this.value.set(value); // (to re-sync value field)
       var prenormalisedValue = value;
       var valueObject = null;
       var extraEditorModel = this.extraEditorModel.get();
@@ -2220,7 +2222,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   SizeEditorModel.prototype = {
     
     prenormalise: function(valueString) {
-      return [trim(valueString), null];
+      return null;
     }, 
     
     /** A value string from initial editing (presumed to be valid, and accepted in the given format)*/
@@ -2367,7 +2369,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
 
     prenormalise: function(valueString) {
-      valueString = trim(valueString);
       var sizeObject = cssSizeParser.parse(valueString);
       if (sizeObject) {
         if (sizeObject.unit == "") {
