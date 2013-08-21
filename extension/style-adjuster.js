@@ -2952,8 +2952,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
   
   /** ----------------------------------------------------------------------------- */
-  function CssDimensionType(allowNegative) {
+  function CssDimensionType(allowNegative, description) {
     this.allowNegative = allowNegative;
+    this.description = description;
   }
   
   CssDimensionType.prototype = {
@@ -2962,18 +2963,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
     
-  function CssSizeType() {
-    CssDimensionType.call(this, false);
-    this.description = "Size";
-  }
-  CssSizeType.prototype = CssDimensionType.prototype;
-
-  function CssPositionType() {
-    CssDimensionType.call(this, true);
-    this.description = "Position";
-  }
-  CssPositionType.prototype = CssDimensionType.prototype;
-
+  var cssSizeType = new CssDimensionType(false, "Size");
+  var cssPositionType = new CssDimensionType(true, "Position");
+  
   /** ----------------------------------------------------------------------------- */
   function FourCssDimensionsEditorModel(type) {
     ComponentsEditorModel.call(this, 
@@ -3025,13 +3017,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   };
 
   function FourCssSizesType() {
-    FourCssDimensionsType.call(this, false, new CssSizeType());
+    FourCssDimensionsType.call(this, false, cssSizeType);
     this.description = "Sizes for top/right/bottom/left";
   }
   FourCssSizesType.prototype = FourCssDimensionsType.prototype;
 
   function FourCssPositionsType() {
-    FourCssDimensionsType.call(this, true, new CssPositionType());
+    FourCssDimensionsType.call(this, true, cssPositionType);
     this.description = "Positions for top/right/bottom/left";
   }
   FourCssPositionsType.prototype = FourCssDimensionsType.prototype;
@@ -3181,8 +3173,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
-  var cssSizeType = new CssSizeType();
-  
   var colorType = new ColorType();
   
   var borderType = {
@@ -3219,16 +3209,16 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                  ["margin"]);
     this.setType(new FourCssSizesType(), 
                  ["padding", "border-width"]);
-    this.setType(new CssSizeType(), 
+    this.setType(cssSizeType, 
                  ["font-size", "width", "min-width", "max-width"]);
     this.setType(new ColorType(), 
                  ["color", "background-color", "border-color"]);
     this.setType(new ColorType(), 
                  this.templatedTrbl(["border-{trbl}-color"]))
     
-    this.setType(new CssSizeType(), 
+    this.setType(cssSizeType, 
                  this.templatedTrbl(["padding-{trbl}", "border-{trbl}-width"]))
-    this.setType(new CssPositionType(), 
+    this.setType(cssPositionType, 
                  this.templatedTrbl(["margin-{trbl}"]))
     this.setType(borderType, ["border"]);
   }
