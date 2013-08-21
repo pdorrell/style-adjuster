@@ -2498,15 +2498,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ColorFormatsController() {
-    this.formats = ["name", "rgb", "rgba", "hsl", "hsla", "hex"];
+  function FormatsController(type) {
+    this.type = type;
+    this.formats = type.formats;
   }
-
-  ColorFormatsController.prototype = {
-    parseValue: function(value) {
-      return colorType.parse(value);
-    }, 
-    
+  
+  FormatsController.prototype = {
     resetUpdatedValueObject: function(updatedValueObject, parsedInputValue, formatsStateModel) {
       var newValue = updatedValueObject;
       if (updatedValueObject.format != parsedInputValue.format) {
@@ -2973,69 +2970,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   var fourCssSizesType = new FourCssDimensionsType(cssSizeType);
   var fourCssPositionsType = new FourCssDimensionsType(cssPositionType);
-
-  /** ----------------------------------------------------------------------------- */
-  function ColorEditorModel(type) {
-    ComponentsEditorModel.call (this, 
-                                type, 
-                                type, 
-                                ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
-                                colorComponentDescriptions);
-    this.divClass = 'color';
-    this.formatsStateModel = new FormatsStateModel();
-    this.formatsController = new ColorFormatsController();
-    var $this = this;
-    this.formatsStateModel.selectedFormat.onChange(function(selectedFormat) {
-      var value = $this.formatsStateModel.value;
-      if (value.format != selectedFormat) {
-        var newValue = value.convertToFormat(selectedFormat);
-        if(!newValue) {
-          throw new Error("Failed to convert " + value + " to format " + inspect(selectedFormat));
-        }
-        var newValueString = newValue.toString();
-        $this.receiveValueString(newValueString); // update itself first before sending new data out
-        $this.sendValueFromUser(newValueString, newValue, "format");
-      }
-    });
-
-  }
   
-  ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
-    viewClass: ColorEditorView, 
-    
-    prenormalise: function(valueString) {
-      return this.valueParser.parse(valueString);
-    }, 
-
-    updatedValueObjectToSendOn: function(label, valueObject) {
-      return this.valueObject.withComponentUpdated(label, valueObject);
-    }, 
-
-    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
-      var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
-                                                                            this.formatsStateModel);
-      return fixedValueObject;
-    }, 
-    
-    setValueObject: function() {
-      this.valueObject = this.parsedValue;
-    }, 
-    
-    receiveValueString: function(valueString) {
-      ComponentsEditorModel.prototype.receiveValueString.call(this, valueString);
-      this.formatsStateModel.setFormatsController(this.formatsController, valueString);
-    }
-  });
-  
-  function ColorEditorView(colorEditorModel) {
-    ComponentsEditorView.call(this, colorEditorModel);
-    this.formatsStateView = new FormatsView(colorEditorModel.formatsStateModel);
-    this.dom.prepend(this.formatsStateView.dom);
-  }
-  
-  ColorEditorView.prototype = merge(ComponentsEditorView.prototype, {
-  });
-    
   var stringType = {
   };
   
@@ -3061,6 +2996,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   var colorType = {
     description: "Color", 
+    
+    formats: ["name", "rgb", "rgba", "hsl", "hsla", "hex"], 
+
     componentTypes: {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
                      hue: hueType, saturation: percentageType, lightness: percentageType, 
                      alpha: alphaType, name: stringType}, 
@@ -3102,6 +3040,68 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
   
+  var colorFormatsController = new FormatsController(colorType);
+
+  /** ----------------------------------------------------------------------------- */
+  function ColorEditorModel(type) {
+    ComponentsEditorModel.call (this, 
+                                type, 
+                                ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
+                                colorComponentDescriptions);
+    this.divClass = 'color';
+    this.formatsStateModel = new FormatsStateModel();
+    this.formatsController = colorFormatsController;
+    var $this = this;
+    this.formatsStateModel.selectedFormat.onChange(function(selectedFormat) {
+      var value = $this.formatsStateModel.value;
+      if (value.format != selectedFormat) {
+        var newValue = value.convertToFormat(selectedFormat);
+        if(!newValue) {
+          throw new Error("Failed to convert " + value + " to format " + inspect(selectedFormat));
+        }
+        var newValueString = newValue.toString();
+        $this.receiveValueString(newValueString); // update itself first before sending new data out
+        $this.sendValueFromUser(newValueString, newValue, "format");
+      }
+    });
+
+  }
+  
+  ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
+    viewClass: ColorEditorView, 
+    
+    prenormalise: function(valueString) {
+      return this.type.parse(valueString);
+    }, 
+
+    updatedValueObjectToSendOn: function(label, valueObject) {
+      return this.valueObject.withComponentUpdated(label, valueObject);
+    }, 
+
+    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
+                                                                            this.formatsStateModel);
+      return fixedValueObject;
+    }, 
+    
+    setValueObject: function() {
+      this.valueObject = this.parsedValue;
+    }, 
+    
+    receiveValueString: function(valueString) {
+      ComponentsEditorModel.prototype.receiveValueString.call(this, valueString);
+      this.formatsStateModel.setFormatsController(this.formatsController, valueString);
+    }
+  });
+  
+  function ColorEditorView(colorEditorModel) {
+    ComponentsEditorView.call(this, colorEditorModel);
+    this.formatsStateView = new FormatsView(colorEditorModel.formatsStateModel);
+    this.dom.prepend(this.formatsStateView.dom);
+  }
+  
+  ColorEditorView.prototype = ComponentsEditorView.prototype;
+    
   /** ----------------------------------------------------------------------------- */
   function addTopLeftBottomRightTypes(types, beforePart, afterPart, type) {
     var positions = ["top", "left", "bottom", "right"];
