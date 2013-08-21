@@ -2214,14 +2214,14 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function SizeEditorModel(type, negativeAllowed) {
+  function DimensionEditorModel(type) {
     this.type = type;
-    this.negativeAllowed = negativeAllowed;
+    this.negativeAllowed = type.negativeAllowed;
     this.sliderControlModel = null;
     this.initialise();
   }
 
-  SizeEditorModel.prototype = {
+  DimensionEditorModel.prototype = {
     
     prenormalise: function(valueString) {
       return null;
@@ -2358,11 +2358,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function CssSizeEditorModel(type, negativeAllowed) {
-    SizeEditorModel.call(this, type, negativeAllowed);
+  function CssDimensionEditorModel(type) {
+    DimensionEditorModel.call(this, type);
   }
 
-  CssSizeEditorModel.prototype = merge(SizeEditorModel.prototype, {
+  CssDimensionEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([-]?[0-9.]+)(%|in|cm|mm|px|pt|em|ex|rem|pc)$/, 
     
@@ -2430,7 +2430,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   var cssSizePattern =  "((?:[-]?[0-9.]+)(?:%|in|cm|mm|px|pt|em|ex|rem|pc|))";
   
-  var fourCssSizesParser = {
+  var fourCssDimensionsParser = {
     regex: new RegExp(itemsPattern([cssSizePattern, cssSizePattern, 
                                     cssSizePattern, cssSizePattern])), 
     parse: function(valueString) {
@@ -2447,12 +2447,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
     }
   }
-
-  function ColorComponentEditorModel() {
-    SizeEditorModel.call(this, false);
+  
+  function ColorComponentEditorModel(type) {
+    DimensionEditorModel.call(this, type);
   }
 
-  ColorComponentEditorModel.prototype = merge(SizeEditorModel.prototype, {
+  ColorComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([-]?[0-9.]+)$/, 
     
@@ -2466,11 +2466,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
   });
 
-  function HueComponentEditorModel() {
-    SizeEditorModel.call(this, false);
+  function HueComponentEditorModel(type) {
+    console.log("HueComponentEditorModel, type = " + inspect(type));
+    DimensionEditorModel.call(this, type, false);
   }
 
-  HueComponentEditorModel.prototype = merge(SizeEditorModel.prototype, {
+  HueComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([0-9.]+)$/, 
     
@@ -2484,11 +2485,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
   });
 
-  function PercentageComponentEditorModel() {
-    SizeEditorModel.call(this, false);
+  function PercentageComponentEditorModel(type) {
+    DimensionEditorModel.call(this, type, false);
   }
 
-  PercentageComponentEditorModel.prototype = merge(SizeEditorModel.prototype, {
+  PercentageComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([0-9.]+)(%)$/, 
     
@@ -2502,11 +2503,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
   });
 
-  function AlphaComponentEditorModel() {
-    SizeEditorModel.call(this, false);
+  function AlphaComponentEditorModel(type) {
+    DimensionEditorModel.call(this, type, false);
   }
 
-  AlphaComponentEditorModel.prototype = merge(SizeEditorModel.prototype, {
+  AlphaComponentEditorModel.prototype = merge(DimensionEditorModel.prototype, {
 
     sizeRegex: /^([0-9.]+)$/, 
     
@@ -2873,8 +2874,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
-  function cssSizeEditor(type, negativeAllowed) {
-    var model = new CssSizeEditorModel(type, negativeAllowed);
+  function cssDimensionEditor(type) {
+    var model = new CssDimensionEditorModel(type);
     new SizeEditorView(model);
     return model;
   }
@@ -2944,7 +2945,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     var model = new ComponentsEditorModel(new BorderType(), borderPropertyParser, 
                                           ["width", "style", "color"], 
                                           borderComponentDescriptions, 
-                                          {width: cssSizeEditor(false), 
+                                          {width: cssDimensionEditor(false), 
                                            color: colorEditorModel()});
     new ComponentsEditorView(model);
     return model;
@@ -2961,39 +2962,42 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   };
   
   /** ----------------------------------------------------------------------------- */
-  function CssSizeType() {
-    this.allowNegative = false;
-    this.description = "Size";
-  }
-
-  CssSizeType.prototype = {
-    getEditorModel: function() {
-      return cssSizeEditor(this, this.allowNegative);
-    }
-  };
-
-  function CssPositionType() {
-    CssSizeType.call(this);
-    this.allowNegative = true;
-    this.description = "Position";
-  }
-
-  CssPositionType.prototype = CssSizeType.prototype;
-
-  /** ----------------------------------------------------------------------------- */
-  function FourCssSizesEditorModel(type, allowNegative) {
-    ComponentsEditorModel.call(this, 
-                               type, 
-                               fourCssSizesParser, 
-                               ["top", "right", "bottom", "left"], 
-                               new TrblDescriptions(), 
-                               {top: cssSizeEditor(allowNegative), 
-                                right: cssSizeEditor(allowNegative), 
-                                bottom: cssSizeEditor(allowNegative), 
-                                left: cssSizeEditor(allowNegative)});
+  function CssDimensionType(allowNegative) {
+    this.allowNegative = allowNegative;
   }
   
-  FourCssSizesEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
+  CssDimensionType.prototype = {
+    getEditorModel: function() {
+      return cssDimensionEditor(this);
+    }
+  };
+    
+  function CssSizeType() {
+    CssDimensionType.call(this, false);
+    this.description = "Size";
+  }
+  CssSizeType.prototype = CssDimensionType.prototype;
+
+  function CssPositionType() {
+    CssDimensionType.call(this, true);
+    this.description = "Position";
+  }
+  CssPositionType.prototype = CssDimensionType.prototype;
+
+  /** ----------------------------------------------------------------------------- */
+  function FourCssDimensionsEditorModel(type) {
+    ComponentsEditorModel.call(this, 
+                               type, 
+                               fourCssDimensionsParser, 
+                               ["top", "right", "bottom", "left"], 
+                               new TrblDescriptions(), 
+                               {top: cssDimensionEditor(type.componentTypes.top), 
+                                right: cssDimensionEditor(type.componentTypes.right), 
+                                bottom: cssDimensionEditor(type.componentTypes.bottom), 
+                                left: cssDimensionEditor(type.componentTypes.left)});
+  }
+  
+  FourCssDimensionsEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
     defaultLabelForMissingLabel: {right: "top", bottom: "top", left: "right"}, 
     
     fixParsedValue: function(parsedUpdatedValue, valueObject) {
@@ -3012,51 +3016,57 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   });
 
-  function fourCssSizesEditorModel(type, allowNegative) {
-    var model = new FourCssSizesEditorModel(type, allowNegative);
+  function fourCssDimensionsEditorModel(type) {
+    var model = new FourCssDimensionsEditorModel(type);
     new ComponentsEditorView(model);
     return model;
   }
-
-  function FourCssSizesType() {
-    this.allowNegative = false;
-    this.description = "Sizes for top/right/bottom/left";
+  
+  function FourCssDimensionsType(allowNegative, componentType) {
+    this.allowNegative = allowNegative;
+    this.componentTypes = {top: componentType, right: componentType, 
+                           bottom: componentType, left: componentType}
   }
-
-  FourCssSizesType.prototype = {
+                           
+  FourCssDimensionsType.prototype = {
     getEditorModel: function() {
-      return fourCssSizesEditorModel(this, this.allowNegative);
+      return fourCssDimensionsEditorModel(this);
     }    
   };
 
+  function FourCssSizesType() {
+    FourCssDimensionsType.call(this, false, new CssSizeType());
+    this.description = "Sizes for top/right/bottom/left";
+  }
+  FourCssSizesType.prototype = FourCssDimensionsType.prototype;
+
   function FourCssPositionsType() {
-    FourCssSizesType.call(this, true);
-    this.allowNegative = true;
+    FourCssDimensionsType.call(this, true, new CssPositionType());
     this.description = "Positions for top/right/bottom/left";
   }
-  FourCssPositionsType.prototype = FourCssSizesType.prototype;
+  FourCssPositionsType.prototype = FourCssDimensionsType.prototype;
 
   /** ----------------------------------------------------------------------------- */
-  function colorComponentEditor() {
-    var model = new ColorComponentEditorModel();
+  function colorComponentEditor(type) {
+    var model = new ColorComponentEditorModel(type);
     new SizeEditorView(model);
     return model;
   }
 
-  function hueComponentEditor() {
-    var model = new HueComponentEditorModel();
+  function hueComponentEditor(type) {
+    var model = new HueComponentEditorModel(type);
     new SizeEditorView(model);
     return model;
   }
 
-  function percentageComponentEditor() {
-    var model = new PercentageComponentEditorModel();
+  function percentageComponentEditor(type) {
+    var model = new PercentageComponentEditorModel(type);
     new SizeEditorView(model);
     return model;
   }
 
-  function alphaComponentEditor() {
-    var model = new AlphaComponentEditorModel();
+  function alphaComponentEditor(type) {
+    var model = new AlphaComponentEditorModel(type);
     new SizeEditorView(model);
     return model;
   }
@@ -3067,13 +3077,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                 colorParser, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions, 
-                                {red: colorComponentEditor(), 
-                                 green: colorComponentEditor(), 
-                                 blue: colorComponentEditor(), 
-                                 hue: hueComponentEditor(), 
-                                 saturation: percentageComponentEditor(), 
-                                 lightness: percentageComponentEditor(), 
-                                 alpha: alphaComponentEditor()
+                                {red: colorComponentEditor(type.componentTypes.red), 
+                                 green: colorComponentEditor(type.componentTypes.green), 
+                                 blue: colorComponentEditor(type.componentTypes.blue), 
+                                 hue: hueComponentEditor(type.componentTypes.hue), 
+                                 saturation: percentageComponentEditor(type.componentTypes.saturation), 
+                                 lightness: percentageComponentEditor(type.componentTypes.lightness), 
+                                 alpha: alphaComponentEditor(type.componentTypes.alpha)
                                 });
     this.divClass = 'color';
     this.formatsStateModel = new FormatsStateModel();
@@ -3133,9 +3143,46 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     new ColorEditorView(model);
     return model;
   }
+  
+  var stringType = {
+    getEditorModel: function() {
+      return null;
+    }
+  };
+  
+  var colorComponentType = {
+    allowNegative: false, 
+    getEditorModel: function() {
+      return new ColorComponentEditorModel(this);
+    }
+  };
+  
+  var hueType = {
+    allowNegative: false, 
+    getEditorModel: function() {
+      return new HueComponentEditorModel(this);
+    }
+  };
+  
+  var percentageType = {
+    allowNegative: false, 
+    getEditorModel: function() {
+      return new PercentageComponentEditorModel(this);
+    }
+  };
+  
+  var alphaType = {
+    allowNegative: false, 
+    getEditorModel: function() {
+      return new AlphaComponentEditorModel(this);
+    }
+  };
 
   function ColorType() {
     this.description = "Color";
+    this.componentTypes = {red: colorComponentType, green: colorComponentType, blue: colorComponentType, 
+                           hue: hueType, saturation: percentageType, lightness: percentageType, 
+                           alpha: alphaType, name: stringType}
   }
 
   ColorType.prototype = {
