@@ -2009,8 +2009,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ComponentsEditorModel(type, valueParser, labels, componentDescriptions, 
-                                 editorModels) {
+  function ComponentsEditorModel(type, valueParser, labels, componentDescriptions) {
     this.divClass = "components";
     this.view = null;
     this.type = type;
@@ -2018,21 +2017,26 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.labels = labels;
     this.componentDescriptions = componentDescriptions;
     this.firstEditorModel = null;
-    this.editorModels = editorModels;
     this.updateValueHandler = null;
     this.parsedLabels = new Observable([]);
-    for (var i=0; i<labels.length; i++) {
-      var label = labels[i];
-      var editorModel = editorModels[label];
-      if (editorModel) {
-        editorModel.label = label;
-        this.handleValueSentFrom(label, editorModel);
-      }
-    }
+    this.initialiseEditorModel();
   }
 
   ComponentsEditorModel.prototype = {
     viewClass: ComponentsEditorView, 
+    
+    initialiseEditorModel: function() {
+      this.editorModels = {};
+      for (var i=0; i<this.labels.length; i++) {
+        var label = this.labels[i];
+        var editorModel = getEditorModel(this.type.componentTypes[label]);
+        if (editorModel) {
+          editorModel.label = label;
+          this.editorModels[label] = editorModel;
+          this.handleValueSentFrom(label, editorModel);
+        }
+      }
+    }, 
     
     parseValue: function(valueString) {
       return this.valueParser.parse(valueString);
@@ -2949,9 +2953,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     ComponentsEditorModel.call(this, 
                                type, borderPropertyParser, 
                                ["width", "style", "color"], 
-                               borderComponentDescriptions, 
-                               {width: cssDimensionEditor(type.componentTypes.width), 
-                                color: colorEditorModel(type.componentTypes.color)});
+                               borderComponentDescriptions);
   }
   BorderEditorModel.prototype = ComponentsEditorModel.prototype;
   
@@ -2987,11 +2989,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                type, 
                                fourCssDimensionsParser, 
                                ["top", "right", "bottom", "left"], 
-                               new TrblDescriptions(), 
-                               {top: cssDimensionEditor(type.componentTypes.top), 
-                                right: cssDimensionEditor(type.componentTypes.right), 
-                                bottom: cssDimensionEditor(type.componentTypes.bottom), 
-                                left: cssDimensionEditor(type.componentTypes.left)});
+                               new TrblDescriptions());
   }
   
   FourCssDimensionsEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
@@ -3063,15 +3061,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                                 type, 
                                 colorParser, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
-                                colorComponentDescriptions, 
-                                {red: colorComponentEditor(type.componentTypes.red), 
-                                 green: colorComponentEditor(type.componentTypes.green), 
-                                 blue: colorComponentEditor(type.componentTypes.blue), 
-                                 hue: hueComponentEditor(type.componentTypes.hue), 
-                                 saturation: percentageComponentEditor(type.componentTypes.saturation), 
-                                 lightness: percentageComponentEditor(type.componentTypes.lightness), 
-                                 alpha: alphaComponentEditor(type.componentTypes.alpha)
-                                });
+                                colorComponentDescriptions);
     this.divClass = 'color';
     this.formatsStateModel = new FormatsStateModel();
     this.formatsController = new ColorFormatsController();
