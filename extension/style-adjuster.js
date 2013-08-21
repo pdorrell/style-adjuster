@@ -608,10 +608,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   }
   
-  function ParseError(typeDescription, value) {
+  function ParseError(typeDescription, value, reason) {
     this.typeDescription = typeDescription;
     this.value = value;
-    this.message = "Error parsing " + typeDescription + " from value " + inspect(value);
+    this.reason = reason;
+    this.message = "Error parsing " + typeDescription + " from value " + inspect(value) + 
+      (reason ? (" (" + reason + ")") : "");
     console.log("ParseError: " + this.message);
   }
   
@@ -2422,11 +2424,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
   });
   
-  function FourCssSizes(top, right, bottom, left) {
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
-    this.left = left;
+  function FourCssSizes(object) {
+    this.top = object.top;
+    this.right = object.right;
+    this.left = object.left;
+    this.bottom = object.bottom;
     this.setLabels();
   }
   
@@ -2448,7 +2450,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     withComponentUpdated: function(label, value) {
-      var clone = new FourCssSizes(this.top, this.right, this.bottom, this.left);
+      var clone = new FourCssSizes(this);
       clone[label] = value;
       return clone;
     }
@@ -2940,41 +2942,59 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   var cssSizeType = new CssDimensionType(false, "Size");
   var cssPositionType = new CssDimensionType(true, "Position");
   
-  /** ----------------------------------------------------------------------------- */
-  function FourCssDimensionsType(componentType) {
-    this.componentType = componentType;
-    this.componentTypes = {top: componentType, right: componentType, 
-                           bottom: componentType, left: componentType};
-    this.description = componentType.description + "s for top/right/bottom/left";
+    function CompoundType(object) {
+    setRequiredProperties(this, object, 
+                          ["description", "valueClass", "labels", "componentTypes", 
+                           "componentDescriptions", "editorModelClass"]);
+    var componentPatterns = [];
+    for (var i=0; i<this.labels.length; i++) {
+      var label = this.labels[i];
+      componentPatterns.push(this.componentTypes[label].lexRegex.source);
+    }
+    this.parseRegex = new RegExp(itemsPattern(componentPatterns));
   }
   
-  FourCssDimensionsType.prototype = {
-    editorModelClass: ComponentsEditorModel, 
+  CompoundType.prototype = {
+    labelIsOptional: {}, 
     
-    labels: ["top", "right", "bottom", "left"], 
-    
-    componentDescriptions: new TrblDescriptions(), 
-    
-    parseRegex: new RegExp(itemsPattern([cssSizeType.lexRegex.source, 
-                                         cssSizeType.lexRegex.source, 
-                                         cssSizeType.lexRegex.source, 
-                                         cssSizeType.lexRegex.source])), 
-
     parse: function(valueString) {
       var match = valueString.match(this.parseRegex);
-      if(match && match[1]) {
-        var size = [null, null, null, null];
-        for (var i=0; i<4; i++) {
-          size[i] = match[i+1] ? this.componentType.parse(match[i+1]) : null;
+      if (match) {
+        var object = {};
+        for (var i=0; i<this.labels.length; i++) {
+          var label = this.labels[i];
+          var componentMatch = match[i+1];
+          if (componentMatch) {
+            object[label] = this.componentTypes[label].parse(match[i+1]);
+          }
+          else if (!this.labelIsOptional[label]) {
+            throw new ParseError(this.description, valueString, "component " + label + " is missing");
+          }
+          else {
+            object[label] = null;
+          }
         }
-        return new FourCssSizes(size[0], size[1], size[2], size[3]);
+        return new this.valueClass(object);
       }
       else {
-        throw new ParseError("Top/Right/Bottom/Left CSS dimensions", valueString);
+        throw new ParseError(this.description, valueString);
       }
-    }, 
-    
-    defaultLabelForMissingLabel: {right: "top", bottom: "top", left: "right"}, 
+    }
+  };
+  
+  function FourCssDimensionsType(componentType) {
+    CompoundType.call(this, 
+                      {description: componentType.description + "s for top/right/bottom/left", 
+                       valueClass: FourCssSizes, 
+                       labels: ["top", "right", "bottom", "left"], 
+                       componentTypes: {top: componentType, right: componentType, 
+                                        bottom: componentType, left: componentType}, 
+                       componentDescriptions: new TrblDescriptions(), 
+                       editorModelClass: ComponentsEditorModel});
+  }
+  
+  FourCssDimensionsType.prototype = merge(CompoundType.prototype, {
+    labelIsOptional: {right: true, bottom: true, left: true}, 
     
     fixParsedValue: function(parsedUpdatedValue, valueObject) {
       var numLabelsInUpdate = parsedUpdatedValue.labels.length;
@@ -2990,7 +3010,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
       return anyToFix;
     }
-  };
+  });
   
   var fourCssSizesType = new FourCssDimensionsType(cssSizeType);
   var fourCssPositionsType = new FourCssDimensionsType(cssPositionType);
@@ -3062,35 +3082,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         throw new ParseError("Color", valueString);
       }
       return parsedColor;
-    }
-  };
-  
-  function CompoundType(object) {
-    setRequiredProperties(this, object, 
-                          ["description", "valueClass", "labels", "componentTypes", 
-                           "componentDescriptions", "editorModelClass"]);
-    var componentPatterns = [];
-    for (var i=0; i<this.labels.length; i++) {
-      var label = labels[i];
-      componentPatterns.push(this.componentTypes[label].lexRegex.source);
-    }
-    this.parseRegex = new Regexp(itemsPattern(componentPatterns));
-  }
-  
-  CompoundType.prototype = {
-    parse: function(valueString) {
-      var match = valueString.match(this.parseRegex);
-      if (match) {
-        var object = {};
-        for (var i=0; i<labels.length; i++) {
-          var label = labels[i];
-          object[label] = this.componentTypes.label.parse(match[i+1]);
-        }
-        return new this.valueClass(object);
-      }
-      else {
-        throw new ParseError(this.description, valueString);
-      }
     }
   };
   
