@@ -2009,10 +2009,11 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   };
 
-  function ComponentsEditorModel(valueParser, labels, componentDescriptions, 
+  function ComponentsEditorModel(type, valueParser, labels, componentDescriptions, 
                                  editorModels) {
     this.divClass = "components";
     this.view = null;
+    this.type = type;
     this.valueParser = valueParser;
     this.labels = labels;
     this.componentDescriptions = componentDescriptions;
@@ -2979,8 +2980,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   CssPositionType.prototype = CssSizeType.prototype;
 
   /** ----------------------------------------------------------------------------- */
-  function FourCssSizesEditorModel(allowNegative) {
+  function FourCssSizesEditorModel(type, allowNegative) {
     ComponentsEditorModel.call(this, 
+                               type, 
                                fourCssSizesParser, 
                                ["top", "right", "bottom", "left"], 
                                new TrblDescriptions(), 
@@ -3009,8 +3011,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   });
 
-  function fourCssSizesEditorModel(allowNegative) {
-    var model = new FourCssSizesEditorModel(allowNegative);
+  function fourCssSizesEditorModel(type, allowNegative) {
+    var model = new FourCssSizesEditorModel(type, allowNegative);
     new ComponentsEditorView(model);
     return model;
   }
@@ -3022,7 +3024,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   FourCssSizesType.prototype = {
     getEditorModel: function() {
-      return fourCssSizesEditorModel(this.allowNegative);
+      return fourCssSizesEditorModel(this, this.allowNegative);
     }    
   };
 
@@ -3058,8 +3060,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     return model;
   }
   
-  function ColorEditorModel() {
+  function ColorEditorModel(type) {
     ComponentsEditorModel.call (this, 
+                                type, 
                                 colorParser, 
                                 ["red", "green", "blue", "hue", "saturation", "lightness", "alpha"], 
                                 colorComponentDescriptions, 
@@ -3124,8 +3127,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   ColorEditorView.prototype = merge(ComponentsEditorView.prototype, {
   });
     
-  function colorEditorModel() {
-    var model = new ColorEditorModel();
+  function colorEditorModel(type) {
+    var model = new ColorEditorModel(type);
     new ColorEditorView(model);
     return model;
   }
@@ -3136,7 +3139,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   ColorType.prototype = {
     getEditorModel: function() {
-      return colorEditorModel();
+      return colorEditorModel(this);
     }
   };
   
