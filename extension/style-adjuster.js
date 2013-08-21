@@ -2186,19 +2186,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       }
     },      
     
-    updatedValueObjectToSendOn: function(label, valueObject) {
-      var updatedValueObject = merge(this.valueObject);
-      updatedValueObject[label] = valueObject;
-      return updatedValueObject;
-    }, 
-    
-    handleLabelValueFromUser: function(parsedValue, label, value, valueObject, source) {
-      this.parsedValue[label] = valueObject;
+    handleLabelValueFromUser: function(parsedValue, label, value, componentValueObject, source) {
+      this.parsedValue[label] = componentValueObject;
       var wrappedSource = {};
       wrappedSource[label] = source;
-      this.sendValueFromUser(parsedValue.toString(), this.updatedValueObjectToSendOn(label, valueObject), 
+      this.sendValueFromUser(parsedValue.toString(), 
+                             this.valueObject.withComponentUpdated(label, componentValueObject), 
                              wrappedSource);
     }
+    
   };
 
   function ComponentsEditorView(componentsEditorModel) {
@@ -3076,10 +3072,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   ColorEditorModel.prototype = merge(ComponentsEditorModel.prototype, {
     viewClass: ComponentsEditorView, 
     
-    updatedValueObjectToSendOn: function(label, valueObject) {
-      return this.valueObject.withComponentUpdated(label, valueObject);
-    }, 
-
     echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
       var fixedValueObject = this.formatsController.resetUpdatedValueObject(updatedValueObject, valueObject, 
                                                                             this.formatsStateModel);
