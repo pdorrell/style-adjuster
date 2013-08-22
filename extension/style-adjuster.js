@@ -2945,7 +2945,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       var index = Math.round(ui.value);
       $this.choiceEditorModel.setChoiceFromUser(index);
     }
-    this.sliderDom.slider({min: 0, max: this.choiceEditorModel.numChoices, step: 1, 
+    this.sliderDom.slider({min: 0, max: this.choiceEditorModel.numChoices-1, step: 1, 
                            slide: sliderChanged, change: sliderChanged});
     this.choiceEditorModel.index.nowAndOnChange(function(index) {
       $this.sliderDom.slider("option", "value", index);
