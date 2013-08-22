@@ -791,8 +791,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.styleSheets = styleSheets;
     this.rulePrechecker = null;
     this.activeTabId = new Observable("rules");
-    this.activeTabId.log = true;
-    this.activeTabId.description = "Active Tab ID";
   }
   
   StyleAdjusterModel.prototype = {
@@ -2305,9 +2303,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     },      
     
     handleLabelValueFromUser: function(parsedValue, label, value, componentValueObject, source) {
-      console.log("handleLabelValueFromUser, parsedValue = " + inspect(parsedValue) + 
-                  ", label = " + label + ", value = " + inspect(value) +
-                  ", componentValueObject = " + inspect(componentValueObject));
       this.valueObject = this.valueObject.withComponentUpdated(label, componentValueObject);
       this.sendValueFromUser(parsedValue.toString(), this.valueObject, source);
     }
@@ -2919,9 +2914,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     setChoiceFromUser: function(index) {
       this.index.set(index);
-      console.log("setChoiceFromUser, index = " + index);
       this.choice = this.choices[index];
-      console.log("Chose " + inspect(this.choice));
       this.sendValueFromUser(this.choice, this.choice, "slide");
     }
   };
