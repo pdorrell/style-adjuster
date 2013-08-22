@@ -2265,6 +2265,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     },      
     
     handleLabelValueFromUser: function(parsedValue, label, value, componentValueObject, source) {
+      console.log("handleLabelValueFromUser, parsedValue = " + inspect(parsedValue) + 
+                  ", label = " + label + ", value = " + inspect(value) +
+                  ", componentValueObject = " + inspect(componentValueObject));
       this.valueObject = this.valueObject.withComponentUpdated(label, componentValueObject);
       this.sendValueFromUser(parsedValue.toString(), this.valueObject, source);
     }
@@ -2344,6 +2347,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     getSliderModels: function(sliderModels) {
       sliderModels.push(this);
     }, 
+    
     initialise: function() {
       this.view = null; // The view should set this
       this.range = new Observable(null);
@@ -2389,7 +2393,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     sendValueFromUser: function(value, valueObject, source) {
-      if (this.sendValueFromUserHandler != null) {
+      if (this.sendValueFromUserHandler) {
         this.sendValueFromUserHandler(value, valueObject, source);
       }
     }, 
@@ -2670,7 +2674,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   }
 
   DimensionEditorView.prototype = {
-    editorModelClass: DimensionEditorView, 
     focusOnSlider: function() {
       this.sliderDom.find(".ui-slider-handle").focus();
     }
@@ -2834,12 +2837,79 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
+  function ChoiceEditorModel(type) {
+    this.type = type;
+    this.choices = type.choices;
+    this.numChoices = this.choices.length;
+    this.initialise();
+    this.index = -1;
+  }
+  
+  ChoiceEditorModel.prototype = {
+    viewClass: ChoiceEditorView, 
+    
+    getSliderModels: function(sliderModels) {
+      // sliderModels.push(this); todo - include self
+    }, 
+    
+    echoAndFixUpdatedValueObject: function (updatedValueObject, valueObject) {
+      return null;
+    }, 
+    
+    initialise: function() {
+      this.indexOfChoice = {};
+      for (var i=0; i<this.choices.length; i++) {
+        this.indexOfChoice[this.choices[i]] = i;
+      }
+    }, 
+    
+    sendValueFromUser: function(value, valueObject, source) {
+      if (this.sendValueFromUserHandler) {
+        this.sendValueFromUserHandler(value, valueObject, source);
+      }
+    }, 
+    
+    onSendValueFromUser: function(handler) {
+      this.sendValueFromUserHandler = handler;
+    }, 
+    
+    
+    receiveValueString: function(valueString, description) {
+      this.index = this.indexOfChoice[valueString];
+    }, 
+    
+    setChoiceFromUser: function(index) {
+      this.index = index;
+      console.log("setChoiceFromUser, index = " + index);
+      this.choice = this.choices[index];
+      console.log("Chose " + inspect(this.choice));
+      this.sendValueFromUser(this.choice, this.choice, "slide");
+    }
+  };
+  
+  function ChoiceEditorView(choiceEditorModel) {
+    this.choiceEditorModel = choiceEditorModel;
+    choiceEditorModel.view = this;
+    this.dom = $("<div class='choice-slider'/>");
+    this.sliderDom = $("<div class='scale-slider'/>");
+    this.dom.append(this.sliderDom);
+    var $this = this;
+    function sliderChanged(event, ui) {
+      var numChoices = $this.choiceEditorModel.numChoices;
+      var index = Math.round(ui.value);
+      $this.choiceEditorModel.setChoiceFromUser(index);
+    }
+    this.sliderDom.slider({min: 0, max: this.choiceEditorModel.numChoices, step: 1, 
+                           slide: sliderChanged, change: sliderChanged});
+  }
+  
   function ChoiceType (choices, lexRegex) {
     this.choices = choices;
     this.lexRegex = lexRegex || this.getLexRegexFromChoices();
   }
   
   ChoiceType.prototype = {
+    editorModelClass: ChoiceEditorModel, 
     getLexRegexFromChoices: function() {
       return new RegExp("(" + this.choices.join("|") + ")");
     }, 
