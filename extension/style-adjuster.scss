@@ -47,6 +47,34 @@ html {
 
     .property {
 	margin-left: 3em;
+	.extra {
+	    padding: 0 0.5em;
+	    display: none;
+	    position: relative;
+	    line-height: 50%;
+	    .wrapper {
+		border: solid 1px blue;
+		background-color: hsl(230, 100%, 98%);
+		position: absolute;
+		padding: 0 0.2em;
+		top: -0.5em;
+		left: 0.5em;
+		width: 6em;
+		button.edit {
+		    padding: 0;
+		    font-size: 1em;
+		}
+	    }
+	}
+	.hidden {
+	    display: none;
+	}
+    }
+
+    .highlighted {
+	.extra {
+	    display: inline-block;
+	}
     }
 
     .property, .edit-property {
@@ -165,6 +193,11 @@ html {
 			background-color: $selectable_hover_color;
 		    }
 		    cursor: pointer;
+		}
+	    }
+	    .highlighted {
+		.name-and-value {
+		    background-color: $selectable_hover_color;
 		}
 	    }
 	}

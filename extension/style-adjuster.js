@@ -1590,20 +1590,29 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.ruleViews = [];
     for (var j=0; j<ruleModelsList.length; j++) {
       var ruleModel = ruleModelsList[j];
-      var ruleView = new RuleView(ruleModel);
+      var ruleView = new RuleView(this, ruleModel);
       ruleView.dom.appendTo(this.dom);
       this.ruleViews.push(ruleView);
     }
     this.updateFromStyleSheetSelection();
+    this.highlightedDom = null;
   }
 
   StyleSheetRulesView.prototype = {
     updateFromStyleSheetSelection: function() {
       this.dom.toggle(this.styleSheetModel.selected);
     }, 
+    setHighlighted: function(dom) {
+      if (this.highlightedDom) {
+        this.highlightedDom.toggleClass("highlighted", false);
+      }
+      this.highlightedDom = dom;
+      dom.toggleClass("highlighted", true);
+    }
   };
   
-  function RuleView(ruleModel) {
+  function RuleView(styleSheetRulesView, ruleModel) {
+    this.styleSheetRulesView = styleSheetRulesView;
     this.ruleModel = ruleModel;
     this.dom = $("<div class='rule'/>");
     
@@ -1684,10 +1693,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   function PropertyView(ruleView, propertyModel) {
     this.ruleView = ruleView;
+    this.styleSheetRulesView = ruleView.styleSheetRulesView;
     this.propertyModel = propertyModel;
     this.dom = $("<div class='property'/>");
     var labelDom = $("<label/>").appendTo(this.dom);
     this.addSelectCheckBox(labelDom);
+    var $this = this;
     if (propertyModel.error == null) {
       this.nameAndValueDom = $("<span class='name-and-value'/>");
       this.nameDom = $("<span class='name'/>").text(this.propertyModel.name);
@@ -1695,6 +1706,15 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.propertyValueView = new PropertyValueView(propertyModel);
       this.nameAndValueDom.append(this.nameDom, separatorDom, this.propertyValueView.dom);
       labelDom.append(this.nameAndValueDom);
+      var extraDom = $("<div class='extra'>&nbsp;</div>");
+      this.editButton = $("<button class='edit'/>").text("Edit");
+      this.openMoreDom = $("<span class='open-more'/>").append(" ...");
+      var extraWrapperDom = $("<div class='wrapper'/>").appendTo(extraDom);
+      extraWrapperDom.append(this.editButton, this.openMoreDom);
+      this.dom.append(extraDom);
+      labelDom.on("mouseenter", function() {
+        $this.styleSheetRulesView.setHighlighted($this.dom);
+      });
     }
     else {
       this.propertyTextDom = $("<span class='property-text'/>").text(this.propertyModel.propertyText);
@@ -1705,7 +1725,6 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     if(ruleView.ruleModel.hasPropertyError) {
       this.selectCheckbox.prop("disabled", true);
     }    
-    var $this = this;
     this.propertyModel.selected.nowAndOnChange(function(selected) {
       $this.selectCheckbox.prop("checked", selected);
     });
