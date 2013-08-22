@@ -2878,6 +2878,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.numChoices = this.choices.length;
     this.initialise();
     this.index = new Observable();
+    this.description = new Observable();
   }
   
   ChoiceEditorModel.prototype = {
@@ -2910,6 +2911,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     
     receiveValueString: function(valueString, description) {
       this.index.set(this.indexOfChoice[valueString]);
+      this.description.set(description[1]);
     }, 
     
     setChoiceFromUser: function(index) {
@@ -2923,6 +2925,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.choiceEditorModel = choiceEditorModel;
     choiceEditorModel.view = this;
     this.dom = $("<div class='choice-slider'/>");
+    this.descriptionDom = $("<span/>");
+    this.dom.append($("<b/>").append(this.descriptionDom), ": ");
     this.sliderDom = $("<div class='scale-slider'/>");
     this.dom.append(this.sliderDom);
     var $this = this;
@@ -2935,6 +2939,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
                            slide: sliderChanged, change: sliderChanged});
     this.choiceEditorModel.index.nowAndOnChange(function(index) {
       $this.sliderDom.slider("option", "value", index);
+    });
+    this.choiceEditorModel.description.nowAndOnChange(function(description) {
+      $this.descriptionDom.text(description);
     });
   }
   

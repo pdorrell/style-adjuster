@@ -177,7 +177,8 @@ body {
     width: 30em;
     display: inline-block; }
   .style-adjuster .choice-slider {
-    padding: 0.6em 0px 0.4em; }
+    padding: 0.8em 0px 0.4em;
+    font-size: 1.1em; }
   .style-adjuster .size-slider {
     padding: 0.6em 0px 0.4em;
     margin: 0; }
