@@ -3245,7 +3245,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.setType(fourCssSizesType, 
                  ["padding", "border-width"]);
     this.setType(cssSizeType, 
-                 ["font-size", "width", "min-width", "max-width"]);
+                 ["font-size", "width", "min-width", "max-width", 
+                  "height", "min-height", "max-height", "line-height"]);
     this.setType(colorType, 
                  ["color", "background-color", "border-color"]);
     this.setType(colorType, 
