@@ -1595,19 +1595,19 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.ruleViews.push(ruleView);
     }
     this.updateFromStyleSheetSelection();
-    this.highlightedDom = null;
+    this.domSelectedForAction = null;
   }
 
   StyleSheetRulesView.prototype = {
     updateFromStyleSheetSelection: function() {
       this.dom.toggle(this.styleSheetModel.selected);
     }, 
-    setHighlighted: function(dom) {
-      if (this.highlightedDom) {
-        this.highlightedDom.toggleClass("highlighted", false);
+    selectForAction: function(dom) {
+      if (this.domSelectedForAction) {
+        this.domSelectedForAction.toggleClass("selected-for-action", false);
       }
-      this.highlightedDom = dom;
-      dom.toggleClass("highlighted", true);
+      this.domSelectedForAction = dom;
+      dom.toggleClass("selected-for-action", true);
     }
   };
   
@@ -1713,7 +1713,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       extraWrapperDom.append(this.editButton, this.openMoreDom);
       this.dom.append(extraDom);
       labelDom.on("mouseenter", function() {
-        $this.styleSheetRulesView.setHighlighted($this.dom);
+        $this.styleSheetRulesView.selectForAction($this.dom);
       });
     }
     else {

@@ -71,7 +71,7 @@ html {
 	}
     }
 
-    .highlighted {
+    .selected-for-action {
 	.extra {
 	    display: inline-block;
 	}
@@ -195,7 +195,7 @@ html {
 		    cursor: pointer;
 		}
 	    }
-	    .highlighted {
+	    .selected-for-action {
 		.name-and-value {
 		    background-color: $selectable_hover_color;
 		}
