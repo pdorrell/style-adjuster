@@ -790,6 +790,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   function StyleAdjusterModel(styleSheets) {
     this.styleSheets = styleSheets;
     this.rulePrechecker = null;
+    this.activeTabId = new Observable("rules");
+    this.activeTabId.log = true;
+    this.activeTabId.description = "Active Tab ID";
   }
   
   StyleAdjusterModel.prototype = {
@@ -799,6 +802,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         $this.initialiseFrom(styleSheetObjects);
         response();
       });
+    }, 
+    activateTab: function(tabId) {
+      this.activeTabId.set(tabId);
     }, 
     initialiseFrom: function(styleSheetObjects) {
       this.styleSheetsList = [];
@@ -1108,6 +1114,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.styleAdjusterModel.editProperty(this);
     }, 
     
+    selectAndEditThisProperty: function() {
+      this.selected.set(true);
+      this.styleAdjusterModel.activateTab("edit");
+      this.editThisProperty();
+    }, 
+    
     updateValue: function(value) {
       this.ruleModel.setPropertyValue(this, value);
       var updatedValue = this.value.get();
@@ -1412,6 +1424,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
 
   StyleAdjusterView.prototype = {
     initialiseDom: function(parentDom, styleAdjusterModel) {
+      this.nextTabNumber = 0;
+      this.tabNumberById = {};
+
       this.outerDom = $("<div class='style-adjuster-outer'/>");
       this.dom = $("<div/>").appendTo(this.outerDom);;
       if (parentDom) {
@@ -1436,22 +1451,25 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.helpView = new HelpView();
       this.addTab("help", null, "Help", this.helpView, "icons/tab-icon.png");
       
+      this.dom.tabs({activate: function(event, ui) {
+        var tabId = ui.newPanel[0].id;
+        $this.styleAdjusterModel.activeTabId.set(tabId);
+      }});
+      this.tabsDom.find("> ul > li:last-child").css("float", "right");
+
       $this = this;
-      function activateTab(tabId) {
+      this.styleAdjusterModel.activeTabId.nowAndOnChange(function(tabId) {
+        var tabNumber = $this.tabNumberById[tabId];
+        $this.dom.tabs("option", "active", tabNumber);
         var tabView = $this.tabsById[tabId];
         if (tabView.activate) {
           $this.tabsById[tabId].activate();
         }
-      }
-      this.dom.tabs({active: 1, activate: function(event, ui) {
-        var tabId = ui.newPanel[0].id;
-        activateTab(tabId);
-      }});
-      activateTab("rules");
-      this.tabsDom.find("> ul > li:last-child").css("float", "right");
+      });
     }, 
     
     addTab: function(id, label, tooltip, view, imageUrl) {
+      this.tabNumberById[id] = this.nextTabNumber++;
       this.tabsById[id] = view;
       var linkItemDom = $("<a/>").attr("href", "#" + id).attr("title", tooltip);
       if (label) {
@@ -1707,10 +1725,13 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.nameAndValueDom.append(this.nameDom, separatorDom, this.propertyValueView.dom);
       labelDom.append(this.nameAndValueDom);
       var extraDom = $("<div class='extra'>&nbsp;</div>");
-      this.editButton = $("<button class='edit'/>").text("Edit");
-      this.openMoreDom = $("<span class='open-more'/>").append(" ...");
+      var editButton = $("<button class='edit'/>").text("Edit");
+      editButton.click(function() {
+        propertyModel.selectAndEditThisProperty();
+      });
+      var openMoreDom = $("<span class='open-more'/>").append(" ...");
       var extraWrapperDom = $("<div class='wrapper'/>").appendTo(extraDom);
-      extraWrapperDom.append(this.editButton, this.openMoreDom);
+      extraWrapperDom.append(editButton, openMoreDom);
       this.dom.append(extraDom);
       labelDom.on("mouseenter", function() {
         $this.styleSheetRulesView.selectForAction($this.dom);
