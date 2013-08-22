@@ -608,6 +608,16 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
   }
   
+  function setOptionalProperties(target, source, properties) {
+    for (var i=0; i<properties.length; i++) {
+      var property = properties[i];
+      var value = source[property];
+      if (value) {
+        target[property] = value;
+      }
+    }
+  }
+  
   function ParseError(typeDescription, value, reason) {
     this.typeDescription = typeDescription;
     this.value = value;
@@ -2979,15 +2989,21 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.width = object.width;
     this.style = object.style;
     this.color = object.color;
+    this.labels = [];
+    if(this.width) this.labels.push("width");
+    if(this.style) this.labels.push("style");
+    if(this.color) this.labels.push("color");
   }
   
   BorderProperty.prototype = {
-    labels: ["width", "style", "color"], 
-    
     prenormalisables: ["width"], 
     
     toString: function() {
-      return this.width.toString() + " " + this.style.toString() + " " + this.color.toString();
+      var values = [];
+      for (var i=0; i<this.labels.length; i++) {
+        values.push(this[this.labels[i]]);
+      }
+      return values.join(" ");
     }, 
     
     withComponentUpdated: function(label, value) {
@@ -3052,6 +3068,8 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     setRequiredProperties(this, object, 
                           ["description", "valueClass", "labels", "componentTypes", 
                            "componentDescriptions", "editorModelClass"]);
+    setOptionalProperties(this, object, 
+                          ["labelIsOptional"]);
     var componentPatterns = [];
     for (var i=0; i<this.labels.length; i++) {
       var label = this.labels[i];
@@ -3211,6 +3229,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     description: "Border", 
     valueClass: BorderProperty, 
     labels: ["width", "style", "color"], 
+    labelIsOptional: {width: true, style: true, color: true}, 
     componentTypes: {width: cssSizeType, style: borderStyleType, color: colorType}, 
     componentDescriptions: new ComponentDescriptions({width: ["W", "Width"], 
                                                       style: ["S", "Style"], 
