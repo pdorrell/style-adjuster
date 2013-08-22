@@ -2259,7 +2259,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }, 
     
     sendValueFromUser: function(value, valueObject, source) {
-      if (value != null && this.sendValueFromUser != null) {
+      if (value != null && this.sendValueFromUserHandler) {
         this.sendValueFromUserHandler(value, valueObject, source);
       }
     },      
@@ -2842,7 +2842,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     this.choices = type.choices;
     this.numChoices = this.choices.length;
     this.initialise();
-    this.index = -1;
+    this.index = new Observable();
   }
   
   ChoiceEditorModel.prototype = {
@@ -2873,13 +2873,12 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
       this.sendValueFromUserHandler = handler;
     }, 
     
-    
     receiveValueString: function(valueString, description) {
-      this.index = this.indexOfChoice[valueString];
+      this.index.set(this.indexOfChoice[valueString]);
     }, 
     
     setChoiceFromUser: function(index) {
-      this.index = index;
+      this.index.set(index);
       console.log("setChoiceFromUser, index = " + index);
       this.choice = this.choices[index];
       console.log("Chose " + inspect(this.choice));
@@ -2901,6 +2900,9 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
     }
     this.sliderDom.slider({min: 0, max: this.choiceEditorModel.numChoices, step: 1, 
                            slide: sliderChanged, change: sliderChanged});
+    this.choiceEditorModel.index.nowAndOnChange(function(index) {
+      $this.sliderDom.slider("option", "value", index);
+    });
   }
   
   function ChoiceType (choices, lexRegex) {
