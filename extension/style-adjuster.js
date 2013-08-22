@@ -1928,15 +1928,55 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         }
       }
       this.setEditorModel(active 
-                          ? (currentEditorModelIsActive ? currentEditorModel : sliderModels[0])
+                          ? (currentEditorModelIsActive ? currentEditorModel 
+                             : this.findNearestActiveEditorModel(currentEditorModel))
                           : null);
     }, 
+    
+    findNearestActiveEditorModel: function(editorModel) {
+      var ancestorModel = editorModel;
+      while(ancestorModel) {
+        var nearModel = this.findActiveModelWithAncestor(ancestorModel);
+        if (nearModel) {
+          return nearModel;
+        }
+        ancestorModel = ancestorModel.parent;
+      }
+      return this.sliderModels[0];
+    }, 
+    
+    hasAncestor: function(sliderModel, ancestorModel) {
+      var parent = sliderModel.parent;
+      if(parent) {
+        if(parent == ancestorModel) {
+          return true;
+        }
+        else {
+          return this.hasAncestor(parent, ancestorModel);
+        }
+      }
+      else {
+        return false;
+      }
+    }, 
+    
+    findActiveModelWithAncestor: function(ancestorModel) {
+      for (var i=0; i<this.sliderModels.length; i++) {
+        var sliderModel = this.sliderModels[i];
+        if (this.hasAncestor(sliderModel, ancestorModel)) {
+          return sliderModel;
+        }
+      }
+      return null;
+    }, 
+    
     unfocusCurrentEditorModel: function () {
       var previousEditorModel = this.editorModel.get();
       if(previousEditorModel) {
         previousEditorModel.focussed.set(false);
       }
     }, 
+    
     setEditorModel: function(editorModel) {
       this.unfocusCurrentEditorModel();
       this.label.set(editorModel ? editorModel.description : null);
@@ -2107,6 +2147,7 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
         var label = this.labels[i];
         var editorModel = getEditorModel(this.type.componentTypes[label]);
         if (editorModel) {
+          editorModel.parent = this;
           editorModel.label = label;
           this.editorModels[label] = editorModel;
           this.handleValueSentFrom(label, editorModel);
