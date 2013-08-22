@@ -2834,14 +2834,21 @@ window.STYLE_ADJUSTER = window.STYLE_ADJUSTER || {};
   
   /** ===== Specific model editors ==================================================== */
   
-  var borderStyleType = {
-    lexRegex: /(none|dotted|dashed|solid|double|groove|ridge|inset|outset)/, 
-    
+  function ChoiceType (choices, lexRegex) {
+    this.choices = choices;
+    this.lexRegex = lexRegex || this.getLexRegexFromChoices();
+  }
+  
+  ChoiceType.prototype = {
+    getLexRegexFromChoices: function() {
+      return new RegExp("(" + this.choices.join("|") + ")");
+    }, 
     parse: function(valueString) {
       return valueString;
     }
   };
-  
+
+  var borderStyleType = new ChoiceType("none dotted dashed solid double groove ridge inset outset".split(" "));
 
   /** Return a regex for a sequence of items (all optional, but there will always be at least one
    in practice) separated by whitespace. */
